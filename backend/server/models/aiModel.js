@@ -1,24 +1,19 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = mongoose;
 const { randomUUID } = require('node:crypto');
 
-const refreshTokenSchema = new Schema({
+const aiModelSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
         default: randomUUID(),
         unique: true,
     },
-    user_id: {
-        type: Schema.Types.UUID,
-        required: true,
-    },
-    token: {
+    name: {
         type: String,
         required: true,
-        unique: true,
     },
-    expires_at: {
-        type: Date,
+    version: {
+        type: String,
         required: true,
     },
     created_at: {
@@ -27,4 +22,4 @@ const refreshTokenSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model('RefreshToken', refreshTokenSchema);
+module.exports = model('AiModel', aiModelSchema);

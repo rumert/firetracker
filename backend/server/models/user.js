@@ -5,7 +5,8 @@ const { randomUUID } = require('node:crypto');
 const userSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
-        default: randomUUID()
+        default: randomUUID(),
+        unique: true,
     },
     username: {
         type: String,
@@ -17,11 +18,19 @@ const userSchema = new Schema({
         unique: true,
         required: true,
     },
-    passwordHash: {
+    password_hash: {
         type: String,
         required: true,
     },
-    createdAt: {
+    refresh_token_ids: {
+        type: [Schema.Types.UUID],
+        default: [],
+    },
+    budget_ids: {
+        type: [Schema.Types.UUID],
+        default: [],
+    },
+    created_at: {
         type: Date,
         default: Date.now,
     },

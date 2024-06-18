@@ -6,7 +6,6 @@ const aiModelSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
         default: randomUUID(),
-        unique: true,
     },
     name: {
         type: String,

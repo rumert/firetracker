@@ -6,7 +6,6 @@ const transactionSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
         default: randomUUID(),
-        unique: true,
     },
     budget_id: {
         type: Schema.Types.UUID,

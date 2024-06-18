@@ -6,7 +6,6 @@ const refreshTokenSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
         default: randomUUID(),
-        unique: true,
     },
     user_id: {
         type: Schema.Types.UUID,

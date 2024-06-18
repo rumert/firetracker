@@ -6,7 +6,6 @@ const userSchema = new Schema({
     _id: {
         type: Schema.Types.UUID,
         default: randomUUID(),
-        unique: true,
     },
     username: {
         type: String,

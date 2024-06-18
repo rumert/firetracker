@@ -11,7 +11,7 @@ app.use(express.json());
 //database
 const connectDB = require('./server/config/db')
 connectDB()
-const Users = require('./server/models/user'); 
+const User = require('./server/models/user'); 
 const RefreshToken = require('./server/models/refreshToken'); 
 
 
@@ -27,22 +27,22 @@ async function generatePasswordHash(password) {
 }
 
 async function createUser(username, email, password) {
-    return await Users.create({
+    return await User.create({
         username,
         email,
-        passwordHash: await generatePasswordHash(password)
+        password_hash: await generatePasswordHash(password)
     })
 }
 
 async function generateRefreshToken(user) {
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    const expiresAt = new Date(jwt.decode(refreshToken).exp * 1000)
+    const expires_at = new Date(jwt.decode(refreshToken).exp * 1000)
     await RefreshToken.create({
-        uid: user.uid,
+        user_id: user.uid,
         token: refreshToken,
-        expiresAt
+        expires_at
     })
-    return { token: refreshToken, expires: expiresAt.valueOf() }
+    return { token: refreshToken, expires: expires_at.valueOf() }
 }
 
 function generateAccessToken(user) {

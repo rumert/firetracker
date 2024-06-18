@@ -6,17 +6,6 @@ const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 
-const data = [
-    {
-        email: "rumsd21@gmail.com",
-        book: "admin's book"
-    },
-    {
-        email: "test",
-        book: "test's book"
-    }
-]
-
 app.get('/protected', authenticateToken, (req, res) => {
     console.log(req.user)
     res.json('OK')

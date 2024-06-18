@@ -78,10 +78,13 @@ app.delete("/logout", (req, res) => {
 app.get("/token", async (req, res) => {
     const authHeader = req.headers['authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1];
+    if (!refreshToken) return res.sendStatus(401);
+    const isRefreshTokenInDb = await Users.findOne({ token: refreshToken })
+    if (!isRefreshTokenInDb) return res.sendStatus(403);
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        const userWithoutExp = {email: user.email, uid: user.uid}
         if (err) return res.sendStatus(403);
+        const userWithoutExp = {email: user.email, uid: user.uid}
         const accessToken = generateAccessToken(userWithoutExp)
         return res.json({ accessToken });
     });

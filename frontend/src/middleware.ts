@@ -10,8 +10,11 @@ export default async function middleWare(req: NextRequest) {
               authorization: `Bearer ${refreshToken}`
             }  
         });
-        const data = await resFetch.json()
-        res.cookies.set("accessToken", data.accessToken.token, { expires: data.accessToken.expires, httpOnly: true })
+        
+        if (resFetch.ok) {
+            const data = await resFetch.json()
+            res.cookies.set("accessToken", data.accessToken.token, { expires: data.accessToken.expires })
+        }
     }
     
     return res

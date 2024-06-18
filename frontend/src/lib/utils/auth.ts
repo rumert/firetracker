@@ -13,7 +13,7 @@ export async function login(email: any, password: any) {
             body: JSON.stringify({ email, password })
         });
         const data: any = await res.json()
-        cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires, httpOnly: true}); // 1 minute in ms
+        cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires }); // 1 minute in ms
         cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true}); // 7 days in ms
     } catch (error) {
         console.error('Login failed', error);

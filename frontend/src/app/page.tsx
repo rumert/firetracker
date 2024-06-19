@@ -1,23 +1,26 @@
+import AddBudget from "@/components/AddBudget";
 import fetchWithTokens from "@/lib/utils/fetchWithTokens";
-import { cookies } from "next/headers";
-
-const API_URL = process.env.NODE_API_URL;
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-  //const accessToken = cookies().get("accessToken")?.value
-  //const refreshToken = cookies().get("refreshToken")?.value
 
-  // try {
-  //   const response = await fetchWithTokens(`${API_URL}/protected`, { accessToken, refreshToken });
-  //   const data = await response.json();
-  //   console.log(data)
-  // } catch (error) {
-  //   console.log(error)
-  // }
+  let budgetId = undefined;
+  try {
+    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/getDefaultBudget`);
+    const data = await response.json();
+    budgetId = data.budget?._id
+  } catch (error: any) {
+    console.log(error)
+  }
 
-  return (
+  return budgetId ? 
+  (
+    redirect(`/${budgetId}`)
+  )
+  :
+  (
     <main>
-      <p>homeee</p>
+      <AddBudget isFirst={true} />
     </main>
   );
 }

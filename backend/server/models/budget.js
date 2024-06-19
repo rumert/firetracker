@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
-const { randomUUID } = require('node:crypto');
 
 const budgetSchema = new Schema({
-    _id: {
-        type: Schema.Types.UUID,
-        default: randomUUID(),
-    },
     user_id: {
-        type: Schema.Types.UUID,
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
+    name: {
+        type: String,
         required: true,
     },
     base_balance: {
@@ -16,7 +15,7 @@ const budgetSchema = new Schema({
         required: true,
     },
     transaction_ids: {
-        type: [Schema.Types.UUID],
+        type: [Schema.Types.ObjectId],
         default: [],
     },
     current_balance: {
@@ -24,6 +23,10 @@ const budgetSchema = new Schema({
         default: function() {
             return this.base_balance
         }
+    },
+    is_default: {
+        type: Boolean,
+        required: true
     },
     created_at: {
         type: Date,

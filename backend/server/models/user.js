@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
-const { randomUUID } = require('node:crypto');
 
 const userSchema = new Schema({
-    _id: {
-        type: Schema.Types.UUID,
-        default: randomUUID(),
-    },
     username: {
         type: String,
         unique: true,
@@ -22,11 +17,11 @@ const userSchema = new Schema({
         required: true,
     },
     refresh_token_ids: {
-        type: [Schema.Types.UUID],
+        type: [Schema.Types.ObjectId],
         default: [],
     },
     budget_ids: {
-        type: [Schema.Types.UUID],
+        type: [Schema.Types.ObjectId],
         default: [],
     },
     created_at: {

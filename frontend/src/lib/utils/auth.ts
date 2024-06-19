@@ -22,14 +22,6 @@ export async function login(email: any, password: any) {
 };
 
 export async function logout() {
-    const refreshToken = cookies().get('refreshToken')?.value;
-    const res = await fetch(`${AUTH_API_URL}/logout`, { 
-        method: 'DELETE',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify( { token: refreshToken } )
-    });
     cookies().delete('accessToken');
     cookies().delete('refreshToken');
 };

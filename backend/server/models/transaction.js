@@ -1,14 +1,9 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
-const { randomUUID } = require('node:crypto');
 
 const transactionSchema = new Schema({
-    _id: {
-        type: Schema.Types.UUID,
-        default: randomUUID(),
-    },
     budget_id: {
-        type: Schema.Types.UUID,
+        type: Schema.Types.ObjectId,
         required: true,
     },
     amount: {

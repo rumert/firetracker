@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
 app.use(express.json());
+app.listen(5000);
 
 //database
 const connectDB = require('./server/config/db')
@@ -42,6 +43,7 @@ async function generateRefreshToken(user) {
         token: refreshToken,
         expires_at
     })
+    await User.findByIdAndUpdate(user.uid, { $push: { refresh_token_ids: refreshToken } }, {new: true, useFindAndModify: false})
     return { token: refreshToken, expires: expires_at.valueOf() }
 }
 
@@ -51,35 +53,28 @@ function generateAccessToken(user) {
     return { token: accessToken, expires: expiresAt.valueOf() }
 }
 
-//auth routes
+//routes
 app.post("/login", async (req, res) => {
     const email = req.body.email
-    const DoesUserExist = await Users.findOne({ email: email });
+    const DoesUserExist = await User.findOne({ email: email });
     let uid = null
     if ( DoesUserExist ) {
-        uid = DoesUserExist._id
+        uid = DoesUserExist.id
     } else {
         const user = await createUser( email.substring(0, email.indexOf("@")), email, req.body.password )
-        uid = user._id
+        uid = user.id
     }
-
     const user = { email, uid }
     const accessToken = generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user)
     res.json({ accessToken, refreshToken });
 });
 
-app.delete("/logout", (req, res) => {
-    //refreshTokens = refreshTokens.filter(token => token !== req.body.token);
-    //res.sendStatus(204);
-});
-
-//token routes
 app.get("/token", async (req, res) => {
     const authHeader = req.headers['authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1];
     if (!refreshToken) return res.sendStatus(401);
-    const isRefreshTokenInDb = await Users.findOne({ token: refreshToken })
+    const isRefreshTokenInDb = await RefreshToken.findOne({ token: refreshToken })
     if (!isRefreshTokenInDb) return res.sendStatus(403);
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
@@ -89,5 +84,3 @@ app.get("/token", async (req, res) => {
         return res.json({ accessToken });
     });
 });
-
-app.listen(5000);

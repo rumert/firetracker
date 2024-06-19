@@ -9,10 +9,17 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import LoginButton from '@/components/ui/LoginButton'
+import SubmitButton from '@/components/ui/SubmitButton'
 import { login } from '@/lib/utils/auth'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export default function page() {
+
+    if (cookies().get('accessToken')?.value) {
+        return redirect('/')
+    }
+
     async function signIn (formData: FormData) {
         "use server";
     
@@ -60,12 +67,12 @@ export default function page() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <LoginButton
+                    <SubmitButton
                       pendingText="Logging in..."
                       className='w-full'
                     >
                       Login
-                    </LoginButton> 
+                    </SubmitButton> 
                 </CardFooter>
             </form>    
         </Card>

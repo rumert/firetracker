@@ -36,9 +36,9 @@ export default function page() {
     <main className='flex justify-center items-center h-screen w-screen'>
         <Card className="w-full max-w-sm">
             <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Login/Sign Up</CardTitle>
                 <CardDescription>
-                Enter your email below to login to your account.
+                Enter your credentials below to login/register to your account.
                 </CardDescription>
             </CardHeader>
             <form action={signIn}>
@@ -65,10 +65,10 @@ export default function page() {
                 </CardContent>
                 <CardFooter>
                     <SubmitButton
-                      pendingText="Logging in..."
+                      pendingText="Please wait..."
                       className='w-full'
                     >
-                      Login
+                      Login/Sign Up
                     </SubmitButton> 
                 </CardFooter>
             </form>    

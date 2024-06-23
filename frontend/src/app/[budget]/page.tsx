@@ -6,6 +6,7 @@ import CreateBudget from './CreateBudget';
 import BalanceCard from './BalanceCard';
 import BudgetListing from './BudgetListing';
 import Transactions from './Transactions';
+import { Transaction } from './Columns';
 
 export default async function page({ params }: any) {
     let primaryBudget = undefined
@@ -25,6 +26,36 @@ export default async function page({ params }: any) {
         console.log(error)
     }
 
+    async function getData(): Promise<Transaction[]> {
+        return [
+          {
+            id: '1',
+            category: 'c',
+            planned: 10,
+            spent: 5
+          },
+          {
+            id: '2',
+            category: 'a',
+            planned: 20,
+            spent: 10
+          },
+          {
+            id: '3',
+            category: 'bsd',
+            planned: 30,
+            spent: 20
+          },
+          {
+            id: '4',
+            category: 'd',
+            planned: 40,
+            spent: 30
+          },
+        ]
+    }
+    const data = await getData()
+
   return !primaryBudget ? redirect('/') :
     (
     <main className='h-screen w-screen flex flex-col'>
@@ -38,7 +69,7 @@ export default async function page({ params }: any) {
             </div>
         </div>
         <div className='flex h-full p-2'>   
-            <BudgetListing />
+            <BudgetListing data={data}/>
             <Transactions />
         </div>
     </main>  

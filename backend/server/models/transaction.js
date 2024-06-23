@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const transactionSchema = new Schema({
     budget_id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     amount: {

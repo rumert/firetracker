@@ -11,27 +11,24 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SubmitButton from '@/components/ui/SubmitButton'
 import { login } from '@/lib/utils/auth'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export default function page() {
-
-    if (cookies().get('accessToken')?.value) {
-        return redirect('/')
-    }
 
     async function signIn (formData: FormData) {
         "use server";
     
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        //let redirectPath: string;
+        let redirectPath;
 
         try {
             await login(email, password)
-            //redirectPath = '/'
+            redirectPath = '/'
         } catch (error) {
             console.log(error)
+        } finally {
+            redirectPath ? redirect(redirectPath) : ''
         }
     };
 

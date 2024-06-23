@@ -1,42 +1,22 @@
-import React from 'react'
+'use client'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import SubmitButton from '@/components/ui/SubmitButton'
-import fetchWithTokens from '@/lib/utils/fetchWithTokens'
-import { redirect } from 'next/navigation'
+import { createBudget } from '@/app/actions'
+import { X } from 'lucide-react'
+import { Button } from './ui/button'
 
-export default function AddBudget({ isFirst }: any) {
+export default function AddBudget({ isFirst, setIsAddBudgetActive }: any) {
 
-    async function createBudget(formData: FormData) {
-        "use server"
-
-        const name = formData.get("name") as string;
-        const baseBalance = formData.get("baseBalance") as string;
-        let redirectPath = undefined;
-
-        try {
-            const response = await fetchWithTokens(`${process.env.NODE_API_URL}/createBudget`, {
-              method: 'POST',
-              headers: {
-                'Content-type': 'application/json'
-              },
-              body: JSON.stringify({ name, baseBalance, isDefault: isFirst })
-            });
-            const { budget } = await response.json()
-            redirectPath = `/${budget._id}`
-        } catch (error) {
-            console.log(error)
-        }
-        
-        redirectPath ? redirect(redirectPath) : ''
-    }
+    const createBudgetWithIsFirst = createBudget.bind(null, isFirst)
   
   return (
-    <form action={createBudget} className='h-screen w-screen flex justify-center items-center'>
+    <form action={createBudgetWithIsFirst} className='h-screen w-screen flex justify-center items-center absolute top-0 left-0 z-50 bg-background'>
         <Card className="w-[350px]">
-            <CardHeader>
+            <CardHeader className='relative'>
                 <CardTitle>Create budget</CardTitle>
+                {!isFirst && <Button onClick={() => setIsAddBudgetActive(false)} className='w-fit px-2 absolute right-1.5 top-0' variant='ghost' type='button'><X className='text-destructive' /></Button>}
             </CardHeader>
             <CardContent>
                 <div className="grid w-full items-center gap-4">

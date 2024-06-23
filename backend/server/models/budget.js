@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const budgetSchema = new Schema({
     user_id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     name: {
@@ -15,7 +15,7 @@ const budgetSchema = new Schema({
         required: true,
     },
     transaction_ids: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
         default: [],
     },
     current_balance: {

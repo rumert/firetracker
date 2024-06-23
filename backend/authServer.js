@@ -12,9 +12,9 @@ app.listen(5000);
 //database
 const connectDB = require('./server/config/db')
 connectDB()
+const mongoose = require('mongoose');
 const User = require('./server/models/user'); 
 const RefreshToken = require('./server/models/refreshToken'); 
-
 
 //test
 app.get("/test", (req, res) => {

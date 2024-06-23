@@ -17,11 +17,11 @@ const userSchema = new Schema({
         required: true,
     },
     refresh_token_ids: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
         default: [],
     },
     budget_ids: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
         default: [],
     },
     created_at: {

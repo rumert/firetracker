@@ -14,11 +14,10 @@ function fetchOptions(token: any, params: any) {
 
 export default async function fetchWithTokens(url: any, params = {}) {
 
-  const { accessToken, refreshToken } = getTokens()
+  const { accessToken, refreshToken } = await getTokens()
   let response = await fetch(url, fetchOptions(accessToken, params));
   if (response.status === 403) {
-    const refreshResponse = await fetch(`${AUTH_API_URL}/token`, fetchOptions(refreshToken, params));
-
+    const refreshResponse = await fetch(`${AUTH_API_URL}/token`, fetchOptions(refreshToken, {}));
     if (refreshResponse.status === 200) {
       const { accessToken: { token } } = await refreshResponse.json();
       response = await fetch(url, fetchOptions(token, params));

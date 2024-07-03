@@ -12,8 +12,6 @@ export default async function BudgetTables({ transactions }: any) {
     return acc;
   }, {});
 
-  //console.log(categorizedTransactions)
-
   return (
     <div className="mx-auto p-8 w-2/3 max-w-[768px]">
       {Object.keys(categorizedTransactions).map((category) => (

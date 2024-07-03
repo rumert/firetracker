@@ -6,6 +6,7 @@ import CreateBudget from './(top)/CreateBudget';
 import BalanceCard from './(top)/BalanceCard';
 import BudgetTables from './(table)/BudgetTables';
 import Transactions from './(transactions)/Transactions';
+import Image from 'next/image';
 
 async function getBudget(budgetId: any) {
   try {
@@ -46,6 +47,14 @@ export default async function page({ params }: any) {
     <main>
       <div className='flex gap-20 px-20 py-6 sticky top-0 bg-background z-20'>
         <div className='flex gap-2'>
+          <div className='relative h-10 w-10'>
+            <Image
+             src='/icon.png'
+             width='100'
+             height='100'
+             alt='icon'
+            />
+          </div>
           <BudgetPopover budgets={budgets} primaryBudget={primaryBudget} />
           <CreateBudget />
         </div>

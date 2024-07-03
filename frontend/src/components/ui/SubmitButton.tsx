@@ -9,12 +9,12 @@ export default function SubmitButton({ children, pendingText, variant, size, cla
     const { pending } = useFormStatus();
     
     return pending ? (
-        <Button aria-disabled={true} className={buttonVariants({ variant, size, className })}>
+        <Button aria-disabled={true} variant={variant} size={size} className={className}>
           <Loader2 className={`${pendingText ? 'mr-2' : ''} h-4 w-4 animate-spin`} />
           {pendingText}
         </Button> 
     ) : (
-        <Button className={buttonVariants({ variant, size, className })} type="submit">
+        <Button type="submit" variant={variant} size={size} className={className}>
           { children }
         </Button>
     )

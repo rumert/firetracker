@@ -24,3 +24,57 @@ export async function createBudget(isFirst: boolean, formData: FormData) {
         
     redirectPath ? redirect(redirectPath) : ''
 }
+
+export async function addTransaction( date: any, budgetId: any, currentState: any, formData: FormData ) {
+  const title = formData.get('title') as string;
+  const amount = formData.get('amount') as unknown as number
+  const type = formData.get('type') as string;
+
+  try {
+      await fetchWithTokens(`${process.env.NODE_API_URL}/addTransaction`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          budgetId,
+          type,
+          amount: type === 'income' ? amount : -amount,
+          date,
+          title
+        })
+      });
+
+      return {
+        message: 'success'
+      }
+
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'failed'
+    }
+  }
+}
+
+export async function updateTransaction( dataToUpdate: any, budgetId: any, transactionId: any, amount: any ) {
+
+  try {
+      await fetchWithTokens(`${process.env.NODE_API_URL}/updateTransaction`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ dataToUpdate, budgetId, transactionId, amount })
+      });
+
+      return {
+        message: 'success'
+      }
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'failed'
+    }
+  }
+}

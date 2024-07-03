@@ -22,16 +22,20 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { getColumns, Transaction } from "./Columns"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+interface DataTableProps<TData> {
+  key: string
+  category: string
+  transactions: TData[]
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData extends Transaction>({
+  key,
+  category,
+  transactions,
+}: DataTableProps<TData>) {
+  const columns = getColumns(category)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -39,7 +43,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
-    data,
+    data: transactions,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -56,13 +60,13 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div>
+    <div key={key}>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter spends..."
-          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
+          placeholder={`Filter ${category === 'Income' ? 'incomes' : 'spends'}...`}
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("category")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

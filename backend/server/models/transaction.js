@@ -2,20 +2,28 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 const transactionSchema = new Schema({
+    user_id: {
+        type: String,
+        required: true,
+    },
     budget_id: {
+        type: String,
+        required: true,
+    },
+    type: {
         type: String,
         required: true,
     },
     amount: {
         type: Number,
-        required: true,
+        default: 0
     },
     category: {
         type: String,
         required: true,
     },
     date: {
-        type: Date,
+        type: String,
         required: true,
     },
     title: {

@@ -24,6 +24,10 @@ const budgetSchema = new Schema({
             return this.base_balance
         }
     },
+    categories: {
+        type: [String],
+        default: [],
+    },
     is_default: {
         type: Boolean,
         required: true

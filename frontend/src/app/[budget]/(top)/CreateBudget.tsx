@@ -2,7 +2,7 @@
 import AddBudget from '@/components/AddBudget'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 export default function CreateBudget() {
   const [isAddBudgetActive, setIsAddBudgetActive] = useState(false)

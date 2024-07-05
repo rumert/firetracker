@@ -7,7 +7,12 @@ import { createBudget } from '@/app/actions'
 import { X } from 'lucide-react'
 import { Button } from './ui/button'
 
-export default function AddBudget({ isFirst, setIsAddBudgetActive }: any) {
+interface props {
+    isFirst: boolean
+    setIsAddBudgetActive?: (value: boolean) => void
+}
+
+export default function AddBudget({ isFirst, setIsAddBudgetActive }: props) {
 
     const createBudgetWithIsFirst = createBudget.bind(null, isFirst)
   
@@ -16,7 +21,7 @@ export default function AddBudget({ isFirst, setIsAddBudgetActive }: any) {
         <Card className="w-[350px]">
             <CardHeader className='relative'>
                 <CardTitle>Create budget</CardTitle>
-                {!isFirst && <Button onClick={() => setIsAddBudgetActive(false)} className='w-fit px-2 absolute right-1.5 top-0' variant='ghost' type='button'><X className='text-destructive' /></Button>}
+                {!isFirst && <Button onClick={() => setIsAddBudgetActive && setIsAddBudgetActive(false)} className='w-fit px-2 absolute right-1.5 top-0' variant='ghost' type='button'><X className='text-destructive' /></Button>}
             </CardHeader>
             <CardContent>
                 <div className="grid w-full items-center gap-4">

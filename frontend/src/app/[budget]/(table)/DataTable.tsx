@@ -21,7 +21,8 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getColumns, Transaction } from "./Columns"
+import { getColumns } from "./Columns"
+import { Transaction } from "../page"
 
 interface DataTableProps<TData> {
   key: string

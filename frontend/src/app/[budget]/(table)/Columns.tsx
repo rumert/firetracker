@@ -17,15 +17,7 @@ import { useState } from "react"
 import { updateTransaction } from "@/app/actions"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
-
-export type Transaction = {
-  budget_id: string
-  _id: string
-  title: string
-  amount: number
-  date: string
-  type: string
-}
+import { Transaction } from "../page"
 
 export const getColumns = <TData extends Transaction>(category: string): ColumnDef<TData>[] => {
   const allCategories = ["Clothing", "Dining", "Education", "Entertainment", "Groceries", "Healthcare", "Hobbies", "Utilities", "Transportation", "Travel"]

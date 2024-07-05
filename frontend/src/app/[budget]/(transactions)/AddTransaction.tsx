@@ -37,8 +37,8 @@ export default function AddTransaction() {
     const [date, setDate] = useState(today) 
     const [type, setType] = useState('expense')
 
-    const budgetId = useParams().budget
-    const addTransactionWithOtherVars = addTransaction.bind(null, date, budgetId)
+    const params: { budget: string } = useParams()
+    const addTransactionWithOtherVars = addTransaction.bind(null, date, params.budget)
     const [formState, formAction] = useFormState(addTransactionWithOtherVars, {message: 'initial'})
 
     useEffect(() => {

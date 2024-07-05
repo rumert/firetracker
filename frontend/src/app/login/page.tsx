@@ -20,16 +20,16 @@ export default function page() {
     
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        let redirectPath;
+        let redirectPath: string | null;
 
         try {
             await login(email, password)
             redirectPath = '/'
         } catch (error) {
             console.log(error)
-        } finally {
-            redirectPath ? redirect(redirectPath) : ''
+            redirectPath = null
         }
+        redirectPath && redirect(redirectPath)
     };
 
   return (

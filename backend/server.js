@@ -33,10 +33,10 @@ app.get('/test', async (req, res) => {
 })
 
 //budget routes
-app.get('/getDefaultBudget', authenticateToken, async (req, res) => {
+app.get('/getDefaultBudgetId', authenticateToken, async (req, res) => {
     try {
-        const budget = await Budget.exists({ user_id: req.user.uid, is_default: true });
-        res.json({ budget });
+        const budgetId = await Budget.exists({ user_id: req.user.uid, is_default: true });
+        res.json({ budgetId });
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: 'Internal server error' })
@@ -61,9 +61,9 @@ app.post('/createBudget', authenticateToken, async (req, res) => {
 
 app.post('/getBudgetList', authenticateToken, async (req, res) => {
     try {
-        const primaryBudget = await Budget.findById(req.body.budgetId);
-        const budgets = await Budget.find({ user_id: req.user.uid }, '_id name is_default');
-        res.json({ primaryBudget, budgets });
+        const currentBudget = await Budget.findOne({_id: req.body.budgetId, user_id: req.user.uid});
+        const otherBudgets = await Budget.find({ user_id: req.user.uid }, '_id name is_default');
+        res.json({ currentBudget, otherBudgets });
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: 'Internal server error' })

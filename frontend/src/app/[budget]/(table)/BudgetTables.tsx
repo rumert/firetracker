@@ -1,9 +1,11 @@
 import React from 'react'
 import { DataTable } from './DataTable'
+import { Transactions } from '../page';
 
-export default async function BudgetTables({ transactions }: any) {
+export default async function BudgetTables({ transactions }: { transactions: Transactions }) {
 
-  const categorizedTransactions = transactions.reduce((acc: any, transaction: any) => {
+  const categorizedTransactions: any = transactions?.reduce((acc: any, transaction) => {
+    console.log(acc)
     const { category } = transaction;
     if (!acc[category]) {
       acc[category] = [];

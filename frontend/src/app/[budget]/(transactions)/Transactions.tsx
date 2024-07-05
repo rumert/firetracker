@@ -3,17 +3,22 @@ import AddTransaction from "./AddTransaction";
 import { Trash2 } from "lucide-react";
 import SubmitButton from "@/components/ui/SubmitButton";
 import { redirect } from "next/navigation";
+import { Transaction } from "../page";
 
+type props = {
+  budgetId: string,
+  transactions: Transaction[]
+}
 
+export default async function Transactions({ budgetId, transactions }: props) {
 
-export default async function Transactions({ budgetId, transactions }: any) {
-
-  async function deleteTransaction(FormData: any) {
+  async function deleteTransaction(FormData: FormData) {
     "use server"
-    const transactionId = FormData.get("transactionId")
-    const amount = FormData.get("amount")
-    const type = FormData.get("type")
-    let redirectPath = undefined;
+    const transactionId = FormData.get("transactionId") as string
+    const amount = FormData.get("amount") as unknown as number
+    const type = FormData.get("type") as string
+    let redirectPath: string | null;
+
     try {
       await fetchWithTokens(`${process.env.NODE_API_URL}/deleteTransaction`, {
         method: 'POST',
@@ -27,7 +32,9 @@ export default async function Transactions({ budgetId, transactions }: any) {
 
     } catch (error) {
       console.log(error)
+      redirectPath = null
     } 
+
     if (redirectPath) {
       redirect(redirectPath)
     }
@@ -57,7 +64,7 @@ export default async function Transactions({ budgetId, transactions }: any) {
           <div></div>
         </div>
         }
-        {transactions.map((tr: any, index: any) => {
+        {transactions?.map((tr: Transaction, index: number) => {
           const date = new Date(tr.date);
           const month = date.toLocaleString('default', { month: 'short' })
           const day = date.getDate()

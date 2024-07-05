@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 const AUTH_API_URL = process.env.NODE_AUTH_API_URL;
 
-export async function login(email: any, password: any) {
+export async function login(email: string, password: string) {
     try {
         const res = await fetch(`${AUTH_API_URL}/login`, { 
             method: 'POST',
@@ -12,7 +12,7 @@ export async function login(email: any, password: any) {
             },
             body: JSON.stringify({ email, password })
         });
-        const data: any = await res.json()
+        const data = await res.json()
         cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires }); // 1 minute in ms
         cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: (process.env.IS_DEPLOYED === 'true' ? true : false) }); // 7 days in ms
     } catch (error) {

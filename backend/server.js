@@ -34,8 +34,9 @@ app.get('/test', async (req, res) => {
 
 //budget routes
 app.get('/getDefaultBudgetId', authenticateToken, async (req, res) => {
+
     try {
-        const budgetId = await Budget.exists({ user_id: req.user.uid, is_default: true });
+        const budgetId = ( await Budget.exists({ user_id: req.user.uid, is_default: true }) )?._id;
         res.json({ budgetId });
     } catch (error) {
         console.error(error)

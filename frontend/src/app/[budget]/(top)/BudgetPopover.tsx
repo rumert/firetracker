@@ -39,6 +39,7 @@ export function BudgetPopover({ otherBudgets, currentBudget }: Props) {
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
+          data-cy="popoverOpener"
         >
           { name }
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

@@ -19,7 +19,11 @@ const RefreshToken = require('./server/models/refreshToken');
 //functions
 async function generatePasswordHash(password) {
     const salt = await bcrypt.genSalt(10)
-    return ( await bcrypt.hash(password, salt) )
+    return await bcrypt.hash(password, salt)
+}
+
+async function checkPasswordHash(password, hash) {
+    return await bcrypt.compare(password, hash)
 }
 
 async function createUser(username, email, password) {
@@ -51,10 +55,15 @@ function generateAccessToken(user) {
 //routes
 app.post("/login", async (req, res) => {
     const email = req.body.email
-    const DoesUserExist = await User.findOne({ email: email });
+    const password = req.body.password
+    const userIfExist = await User.findOne({ email: email });
     let uid = null
-    if ( DoesUserExist ) {
-        uid = DoesUserExist.id
+    if ( userIfExist ) {
+        if ( await checkPasswordHash(password, userIfExist.password_hash) ) {
+            uid = userIfExist.id 
+        } else {
+            return res.status(403).send({ message: "Wrong password" })
+        }
     } else {
         const user = await createUser( email.substring(0, email.indexOf("@")), email, req.body.password )
         uid = user.id
@@ -79,3 +88,5 @@ app.get("/token", async (req, res) => {
         return res.json({ accessToken });
     });
 });
+
+module.exports = { createUser }

@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "devAuth": "nodemon authServer.js"
+    "devAuth": "nodemon authServer.js",
+    "db:reset": "node scripts/db-reset.js",
+    "db:seed": "node scripts/db-seed.js"
   },
   "keywords": [],
   "author": "",

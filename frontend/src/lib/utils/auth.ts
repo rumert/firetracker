@@ -13,11 +13,15 @@ export async function login(email: string, password: string) {
             body: JSON.stringify({ email, password })
         });
         const data = await res.json()
-        cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires }); // 1 minute in ms
-        cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: (process.env.IS_DEPLOYED === 'true' ? true : false) }); // 7 days in ms
-    } catch (error) {
-        console.error('Login failed', error);
-        throw error;
+        if (res.status === 403) {
+            throw new Error(data.message)
+        } else {
+            cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires }); // 1 minute in ms
+            cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: (process.env.IS_DEPLOYED === 'true' ? true : false) }); // 7 days in ms
+        }
+    } catch (error: any) {
+        console.log(error)
+        throw new Error(error.message);
     }
 };
 

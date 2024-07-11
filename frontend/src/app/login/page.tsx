@@ -12,22 +12,27 @@ import { Label } from "@/components/ui/label"
 import SubmitButton from '@/components/ui/SubmitButton'
 import { login } from '@/lib/utils/auth'
 import { redirect } from 'next/navigation'
+import { signUpValidation } from '@/lib/utils/formValidation'
 
-export default function page() {
+export default function page({ searchParams }: { searchParams: { message: string } }) {
 
     async function signIn (formData: FormData) {
         "use server";
     
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
+        const validationError = signUpValidation(email, password)
+        if (validationError) {
+            return redirect(`/login?message=${validationError}`)
+        }
         let redirectPath: string | null;
 
         try {
             await login(email, password)
             redirectPath = '/'
-        } catch (error) {
-            console.log(error)
-            redirectPath = null
+        } catch (error: any) {
+            //console.log(error)
+            redirectPath = `/login?message=${error.message}`
         }
         redirectPath && redirect(redirectPath)
     };
@@ -47,9 +52,10 @@ export default function page() {
                         <Label htmlFor="email">Email</Label>
                         <Input 
                             id="email" 
-                            type="email" 
+                            type="text" 
                             name="email"
                             placeholder="m@example.com" 
+                            autoFocus={true}
                             required 
                         />
                     </div>
@@ -62,6 +68,7 @@ export default function page() {
                             required 
                         />
                     </div>
+                    <p className='text-destructive'>{searchParams.message}</p>
                 </CardContent>
                 <CardFooter>
                     <SubmitButton

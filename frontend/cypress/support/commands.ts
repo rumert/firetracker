@@ -50,3 +50,14 @@ Cypress.Commands.add('successfulBudgetCreation', (name, balance) => {
       cy.get(`a[href="/${budgetId}"]`).should('exist')
     })
 })
+
+Cypress.Commands.add('successfulTransactionCreation', (title, amount) => {
+  cy.get('input[id=title]').type(title)
+  cy.get('input[id=amount]').type(amount as unknown as string)
+  cy.get('button[type=submit]').click()
+  cy.get('[data-cy=balance]').should('contain', 100 - amount)
+  cy.get('[data-cy=transactionTitle]').should('contain', title)
+  cy.get('[data-cy=transactionAmount]').should('contain', amount)
+  cy.get('[data-cy=transactionTitleInDT]').should('contain', title)
+  cy.get('[data-cy=transactionAmountInDT]').should('contain', amount)
+})

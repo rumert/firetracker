@@ -38,6 +38,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          data-cy='tableTitle'
         >
           {category}
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -66,7 +67,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         )}/>
       ) : (
         <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
-          <h2 className="">{title}</h2>
+          <h2 data-cy='transactionTitleInDT'>{title}</h2>
           <PenLine className="h-4" />
         </Button>
       )
@@ -109,7 +110,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
       ) : (
         <div className="w-full flex justify-end">
           <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
-            <h2 className="font-medium">{amount}</h2>
+            <h2 className="font-medium" data-cy='transactionAmountInDT'>{amount}</h2>
             <PenLine className="h-4" />
           </Button>
         </div>
@@ -133,14 +134,14 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
       return row.original.type === 'expense' && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0" data-cy='openDropdown'>
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger data-cy='categoryList'>
                 Change Category
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
@@ -154,7 +155,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
                 )}>
                   { allCategories.map((cat: any, index: any) => {
                     return (
-                    <DropdownMenuRadioItem value={cat} key={index}>
+                    <DropdownMenuRadioItem value={cat} key={index} data-cy={cat === 'Dining' ? 'categoryToTest' : ''}>
                       {cat}
                     </DropdownMenuRadioItem>
                     )

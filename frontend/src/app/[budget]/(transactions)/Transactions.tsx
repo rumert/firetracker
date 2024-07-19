@@ -18,16 +18,10 @@ export default async function Transactions({ budgetId, transactions }: props) {
     const amount = FormData.get("amount") as unknown as number
     const type = FormData.get("type") as string
     let redirectPath: string | null;
-
     try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/deleteTransaction`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ budgetId, transactionId, amount, type })
+      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction?transaction_id=${transactionId}&budget_id=${budgetId}&amount=${amount}`, {
+        method: 'DELETE',
       });
-
       redirectPath = `/${budgetId}`
 
     } catch (error) {

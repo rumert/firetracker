@@ -9,7 +9,7 @@ export async function createBudget(isFirst: boolean, formData: FormData) {
     let redirectPath: string | null;
 
     try {
-        const response = await fetchWithTokens(`${process.env.NODE_API_URL}/createBudget`, {
+        const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget`, {
           method: 'POST',
           headers: {
             'Content-type': 'application/json'
@@ -37,7 +37,7 @@ export async function addTransaction(
   const type = formData.get('type') as string;
 
   try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/addTransaction`, {
+      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction`, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
@@ -71,8 +71,8 @@ export async function updateTransaction(
 ) {
 
   try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/updateTransaction`, {
-        method: 'POST',
+      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction`, {
+        method: 'PUT',
         headers: {
           'Content-type': 'application/json'
         },

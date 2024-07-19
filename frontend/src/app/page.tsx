@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 async function getDefaultBucketId(): Promise<string | null> {
   try {
-    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/getDefaultBudgetId`);
+    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/DefaultBudgetId`);
     return ( await response.json() ).budgetId;
   } catch (error) {
     console.log(error)

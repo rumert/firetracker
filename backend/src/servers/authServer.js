@@ -10,11 +10,11 @@ app.use(express.json());
 app.listen(5000);
 
 //database
-const connectDB = require('./server/config/db')
+const connectDB = require('../config/db')
 connectDB()
 const mongoose = require('mongoose');
-const User = require('./server/models/user'); 
-const RefreshToken = require('./server/models/refreshToken'); 
+const User = require('../models/user'); 
+const RefreshToken = require('../models/refreshToken'); 
 
 //functions
 async function generatePasswordHash(password) {

@@ -8,11 +8,11 @@ const app = express();
 app.use(express.json());
 
 //db
-const connectDB = require('./server/config/db')
+const connectDB = require('../config/db')
 connectDB()
-const Budget = require('./server/models/budget');
-const User = require('./server/models/user');
-const Transaction = require('./server/models/transaction');
+const Budget = require('../models/budget');
+const User = require('../models/user');
+const Transaction = require('../models/transaction');
 
 //ai
 const { GoogleGenerativeAI } = require("@google/generative-ai");

@@ -51,21 +51,17 @@ async function getDataWithCaching(cacheKey, cb) {
     return freshData
 }
 
-//test
-app.get('/test', async (req, res) => {
-    res.json('OK')
-})
+//middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-app.get('/reset-redis', authenticateToken, async (req, res) => {
-
-    try {
-        await redisClient.flushAll()
-        res.json('OK')
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
-});
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        req.user = user;
+        next();
+    });
+}
 
 //budget routes
 app.get('/default-budget-id', authenticateToken, async (req, res) => {
@@ -146,7 +142,7 @@ app.post('/transaction', authenticateToken, async (req, res) => {
             }
         );
         await redisClient.del(`transactions:${req.user.uid}:${req.body.budgetId}`)
-        res.json('OK')
+        res.json({ transaction })
     } catch (error) {
         console.error('Error creating budget:', error)
         res.status(500).json({ message: 'Internal server error' })
@@ -199,16 +195,4 @@ app.delete('/transaction/:transactionId', authenticateToken, async (req, res) =>
     }
 });
 
-//middleware
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        req.user = user;
-        next();
-    });
-}
-
-app.listen(4000)
+module.exports = { app }

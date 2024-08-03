@@ -1,6 +1,5 @@
 //database
 import mongoose from 'mongoose';
-import connectDB from '../src/config/db.js';
 
 //tools
 import bcrypt from 'bcrypt';
@@ -11,7 +10,9 @@ import {
     createUser, 
     generatePasswordHash, 
     generateRefreshToken, 
-    generateAccessToken } from '../src/servers/authServer.js';
+    generateAccessToken 
+} from '../src/utils/functions.js';
+import connectDB from '../src/config/db.js';
 
 describe('Function tests', () => {
 
@@ -28,7 +29,7 @@ describe('Function tests', () => {
         await mongoose.connection.close();
     });
 
-    afterEach(async () => {
+    beforeEach(async () => {
         await mongoose.connection.db.dropDatabase();
     });
 

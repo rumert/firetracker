@@ -37,6 +37,73 @@ describe('Integration tests', () => {
         password: 'Password123'
     };
 
+    describe("not requires a user", () => {
+
+        it('should return 400 for no refreshToken', async () => {
+
+            const tokenRes = await request(app)
+                .get('/token')
+                .expect(400)
+
+            expect(tokenRes.body).not.to.have.property('accessToken');
+        });
+
+        it('should return 400 for a refreshToken not in db', async () => {
+
+            const tokenRes = await request(app)
+                .get('/token')
+                .set('Authorization', `Bearer notInDatabase`)
+                .expect(400)
+
+            expect(tokenRes.body).not.to.have.property('accessToken');
+        });
+
+        it('should return 403 for an invalid token', async () => {
+
+            const expires_at = new Date()
+            const tokenInDb = await RefreshToken.create({
+                user_id: 'test',
+                token: 'tokenInDb',
+                expires_at
+            })
+            expect(tokenInDb.token).to.equal('tokenInDb')
+
+            const tokenRes = await request(app)
+                .get('/token')
+                .set('Authorization', 'Bearer tokenInDb')
+                .expect(403)
+
+            expect(tokenRes.body).not.to.have.property('accessToken');
+        });
+
+        it('should return error for invalid email', async () => {
+
+            const loginRes = await request(app)
+                .post('/login')
+                .send({ email: 'invalid@@email.com', password: testUser.password })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400)
+            expect(loginRes.body.error.msg).to.equal('Invalid email');
+
+            expect(loginRes.body).not.to.have.property('accessToken');
+        });
+
+        it('should return error for short password', async () => {
+
+            const loginRes = await request(app)
+                .post('/login')
+                .send({ email: testUser.email, password: '123' })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400)
+            expect(loginRes.body.error.msg).to.equal('Password must be at least 6 characters long');
+
+            expect(loginRes.body).not.to.have.property('accessToken');
+        });
+
+    })
+
     describe("requires a user", () => {
 
         let res;
@@ -89,7 +156,7 @@ describe('Integration tests', () => {
             expect(refreshToken?.token).to.equal(loginRes.body.refreshToken.token);
         });
 
-        it('should return 403 status with an error message on unsuccessful login', async () => {
+        it('should return 403 with an error message on unsuccessful login', async () => {
 
             const user = await User.findOne({ email: testUser.email });
             expect(user.email).to.equal(testUser.email)
@@ -109,7 +176,7 @@ describe('Integration tests', () => {
             expect(loginRes.body).not.have.property('refreshToken')
         });
 
-        it('should return an access token using a refresh token', async () => {
+        it('should return an access token using a valid refresh token', async () => {
 
             const tokenRes = await request(app)
                 .get('/token')
@@ -119,46 +186,6 @@ describe('Integration tests', () => {
             expect(tokenRes.body.accessToken).to.have.property('token');
         });
         
-    })
-
-    describe("not requires a user", () => {
-
-        it('should return 401 status for no refreshToken', async () => {
-
-            const tokenRes = await request(app)
-                .get('/token')
-                .expect(401)
-
-            expect(tokenRes.body).not.to.have.property('accessToken');
-        });
-
-        it('should return 403 status for a refreshToken not in db', async () => {
-
-            const tokenRes = await request(app)
-                .get('/token')
-                .set('Authorization', `Bearer notInDatabase`)
-            expect(tokenRes.status).to.equal(403)
-
-            expect(tokenRes.body).not.to.have.property('accessToken');
-        });
-
-        it('should return 403 status for an invalid token', async () => {
-
-            const expires_at = new Date()
-            const tokenInDb = await RefreshToken.create({
-                user_id: 'test',
-                token: 'tokenInDb',
-                expires_at
-            })
-            expect(tokenInDb.token).to.equal('tokenInDb')
-
-            const tokenRes = await request(app)
-                .get('/token')
-                .set('Authorization', 'Bearer tokenInDb')
-            expect(tokenRes.status).to.equal(403)
-
-            expect(tokenRes.body).not.to.have.property('accessToken');
-        });
     })
 
 })

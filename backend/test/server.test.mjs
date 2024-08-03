@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import User from '../src/models/user.js';
 import Budget from '../src/models/budget.js';
 import Transaction from '../src/models/transaction.js'
-import connectDB from '../src/config/db.js';
 
 //tools
 import request from 'supertest';
@@ -13,16 +12,17 @@ import { expect } from 'chai';
 //server
 import { app } from '../src/servers/server.js';
 import { app as authApp } from '../src/servers/authServer.js';
+import connectDB from '../src/config/db.js';
 
-const budgetTest = {
+let budgetTest = {
     name: 'testBudget',
-    baseBalance: 100,
-    isDefault: true
+    base_balance: 100,
+    is_default: true
 }
 
-function transactionTest (budgetId, title) {
+function transactionTest (budget_id, title) {
     return {
-        budgetId,
+        budget_id,
         type: 'income',
         amount: 10,
         date: new Date(),
@@ -67,14 +67,7 @@ describe("server test", () => {
 
     beforeEach(async () => {
         await mongoose.connection.db.dropDatabase();
-        loginRes = await myFetch(
-            authApp, 
-            'POST', 
-            '/login', 
-            200, 
-            '', 
-            testUser
-        )
+        loginRes = await myFetch( authApp, 'POST', '/login', 200, '', testUser )
     });
 
     before(async () => {
@@ -90,31 +83,34 @@ describe("server test", () => {
         await mongoose.connection.close();
     });
 
-    it("should create a budget and send it to the user", async () => {
-        const res = await myFetch(
-            app, 
-            'POST', 
-            '/budget', 
-            200, 
-            loginRes.body.accessToken.token, 
-            budgetTest
-        )
-        expect(res.body.budget._id).to.equal( (await Budget.findOne({ name: 'testBudget' })).id )
-        expect( (await User.findOne({ email: testUser.email })).budget_ids[0] ).to.equal(res.body.budget._id)
-    })
+    describe("not requires budget", () => {
 
-    it("should response with 403 if user doesn't have the budget", async () => {
-        const res = await myFetch(
-            app, 
-            'GET', 
-            '/budget-list/71F2155B38D1CBDCDA7D54CC', 
-            403, 
-            loginRes.body.accessToken.token
-        )
-        expect(res.body).not.have.property('currentBudget')
-        expect(res.body).not.have.property('list')
-        const user_id = ( await User.findOne({ email: 'test@example.com' }) )._id
-        expect( (await Budget.find({ user_id })).length ).to.equal(0)
+        it("should return error for invalid budget id in budget-list route", async () => {
+            const res = await myFetch( app, 'GET', '/budget/invalidBudgetId/list', 400, loginRes.body.accessToken.token )
+            expect(res.body.error.msg).to.equal('Invalid budget id');
+        })
+
+        it("should return error for any invalid request in budget post route", async () => {
+            const res1 = await myFetch( app, 'POST', '/budget', 400, loginRes.body.accessToken.token, { ...budgetTest, base_balance: 'asdasd' } )
+            expect(res1.body.error.msg).to.equal('Invalid value');
+
+            const res2 = await myFetch( app, 'POST', '/budget', 400, loginRes.body.accessToken.token, { ...budgetTest, is_default: '123' } )
+            expect(res2.body.error.msg).to.equal('Invalid value');
+        })
+
+        it("should return error for invalid budget id in transactions route", async () => {
+            const res = await myFetch( app, 'GET', '/budget/invalidBudgetId/transactions', 400, loginRes.body.accessToken.token )
+            expect(res.body.error.msg).to.equal('Invalid budget id');
+        })
+
+        it("should response with 403 if user doesn't have the budget", async () => {
+            const res = await myFetch( app, 'GET', '/budget/71F2155B38D1CBDCDA7D54CC/list', 403, loginRes.body.accessToken.token )
+            expect(res.body).not.have.property('currentBudget')
+            expect(res.body).not.have.property('list')
+            const user_id = ( await User.findOne({ email: 'test@example.com' }) )._id
+            expect( (await Budget.find({ user_id })).length ).to.equal(0)
+        })
+
     })
 
     describe("requires a budget", () => {
@@ -122,36 +118,26 @@ describe("server test", () => {
         let budgetRes;
 
         beforeEach(async () => {
-            budgetRes = await myFetch(
-                app, 
-                'POST', 
-                '/budget', 
-                200, 
-                loginRes.body.accessToken.token,
-                budgetTest
-            )
+            budgetRes = await myFetch( app, 'POST', '/budget', 200, loginRes.body.accessToken.token,budgetTest, budgetTest )
         });
 
+        it("should return error for any invalid request in transaction post route", async () => {
+            const validTransaction = transactionTest(budgetRes.body.budget._id, 'testTransaction')
+
+            const res1 = await myFetch( app, 'POST', '/transaction', 400, loginRes.body.accessToken.token, { ...validTransaction, budget_id: 'invalidMongoId' } )
+            expect(res1.body.error.msg).to.equal('Invalid value');
+
+            const res2 = await myFetch( app, 'POST', '/transaction', 400, loginRes.body.accessToken.token, { ...validTransaction, amount: 'invalid' } )
+            expect(res2.body.error.msg).to.equal('Invalid value');
+        })
+
         it("response should include default budget id", async () => {
-            const res = await myFetch(
-                app, 
-                'GET', 
-                '/default-budget-id', 
-                200, 
-                loginRes.body.accessToken.token
-            )
+            const res = await myFetch( app, 'GET', '/budget/default/id', 200, loginRes.body.accessToken.token )
             expect(res.body.budgetId).to.equal(budgetRes.body.budget._id)
         })
 
         it("should create transaction", async () => {
-            const res = await myFetch (
-                app, 
-                'POST', 
-                '/transaction', 
-                200, 
-                loginRes.body.accessToken.token,
-                transactionTest(budgetRes.body.budget._id, 'testTransaction')
-            )
+            const res = await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token, transactionTest(budgetRes.body.budget._id, 'testTransaction') )
             expect(res.body.transaction._id).to.equal( (await Transaction.findOne({ title: 'testTransaction' })).id )
             const budgetData = (await Budget.findOne({ name: 'testBudget' }))
             expect( budgetData.transaction_ids[0] ).to.equal(res.body.transaction._id)
@@ -165,46 +151,66 @@ describe("server test", () => {
             let transactionRes;
 
             beforeEach(async () => {
-                transactionRes = await myFetch (
-                    app, 
-                    'POST', 
-                    '/transaction', 
-                    200, 
-                    loginRes.body.accessToken.token,
-                    transactionTest(budgetRes.body.budget._id, 'testTransaction')
-                )
+                transactionRes = await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token,transactionTest(budgetRes.body.budget._id, 'testTransaction') )
             });
 
-            it("should change the title/amount/category of the transaction", async () => {
-                for (const dataToUpdate of [ { title: 'newTitle' }, { amount: 20 }, { category: 'newCategory' } ]) {
-                    const res = await myFetch(
-                        app, 
-                        'PUT', 
-                        '/transaction', 
-                        200, 
-                        loginRes.body.accessToken.token, 
-                        { 
-                            dataToUpdate, 
-                            ...(dataToUpdate?.amount && { amount: transactionRes.body.transaction.amount }),
-                            budgetId: budgetRes.body.budget._id, 
-                            transactionId: transactionRes.body.transaction._id 
-                        }
-                    )
-                    const updatedTransaction = await Transaction.findById(transactionRes.body.transaction._id)
-                    const updatedBudget = await Budget.findById(budgetRes.body.budget._id)
+            it("should return error for any invalid request in transaction put route", async () => {
+                const res1 = await myFetch(app, 'PUT', '/transaction/invalidTransactionId', 400, loginRes.body.accessToken.token)
+                expect(res1.body.error.msg).to.equal('Invalid transaction id');
 
-                    if (dataToUpdate?.title) {
-                        expect(updatedTransaction.title).to.equal(dataToUpdate.title)
-                    } else if (dataToUpdate?.amount) {
-                        expect(updatedTransaction.amount).to.equal(dataToUpdate.amount)
-                        expect( updatedBudget.current_balance )
-                        .to
-                        .equal(budgetRes.body.budget.current_balance + dataToUpdate.amount) //new budget balance
-                    } else if (dataToUpdate?.category) {
-                        expect(updatedTransaction.category).to.equal(dataToUpdate.category)
-                        expect( updatedBudget.categories ).includes(dataToUpdate.category)
-                    }
-                }
+                const res2 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token)
+                expect(res2.body.error.msg).to.equal('No field provided');
+
+                const res3 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token, {
+                    budget_id: 'invalid',
+                    amount: 100,
+                })
+                expect(res3.body.error.msg).to.equal('Invalid budget id');
+
+                const res4 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token, {
+                    budget_id: budgetRes.body.budget._id,
+                    amount: 'invalid',
+                })
+                expect(res4.body.error.msg).to.equal('Invalid value');
+            })
+
+            it("should return error for invalid budget id in transactions delete route", async () => {
+                const res = await request(app)
+                    .delete('/transaction/invalidTransactionId')
+                    .set('Authorization', `Bearer ${loginRes.body.accessToken.token}`)
+                    .send()
+                    .expect(400)
+                expect(res.body.error.msg).to.equal('Invalid transaction id');
+            })
+
+            it("should change the title/amount/category of the transaction", async () => {
+
+                await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 200, loginRes.body.accessToken.token, {
+                    title: 'newTitle',
+                })
+                await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 200, loginRes.body.accessToken.token, {
+                    budget_id: budgetRes.body.budget._id,
+                    amount: 20,
+                })
+                await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 200, loginRes.body.accessToken.token, {
+                    budget_id: budgetRes.body.budget._id,
+                    category: 'newCategory',
+                })
+                await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 200, loginRes.body.accessToken.token, {
+                    date: 'newDate',
+                })
+
+                const updatedTransaction = await Transaction.findById(transactionRes.body.transaction._id)
+                const updatedBudget = await Budget.findById(budgetRes.body.budget._id)
+
+                expect(updatedTransaction.title).to.equal('newTitle')
+                expect(updatedTransaction.amount).to.equal(20)
+                expect(updatedTransaction.category).to.equal('newCategory')
+                expect(updatedTransaction.date).to.equal('newDate')
+
+                expect(updatedBudget.current_balance).to.equal(budgetRes.body.budget.base_balance + 20)
+                expect(updatedBudget.categories).includes('newCategory')
+
             })
 
             it("should delete the transaction", async () => {
@@ -232,28 +238,13 @@ describe("server test", () => {
 
             beforeEach(async () => {
                 ['testTransaction_1', 'testTransaction_2', 'testTransaction_3'].map(async (title) => {
-                    await myFetch (
-                        app, 
-                        'POST', 
-                        '/transaction', 
-                        200, 
-                        loginRes.body.accessToken.token,
-                        transactionTest(budgetRes.body.budget._id, title)
-                    )
+                    await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token,transactionTest(budgetRes.body.budget._id, title) )
                 })
             });
 
             it("response should include transactions which a budget has", async () => {
-                const res = await myFetch (
-                    app, 
-                    'GET', 
-                    `/transactions/${budgetRes.body.budget._id}`, 
-                    200, 
-                    loginRes.body.accessToken.token
-                )        
-                expect(res.body.transactions.length)
-                .to
-                .equal( (await Budget.findById(budgetRes.body.budget._id)).transaction_ids.length )
+                const res = await myFetch ( app, 'GET', `/budget/${budgetRes.body.budget._id}/transactions`, 200, loginRes.body.accessToken.token )    
+                expect(res.body.transactions.length).to.equal( (await Budget.findById(budgetRes.body.budget._id)).transaction_ids.length )
             })
 
         })
@@ -265,14 +256,7 @@ describe("server test", () => {
 
         beforeEach(async () => {
             for ( const name of ['testBudget_1', 'testBudget_2', 'testBudget_3'] ) {
-                const res = await myFetch (
-                    app, 
-                    'POST', 
-                    '/budget', 
-                    200, 
-                    loginRes.body.accessToken.token,
-                    { ...budgetTest, name }
-                )
+                const res = await myFetch ( app, 'POST', '/budget', 200, loginRes.body.accessToken.token,{ ...budgetTest, name } )
                 if (name === 'testBudget_1') {
                     budgetRes = res
                 }
@@ -280,13 +264,7 @@ describe("server test", () => {
         });
 
         it("response should include all budgets user has", async () => {
-            const res = await myFetch (
-                app, 
-                'GET', 
-                `/budget-list/${budgetRes.body.budget._id}`, 
-                200, 
-                loginRes.body.accessToken.token
-            ) 
+            const res = await myFetch ( app, 'GET', `/budget/${budgetRes.body.budget._id}/list`, 200, loginRes.body.accessToken.token ) 
             expect(res.body.currentBudget._id).to.equal(budgetRes.body.budget._id)
             const user_id = ( await User.findOne({ email: 'test@example.com' }) )._id
             expect(res.body.list.length).to.equal( (await Budget.find({ user_id })).length )

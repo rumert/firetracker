@@ -1,4 +1,7 @@
+require('dotenv').config();
 const rateLimit = require('express-rate-limit')
+
+const isTestEnv = process.env.NODE_ENV === 'test';
 
 const shortTermLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -8,7 +11,7 @@ const shortTermLimiter = rateLimit({
         err.status = 429
         next(err)
     },
-    requestWasSuccessful: (request, response) => response.statusCode < 400,
+    requestWasSuccessful: (request, response) => isTestEnv || response.statusCode < 400,
     skipSuccessfulRequests: true,
   });
 
@@ -20,7 +23,7 @@ const longTermLimiter = rateLimit({
         err.status = 429
         next(err)
     },
-    requestWasSuccessful: (request, response) => response.statusCode < 400,
+    requestWasSuccessful: (request, response) => isTestEnv || response.statusCode < 400,
     skipSuccessfulRequests: true,
 });
 

@@ -66,7 +66,7 @@ describe("server test", () => {
     let loginRes;
 
     beforeEach(async () => {
-        await mongoose.connection.db.dropDatabase();
+        await mongoose.connection.db.dropDatabase()
         loginRes = await myFetch( authApp, 'POST', '/login', 200, '', testUser )
     });
 
@@ -87,20 +87,20 @@ describe("server test", () => {
 
         it("should return error for invalid budget id in budget-list route", async () => {
             const res = await myFetch( app, 'GET', '/budget/invalidBudgetId/list', 400, loginRes.body.accessToken.token )
-            expect(res.body.error.msg).to.equal('Invalid budget id');
+            expect(res.body.error).to.equal('Invalid budget id');
         })
 
         it("should return error for any invalid request in budget post route", async () => {
             const res1 = await myFetch( app, 'POST', '/budget', 400, loginRes.body.accessToken.token, { ...budgetTest, base_balance: 'asdasd' } )
-            expect(res1.body.error.msg).to.equal('Invalid value');
+            expect(res1.body.error).to.equal('Invalid value');
 
             const res2 = await myFetch( app, 'POST', '/budget', 400, loginRes.body.accessToken.token, { ...budgetTest, is_default: '123' } )
-            expect(res2.body.error.msg).to.equal('Invalid value');
+            expect(res2.body.error).to.equal('Invalid value');
         })
 
         it("should return error for invalid budget id in transactions route", async () => {
             const res = await myFetch( app, 'GET', '/budget/invalidBudgetId/transactions', 400, loginRes.body.accessToken.token )
-            expect(res.body.error.msg).to.equal('Invalid budget id');
+            expect(res.body.error).to.equal('Invalid budget id');
         })
 
         it("should response with 403 if user doesn't have the budget", async () => {
@@ -125,10 +125,10 @@ describe("server test", () => {
             const validTransaction = transactionTest(budgetRes.body.budget._id, 'testTransaction')
 
             const res1 = await myFetch( app, 'POST', '/transaction', 400, loginRes.body.accessToken.token, { ...validTransaction, budget_id: 'invalidMongoId' } )
-            expect(res1.body.error.msg).to.equal('Invalid value');
+            expect(res1.body.error).to.equal('Invalid value');
 
             const res2 = await myFetch( app, 'POST', '/transaction', 400, loginRes.body.accessToken.token, { ...validTransaction, amount: 'invalid' } )
-            expect(res2.body.error.msg).to.equal('Invalid value');
+            expect(res2.body.error).to.equal('Invalid value');
         })
 
         it("response should include default budget id", async () => {
@@ -151,27 +151,27 @@ describe("server test", () => {
             let transactionRes;
 
             beforeEach(async () => {
-                transactionRes = await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token,transactionTest(budgetRes.body.budget._id, 'testTransaction') )
+                transactionRes = await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token, transactionTest(budgetRes.body.budget._id, 'testTransaction') )
             });
 
             it("should return error for any invalid request in transaction put route", async () => {
                 const res1 = await myFetch(app, 'PUT', '/transaction/invalidTransactionId', 400, loginRes.body.accessToken.token)
-                expect(res1.body.error.msg).to.equal('Invalid transaction id');
+                expect(res1.body.error).to.equal('Invalid transaction id');
 
                 const res2 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token)
-                expect(res2.body.error.msg).to.equal('No field provided');
+                expect(res2.body.error).to.equal('No field provided');
 
                 const res3 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token, {
                     budget_id: 'invalid',
                     amount: 100,
                 })
-                expect(res3.body.error.msg).to.equal('Invalid budget id');
+                expect(res3.body.error).to.equal('Invalid budget id');
 
                 const res4 = await myFetch(app, 'PUT', `/transaction/${transactionRes.body.transaction._id}`, 400, loginRes.body.accessToken.token, {
                     budget_id: budgetRes.body.budget._id,
                     amount: 'invalid',
                 })
-                expect(res4.body.error.msg).to.equal('Invalid value');
+                expect(res4.body.error).to.equal('Invalid value');
             })
 
             it("should return error for invalid budget id in transactions delete route", async () => {
@@ -180,7 +180,7 @@ describe("server test", () => {
                     .set('Authorization', `Bearer ${loginRes.body.accessToken.token}`)
                     .send()
                     .expect(400)
-                expect(res.body.error.msg).to.equal('Invalid transaction id');
+                expect(res.body.error).to.equal('Invalid transaction id');
             })
 
             it("should change the title/amount/category of the transaction", async () => {
@@ -238,7 +238,7 @@ describe("server test", () => {
 
             beforeEach(async () => {
                 ['testTransaction_1', 'testTransaction_2', 'testTransaction_3'].map(async (title) => {
-                    await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token,transactionTest(budgetRes.body.budget._id, title) )
+                    await myFetch ( app, 'POST', '/transaction', 200, loginRes.body.accessToken.token, transactionTest(budgetRes.body.budget._id, title) )
                 })
             });
 

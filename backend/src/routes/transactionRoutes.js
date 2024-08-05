@@ -4,7 +4,6 @@ const {
     updateTransaction,
     deleteTransaction,
 } = require("../controllers/transactionController");
-const { authenticateToken } = require('../middleware/token-middleware');
 const { validateRequest } = require('../middleware/validate-request');
 const { 
     transactionCreation: transactionCreationValidation,
@@ -14,14 +13,13 @@ const {
 
 const router = express.Router();
 
-const authenticateAndValidate = (validationSchema) => [
-    authenticateToken,
+const validate = (validationSchema) => [
     validationSchema,
     validateRequest
 ];
 
-router.post("/", authenticateAndValidate(transactionCreationValidation), createTransaction);
-router.put("/:transaction_id", authenticateAndValidate(transactionUpdateValidation), updateTransaction);
-router.delete("/:transaction_id", authenticateAndValidate(transactionDeletionValidation), deleteTransaction);
+router.post("/", validate(transactionCreationValidation), createTransaction);
+router.put("/:transaction_id", validate(transactionUpdateValidation), updateTransaction);
+router.delete("/:transaction_id", validate(transactionDeletionValidation), deleteTransaction);
 
 module.exports = router;

@@ -5,7 +5,6 @@ const {
     getBudgetList,
     createBudget,
 } = require("../controllers/budgetController");
-const { authenticateToken } = require('../middleware/token-middleware');
 const { validateRequest } = require('../middleware/validate-request');
 const { 
     defaultBudgetId: defaultBudgetIdValidation,
@@ -16,15 +15,14 @@ const {
 
 const router = express.Router();
 
-const authenticateAndValidate = (validationSchema) => [
-    authenticateToken,
+const validate = (validationSchema) => [
     validationSchema,
-    validateRequest
+    validateRequest,
 ];
 
-router.get("/default/id", authenticateAndValidate(defaultBudgetIdValidation), getDefaultBudgetId);
-router.get("/:budget_id/list", authenticateAndValidate(budgetListValidation), getBudgetList);
-router.post("/", authenticateAndValidate(budgetCreationValidation), createBudget);
-router.get("/:budget_id/transactions", authenticateAndValidate(transactionsValidation), getTransactionsInBudget);
+router.get("/default/id", validate(defaultBudgetIdValidation), getDefaultBudgetId);
+router.get("/:budget_id/list", validate(budgetListValidation), getBudgetList);
+router.post("/", validate(budgetCreationValidation), createBudget);
+router.get("/:budget_id/transactions", validate(transactionsValidation), getTransactionsInBudget);
 
 module.exports = router;

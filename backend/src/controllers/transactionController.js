@@ -3,11 +3,22 @@ const Budget = require('../models/budget');
 const { fetchCategoryFromAI } = require('../utils/functions');
 const redisClient = require('../config/redis');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { mainServerLogger } = require('../utils/logger');
 
 const aiModel = new GoogleGenerativeAI(process.env.AI_KEY).getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const createTransaction = async (req, res) => {
+async function routeWrapper(req, res, next, handler) {
+    mainServerLogger.info(`Request: ${req.method} ${req.originalUrl} - User: ${req.user ? req.user.uid : 'Guest'}`);
     try {
+        await handler()
+        mainServerLogger.info(`Response: ${req.method} ${req.originalUrl} - Status: ${res.statusCode} - User: ${req.user ? req.user.uid : 'Guest'}`);
+    } catch (err) {
+        next(err)
+    }
+}
+
+const createTransaction = async (req, res, next) => {
+    await routeWrapper(req, res, next, async () => {
         const category = req.body.type === "expense" ? await fetchCategoryFromAI(aiModel, req.body.title) : 'Income'
         const transaction = await Transaction.create({
             user_id: req.user.uid,
@@ -29,14 +40,11 @@ const createTransaction = async (req, res) => {
         );
         await redisClient.del(`transactions:${req.user.uid}:${req.body.budget_id}`)
         res.json({ transaction })
-    } catch (error) {
-        console.error('Error creating budget:', error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+    })
 };
 
-const updateTransaction = async (req, res) => {
-    try {
+const updateTransaction = async (req, res, next) => {
+    await routeWrapper(req, res, next, async () => {
         const transaction_old = await Transaction.findById(req.params.transaction_id)
         await Transaction.findByIdAndUpdate(
             req.params.transaction_id,
@@ -58,14 +66,11 @@ const updateTransaction = async (req, res) => {
         await redisClient.del(`transactions:${req.user.uid}:${req.body.budget_id}`)
             
         res.json('OK')
-    } catch (error) {
-        console.error('Error creating budget:', error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+    })
 };
 
-const deleteTransaction = async (req, res) => {
-    try {
+const deleteTransaction = async (req, res, next) => {
+    await routeWrapper(req, res, next, async () => {
         const { budget_id, amount } = await Transaction.findOneAndDelete({ _id: req.params.transaction_id }).select('budget_id amount')
         await Budget.findByIdAndUpdate(
             budget_id,
@@ -76,10 +81,7 @@ const deleteTransaction = async (req, res) => {
         );
         await redisClient.del(`transactions:${req.user.uid}:${budget_id}`)
         res.json('OK')
-    } catch (error) {
-        console.error('Error creating budget:', error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+    })
 };
 
 module.exports = { 

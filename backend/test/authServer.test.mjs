@@ -84,7 +84,7 @@ describe('Integration tests', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400)
-            expect(loginRes.body.error.msg).to.equal('Invalid email');
+            expect(loginRes.body.error).to.equal('Invalid email');
 
             expect(loginRes.body).not.to.have.property('accessToken');
         });
@@ -97,7 +97,7 @@ describe('Integration tests', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400)
-            expect(loginRes.body.error.msg).to.equal('Password must be at least 6 characters long');
+            expect(loginRes.body.error).to.equal('Password must be at least 6 characters long');
 
             expect(loginRes.body).not.to.have.property('accessToken');
         });

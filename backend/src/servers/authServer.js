@@ -4,8 +4,11 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit')
 const authRoutes = require('../routes/authRoutes');
 const connectDB = require('../config/db');
+const { authErrorHandler } = require('../middleware/error-handler');
 
 const app = express();
+connectDB()
+
 app.use(express.json());
 app.use(helmet());
 app.use(rateLimit({
@@ -15,7 +18,7 @@ app.use(rateLimit({
     legacyHeaders: false,
 }))
 
-connectDB()
 app.use('/', authRoutes);
+app.use(authErrorHandler);
 
 module.exports = { app }

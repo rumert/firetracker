@@ -23,11 +23,9 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
   const allCategories = ["Clothing", "Dining", "Education", "Entertainment", "Groceries", "Healthcare", "Hobbies", "Utilities", "Transportation", "Travel"]
   const router = useRouter()
 
-  async function handleTransaction(dataToUpdate: any, budgetId: string, transactionId: string, amount: number) {
-    if (dataToUpdate.title != '') {
-      await updateTransaction(dataToUpdate, budgetId, transactionId, amount)
-      router.refresh()
-    }
+  async function handleTransaction(fieldToUpdate: object, transactionId: string, budgetId: string) {
+    await updateTransaction(fieldToUpdate, transactionId, budgetId)
+    router.refresh()
   }
 
   return([
@@ -53,20 +51,20 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         className="w-24" 
         placeholder={title} 
         onChange={(e) => setTitle(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleTransaction(
+        onKeyDown={(e) => e.key === 'Enter' && title != '' && handleTransaction(
           { title }, 
-          row.original.budget_id, 
           row.original._id,
-          row.original.amount
+          row.original.budget_id, 
         )}
-        onBlur={() => handleTransaction(
+        onBlur={() => title != '' && handleTransaction(
           { title }, 
-          row.original.budget_id, 
           row.original._id,
-          row.original.amount
-        )}/>
+          row.original.budget_id,
+        )}
+        data-cy='titleInputCy'
+        />
       ) : (
-        <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
+        <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)} data-cy='titleButtonCy'>
           <h2 data-cy='transactionTitleInDT'>{title}</h2>
           <PenLine className="h-4" />
         </Button>
@@ -95,21 +93,21 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
           placeholder={amount} 
           onChange={(e) => setAmount(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && amount > 0 && handleTransaction(
-            { amount: row.original.type === 'income' ? amount : -amount}, 
-            row.original.budget_id, 
+            row.original.type === 'income' ? { amount } : { amount: -amount }, 
             row.original._id,
-            row.original.amount
+            row.original.budget_id,
           )}
           onBlur={() => amount > 0 && handleTransaction(
-            { amount: row.original.type === 'income' ? amount : -amount }, 
-            row.original.budget_id, 
+            row.original.type === 'income' ? { amount } : { amount: -amount }, 
             row.original._id,
-            row.original.amount
-          )}/>
+            row.original.budget_id,
+          )}
+          data-cy='amountInputCy'
+          />
         </div>
       ) : (
         <div className="w-full flex justify-end">
-          <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
+          <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)} data-cy='amountButtonCy'>
             <h2 className="font-medium" data-cy='transactionAmountInDT'>{amount}</h2>
             <PenLine className="h-4" />
           </Button>
@@ -148,10 +146,9 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
                 <DropdownMenuRadioGroup 
                 value={category} 
                 onValueChange={(e) => handleTransaction(
-                  { category: e }, 
-                  row.original.budget_id, 
+                  { category : e },
                   row.original._id,
-                  row.original.amount
+                  row.original.budget_id, 
                 )}>
                   { allCategories.map((cat: any, index: any) => {
                     return (

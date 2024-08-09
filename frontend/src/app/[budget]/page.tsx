@@ -43,19 +43,19 @@ export type Transaction = {
 
 export type Transactions = Transaction[] | [] | null
 
-async function getBudget(budgetId: string): Promise<{ currentBudget: Budget, otherBudgets: OtherBudgets }> {
+async function getBudget(budgetId: string): Promise<{ currentBudget: Budget, list: OtherBudgets }> {
   try {
-    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budgetList?budget_id=${budgetId}`);
+    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget/${budgetId}/list`);
     return await response.json()
   } catch (error) {
     console.log(error)
-    return {currentBudget: null, otherBudgets: null}
+    return {currentBudget: null, list: null}
   }
 }
 
 async function getTransactions(budgetId: any): Promise<{transactions: Transactions}> {
   try {
-    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/transactions?budget_id=${budgetId}`);
+    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget/${budgetId}/transactions`);
     return await response.json()
   } catch (error) {
     console.log(error)
@@ -64,7 +64,7 @@ async function getTransactions(budgetId: any): Promise<{transactions: Transactio
 }
 
 export default async function page({ params }: { params: { budget: string } }) {
-  const { currentBudget, otherBudgets } = await getBudget(params.budget)
+  const { currentBudget, list: otherBudgets } = await getBudget(params.budget)
   const { transactions } = await getTransactions(params.budget)
 
   return !currentBudget || !transactions ? redirect('/') :

@@ -2,32 +2,33 @@
 import fetchWithTokens from "@/lib/utils/fetchWithTokens";
 import { redirect } from "next/navigation";
 
-export async function createBudget(isFirst: boolean, formData: FormData) {
+export async function createBudget(isDefault: boolean, formData: FormData) {
 
-    const name = formData.get("name") as string;
-    const baseBalance = formData.get("baseBalance") as unknown as number;
-    let redirectPath: string | null;
+  const name = formData.get("name") as string;
+  const base_balance = formData.get("baseBalance") as unknown as number;
+  let redirectPath: string | null;
 
-    try {
-        const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({ name, baseBalance, isDefault: isFirst })
-        });
-        const { budget } = await response.json()
-        redirectPath = `/${budget._id}`
-    } catch (error) {
-      console.log(error)
-      redirectPath = null
-    }
+  try {
+      const res = await fetchWithTokens(`${process.env.NODE_API_URL}/budget`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ name, base_balance, is_default: isDefault })
+      });
+      const data = await res.json()
+      if (!res.ok) throw data.error
+      redirectPath = `/${data.budget._id}`
+  } catch (errorMes) {
+    console.log(errorMes)
+    redirectPath = null
+  }
         
-    redirectPath ? redirect(redirectPath) : ''
+  redirectPath ? redirect(redirectPath) : ''
 }
 
 export async function addTransaction( 
-  date: Date, 
+  date: string, 
   budgetId: string, 
   currentState: { message: string }, 
   formData: FormData 
@@ -37,19 +38,27 @@ export async function addTransaction(
   const type = formData.get('type') as string;
 
   try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction`, {
+      const res = await fetchWithTokens(`${process.env.NODE_API_URL}/transaction`, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
         },
         body: JSON.stringify({
-          budgetId,
+          budget_id: budgetId,
           type,
           amount: type === 'income' ? amount : -amount,
           date,
           title
         })
       });
+
+      if (!res.ok) {
+        const data = await res.json()
+        console.log(data.error)
+        return {
+          message: 'failed'
+        }
+      }
 
       return {
         message: 'success'
@@ -64,19 +73,18 @@ export async function addTransaction(
 }
 
 export async function updateTransaction( 
-  dataToUpdate: any, 
-  budgetId: string, 
+  fieldToUpdate: object, 
   transactionId: string, 
-  amount: number 
+  budgetId: string, 
 ) {
 
   try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction`, {
+      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction/${transactionId}`, {
         method: 'PUT',
         headers: {
           'Content-type': 'application/json'
         },
-        body: JSON.stringify({ dataToUpdate, budgetId, transactionId, amount })
+        body: JSON.stringify({ budget_id: budgetId, ...fieldToUpdate })
       });
 
       return {

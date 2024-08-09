@@ -15,11 +15,9 @@ export default async function Transactions({ budgetId, transactions }: props) {
   async function deleteTransaction(FormData: FormData) {
     "use server"
     const transactionId = FormData.get("transactionId") as string
-    const amount = FormData.get("amount") as unknown as number
-    const type = FormData.get("type") as string
     let redirectPath: string | null;
     try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction?transaction_id=${transactionId}&budget_id=${budgetId}&amount=${amount}`, {
+      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction/${transactionId}`, {
         method: 'DELETE',
       });
       redirectPath = `/${budgetId}`
@@ -28,10 +26,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
       console.log(error)
       redirectPath = null
     } 
-
-    if (redirectPath) {
-      redirect(redirectPath)
-    }
+    redirectPath && redirect(redirectPath)
   }
 
   return (
@@ -66,12 +61,10 @@ export default async function Transactions({ budgetId, transactions }: props) {
           return (
           <div key={index} className={`h-16 pl-8 pr-2 mb-1 grid grid-cols-7 place-items-center border ${tr.type === 'expense' ? 'border-destructive' : 'border-green-400'} rounded-md`}>
             <p className="col-span-2" data-cy='transactionTitle'>{tr.title}</p>
-            <p className="col-span-2" data-cy='transactionAmount'>${tr.amount}</p>
+            <p className="col-span-2" data-cy='transactionAmount'>${Math.abs(tr.amount)}</p>
             <p className="col-span-2">{month}/{day}</p>
             <form action={deleteTransaction}>
               <input type="hidden" name="transactionId" value={tr._id} />
-              <input type="hidden" name="amount" value={tr.amount} />
-              <input type="hidden" name="type" value={tr.type} />
               <SubmitButton size='icon' variant="ghost" className="justify-self-end" cy='deleteTransaction'>
                 <Trash2 className="w-5 h-5 text-destructive" />
               </SubmitButton>

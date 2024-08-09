@@ -2,11 +2,11 @@ import validator from 'validator';
 
 export function signUpValidation( email: string, password: string ) {
     if ( !validator.isEmail(email) ) {
-        return 'Email is not valid'
+        return 'Invalid email'
     } else if (!validator.isLength(password, { min: 6, max: 20 }))  {
         return 'Password must be between 6 and 20 characters'
     } else if (password.includes(' ')) {
-        return "Password can't contain spaces"
+        return 'Password must not contain spaces'
     }
 
     const isPasswordStrong = validator.isStrongPassword(password, {

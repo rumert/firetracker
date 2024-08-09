@@ -9,8 +9,8 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "firetracker",
-  description: "Best AI-Powered Finance Tracker",
+  title: "Fire Tracker",
+  description: "Personal Finance Tracker",
 };
 
 export default function RootLayout({

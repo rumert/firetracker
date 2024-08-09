@@ -38,7 +38,7 @@ export default function AddTransaction() {
     const [type, setType] = useState('expense')
 
     const params: { budget: string } = useParams()
-    const addTransactionWithOtherVars = addTransaction.bind(null, date, params.budget)
+    const addTransactionWithOtherVars = addTransaction.bind(null, date.toDateString(), params.budget)
     const [formState, formAction] = useFormState(addTransactionWithOtherVars, {message: 'initial'})
 
     useEffect(() => {
@@ -137,7 +137,7 @@ export default function AddTransaction() {
                         </div>
                     </div>
                     <DialogFooter className='flex justify-end items-center gap-2'>
-                        <p className='text-destructive underline'>{error}</p>
+                        <p className='text-destructive'>{error}</p>
                         <SubmitButton>
                             Add
                         </SubmitButton>

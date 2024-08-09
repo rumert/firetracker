@@ -5,7 +5,6 @@ import { Transactions } from '../page';
 export default async function BudgetTables({ transactions }: { transactions: Transactions }) {
 
   const categorizedTransactions: any = transactions?.reduce((acc: any, transaction) => {
-    console.log(acc)
     const { category } = transaction;
     if (!acc[category]) {
       acc[category] = [];

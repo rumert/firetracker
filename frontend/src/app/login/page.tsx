@@ -30,9 +30,9 @@ export default function page({ searchParams }: { searchParams: { message: string
         try {
             await login(email, password)
             redirectPath = '/'
-        } catch (error: any) {
-            //console.log(error)
-            redirectPath = `/login?message=${error.message}`
+        } catch (errorMes: any) {
+            console.log(errorMes)
+            redirectPath = `/login?message=${errorMes}`
         }
         redirectPath && redirect(redirectPath)
     };

@@ -25,7 +25,9 @@ const login = async (req, res, next) => {
             if ( await bcrypt.compare(password, userIfExist.password_hash) ) {
                 uid = userIfExist.id 
             } else {
-                return res.status(403).send({ message: "Wrong password" })
+                const error = new Error("Wrong password")
+                error.status = 403
+                return next(error)
             }
         } else {
             const user = await createUser( User, email.split('@')[0], email, password )
@@ -42,9 +44,13 @@ const getToken = async (req, res, next) => {
     await routeWrapper(req, res, async () => {
         const refreshToken = req.headers['authorization'].split(' ')[1];
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-            if (err) return res.sendStatus(403);
-            const userWithoutExpiration = { email: user.email, uid: user.uid }
-            const accessToken = generateAccessToken(userWithoutExpiration)
+            if (err) {
+                const error = new Error("Forbidden")
+                error.status = 403
+                return next(error)
+            }
+            const userWithEmAndUid = { email: user.email, uid: user.uid }
+            const accessToken = generateAccessToken(userWithEmAndUid)
             return res.json({ accessToken });
         });
     })

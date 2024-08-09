@@ -17,17 +17,21 @@ async function routeWrapper(req, res, next, handler) {
 
 const getDefaultBudgetId = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
-        const budgetId = await getDataWithCaching(redisClient, `default_budget:${req.user.uid}:id`, async () => {
+        const budget_id = await getDataWithCaching(redisClient, `default_budget:${req.user.uid}:id`, async () => {
             return ( await Budget.exists({ user_id: req.user.uid, is_default: true }) )._id
         })
-        res.json({ budgetId })
+        res.json({ budget_id })
     })
 };
 
 const getBudgetList = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
         const currentBudget = await Budget.findOne({ _id: req.params.budget_id, user_id: req.user.uid });
-        if (!currentBudget) return res.sendStatus(403)
+        if (!currentBudget) {
+            const error = new Error("Forbidden")
+            error.status = 403
+            return next(error)
+        }
         const list = await getDataWithCaching(redisClient, `budget-list:${req.user.uid}`, async () => {
             return await Budget.find({ user_id: req.user.uid }, '_id name is_default');
         })

@@ -6,7 +6,11 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return next(err)
+        if (err) {
+            const error = new Error("Forbidden")
+            error.status = 403
+            return next(error)
+        }
         req.user = user;
         next();
     });

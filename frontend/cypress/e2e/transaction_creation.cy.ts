@@ -14,7 +14,7 @@ describe('transaction_creation', () => {
   })
 
   it('should close the form and display the data after successful creation', function () {
-    cy.successfulTransactionCreation('test', 100)
+    cy.successfulTransactionCreation('test', 10)
   })
   
 })

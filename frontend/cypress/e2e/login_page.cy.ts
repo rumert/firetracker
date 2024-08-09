@@ -8,7 +8,7 @@ describe('login', () => {
 
   //sign up
   it('should show an error for an invalid email', () => {
-    cy.unsuccessfulLogin('invalidemail@', 'ValidPass111', 'Email is not valid')
+    cy.unsuccessfulLogin('invalidemail@', 'ValidPass111', 'Invalid email')
   });
 
   it('should show an error for a short password', function () {
@@ -16,7 +16,7 @@ describe('login', () => {
   })
 
   it('should show an error for a password with spaces', function () {
-    cy.unsuccessfulLogin('validemail@gmail.com', 'invalid password', "Password can't contain spaces")
+    cy.unsuccessfulLogin('validemail@gmail.com', 'invalid password', "Password must not contain spaces")
   })
 
   it('should show an error for a weak password', function () {

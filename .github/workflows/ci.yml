@@ -25,6 +25,12 @@ jobs:
           cd backend
           npm install
 
+      - name: Start Backend Server
+        run: |
+          cd backend/src
+          nodemon index
+          sleep 10      # Wait for the server to be fully up
+
       - name: Run Tests
         run: |
           cd backend
@@ -45,11 +51,23 @@ jobs:
         run: |
           cd frontend
           npm install
+          
+      - name: Start Backend Server
+        run: |
+          cd backend/src
+          nodemon index
+          sleep 10      # Wait for the server to be fully up
 
       - name: Build
         run: |
           cd frontend
           npm run build
+
+      - name: Start app
+        run: |
+          cd frontend
+          npm run start
+          sleep 10      # Wait for the app to be fully up
           
       - name: Run Tests
         run: |

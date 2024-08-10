@@ -37,7 +37,7 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
         run: |
           cd backend/src
-          node index
+          node index &
           sleep 10s      # Wait for the server to be fully up
 
       - name: Run Tests
@@ -75,7 +75,7 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
         run: |
           cd backend/src
-          node index
+          node index &
           sleep 10s      # Wait for the server to be fully up
 
       - name: Build
@@ -90,7 +90,7 @@ jobs:
           IS_DEPLOYED: ${{ secrets.IS_DEPLOYED }}
         run: |
           cd frontend
-          npm run start
+          npm run start &
           sleep 10s     # Wait for the app to be fully up
           
       - name: Run Tests

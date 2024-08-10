@@ -38,7 +38,7 @@ jobs:
         run: |
           cd backend/src
           node index
-          sleep 10      # Wait for the server to be fully up
+          sleep 10s      # Wait for the server to be fully up
 
       - name: Run Tests
         run: |
@@ -47,13 +47,6 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-
-    services:
-      mongo:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-        options: --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout Code
@@ -70,9 +63,6 @@ jobs:
           npm install
           cd ../backend
           npm install
-
-      - name: Set Up Environment Variables
-        run: echo "MONGO_URI=mongodb://localhost:27017/test" > .env
           
       - name: Start Backend Server
         env:
@@ -86,7 +76,7 @@ jobs:
         run: |
           cd backend/src
           node index
-          sleep 10      # Wait for the server to be fully up
+          sleep 10s      # Wait for the server to be fully up
 
       - name: Build
         run: |
@@ -101,7 +91,7 @@ jobs:
         run: |
           cd frontend
           npm run start
-          sleep 10      # Wait for the app to be fully up
+          sleep 10s     # Wait for the app to be fully up
           
       - name: Run Tests
         run: |

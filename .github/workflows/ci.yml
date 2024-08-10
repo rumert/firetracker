@@ -68,6 +68,8 @@ jobs:
         run: |
           cd frontend
           npm install
+          cd ../backend
+          npm install
 
       - name: Set Up Environment Variables
         run: echo "MONGO_URI=mongodb://localhost:27017/test" > .env

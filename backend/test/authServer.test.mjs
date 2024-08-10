@@ -40,7 +40,6 @@ describe('Integration tests', () => {
     describe("not requires a user", () => {
 
         it('should return 400 for no refreshToken', async () => {
-
             const tokenRes = await request(app)
                 .get('/token')
                 .expect(400)
@@ -48,12 +47,12 @@ describe('Integration tests', () => {
             expect(tokenRes.body).not.to.have.property('accessToken');
         });
 
-        it('should return 400 for a refreshToken not in db', async () => {
+        it('should return 403 for a refreshToken not in db', async () => {
 
             const tokenRes = await request(app)
                 .get('/token')
                 .set('Authorization', `Bearer notInDatabase`)
-                .expect(400)
+                .expect(403)
 
             expect(tokenRes.body).not.to.have.property('accessToken');
         });
@@ -97,7 +96,7 @@ describe('Integration tests', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400)
-            expect(loginRes.body.error).to.equal('Password must be at least 6 characters long');
+            expect(loginRes.body.error).to.equal('Password must be between 6 and 20 characters');
 
             expect(loginRes.body).not.to.have.property('accessToken');
         });
@@ -165,13 +164,13 @@ describe('Integration tests', () => {
             .post('/login')
             .send({
                 email: "test@example.com",
-                password: "wrongPass"
+                password: "WrongPass21"
             })
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             expect(loginRes.status).to.equal(403)
 
-            expect(loginRes.body.message).to.equal("Wrong password")
+            expect(loginRes.body.error).to.equal("Wrong password")
             expect(loginRes.body).not.have.property('accessToken')
             expect(loginRes.body).not.have.property('refreshToken')
         });

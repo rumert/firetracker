@@ -83,19 +83,15 @@ const transactionCreation = [
     ...user,
     body('type')
         .isString()
-        .withMessage('1')
         .escape(),
     body('title')
         .isString()
-        .withMessage('2')
         .escape(),
     body('budget_id')
         .isMongoId()
-        .withMessage('3')
         .escape(),
     body('amount')
         .isNumeric()
-        .withMessage('4')
         .escape(),
     body('date')
         .custom((value) => {
@@ -105,7 +101,6 @@ const transactionCreation = [
             }
             return true;
         })
-        .withMessage('5')
         .escape()
 ]
 

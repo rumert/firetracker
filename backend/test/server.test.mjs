@@ -133,7 +133,7 @@ describe("server test", () => {
 
         it("response should include default budget id", async () => {
             const res = await myFetch( app, 'GET', '/budget/default/id', 200, loginRes.body.accessToken.token )
-            expect(res.body.budgetId).to.equal(budgetRes.body.budget._id)
+            expect(res.body.budget_id).to.equal(budgetRes.body.budget._id)
         })
 
         it("should create transaction", async () => {

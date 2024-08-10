@@ -7,7 +7,7 @@
     "devAuth": "nodemon src/servers/authServer.js",
     "db:reset": "node scripts/db-reset.js",
     "db:seed": "node scripts/db-seed.js",
-    "test": "mocha"
+    "test": "mocha --exit"
   },
   "keywords": [],
   "author": "",

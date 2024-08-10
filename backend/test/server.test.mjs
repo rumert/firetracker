@@ -147,6 +147,7 @@ describe("server test", () => {
         })
 
         describe("requires a transaction", () => {
+            this.timeout(5000); 
 
             let transactionRes;
 

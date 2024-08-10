@@ -28,13 +28,13 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > backend/.env
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> backend/.env
-          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> backend/.env
-          echo "AI_KEY=${{ secrets.AI_KEY }}" >> backend/.env
-          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> backend/.env
-          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> backend/.env
-          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> backend/.env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > backend/src/.env
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> backend/src/.env
+          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> backend/src/.env
+          echo "AI_KEY=${{ secrets.AI_KEY }}" >> backend/src/.env
+          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> backend/src/.env
+          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> backend/src/.env
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> backend/src/.env
 
       - name: Start Backend Server
         run: |
@@ -68,13 +68,13 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > backend/.env
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> backend/.env
-          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> backend/.env
-          echo "AI_KEY=${{ secrets.AI_KEY }}" >> backend/.env
-          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> backend/.env
-          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> backend/.env
-          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> backend/.env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > backend/src/.env
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> backend/src/.env
+          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> backend/src/.env
+          echo "AI_KEY=${{ secrets.AI_KEY }}" >> backend/src/.env
+          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> backend/src/.env
+          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> backend/src/.env
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> backend/src/.env
           echo "NODE_API_URL=${{ secrets.NODE_API_URL }}" >> frontend/.env.local
           echo "NODE_AUTH_API_URL=${{ secrets.NODE_AUTH_API_URL }}" >> frontend/.env.local
           echo "IS_DEPLOYED=${{ secrets.IS_DEPLOYED }}" >> frontend/.env.local

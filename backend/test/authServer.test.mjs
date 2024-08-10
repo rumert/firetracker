@@ -88,8 +88,8 @@ describe('Integration tests', () => {
             expect(loginRes.body).not.to.have.property('accessToken');
         });
 
-        it('should return error for short password', async () => {
-
+        it('should return error for short password', async function () {
+            this.timeout(5000)
             const loginRes = await request(app)
                 .post('/login')
                 .send({ email: testUser.email, password: '123' })

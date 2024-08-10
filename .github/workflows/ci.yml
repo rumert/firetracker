@@ -11,13 +11,6 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-
-    services:
-      mongo:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-        options: --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'" --health-interval=10s --health-timeout=5s --health-retries=5
     
     steps:
       - name: Checkout Code
@@ -33,10 +26,15 @@ jobs:
           cd backend
           npm install
 
-      - name: Set Up Environment Variables
-        run: echo "MONGO_URI=mongodb://localhost:27017/test" > .env
-
       - name: Start Backend Server
+        env:
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          AI_KEY: ${{ secrets.AI_KEY }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
         run: |
           cd backend/src
           node index
@@ -75,6 +73,14 @@ jobs:
         run: echo "MONGO_URI=mongodb://localhost:27017/test" > .env
           
       - name: Start Backend Server
+        env:
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          AI_KEY: ${{ secrets.AI_KEY }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
         run: |
           cd backend/src
           node index
@@ -86,6 +92,10 @@ jobs:
           npm run build
 
       - name: Start app
+        env:
+          NODE_API_URL: ${{ secrets.NODE_API_URL }}
+          NODE_AUTH_API_URL: ${{ secrets.NODE_AUTH_API_URL }}
+          IS_DEPLOYED: ${{ secrets.IS_DEPLOYED }}
         run: |
           cd frontend
           npm run start

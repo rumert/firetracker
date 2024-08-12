@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
-    limit: 1000, // Limit each IP to 30 requests per `window` (here, per 5 minutes).
+    limit: process.env.NODE_ENV === 'test' ? 10000 : 20, // Limit each IP to 20 requests per `window` (here, per 5 minutes).
     standardHeaders: 'draft-7',
     legacyHeaders: false,
 }))

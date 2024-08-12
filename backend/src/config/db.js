@@ -8,8 +8,8 @@ const connectDB = async () => {
     mongoose.set('strictQuery', false);
     const conn = await mongoose.connect(process.env.MONGODB_URL);
   } catch (error) {
-    //console.log(error);
-    process.exit(1)
+    console.log(error);
+    //process.exit(1)
   }
 
 }

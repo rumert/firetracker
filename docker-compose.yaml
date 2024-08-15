@@ -14,4 +14,3 @@ services:
     environment:
       - NODE_AUTH_API_URL=http://backend:5000
       - NODE_API_URL=http://backend:4000
-      - IS_DEPLOYED=false

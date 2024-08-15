@@ -53,7 +53,7 @@ jobs:
 
       - name: Run Frontend Tests
         run: |
-          docker run --rm --env-file frontend/.env firetracker-frontend:test npm test
+          docker run --rm --env-file frontend/.env.local firetracker-frontend:test npm test
 
   push-images:
     needs: build-and-test

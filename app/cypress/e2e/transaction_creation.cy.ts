@@ -3,7 +3,7 @@ describe('transaction_creation', () => {
 
   beforeEach(() => {
 
-    cy.exec('cd ../api && npm run db:reset && npm run db:seed')
+    cy.exec('npm run db:reset && npm run db:seed')
     cy.successfulLogin('test@gmail.com', 'Test21')
     cy.get('[data-cy="addTransactionButton"]').click()
   })

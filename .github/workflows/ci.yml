@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          docker-compose -f docker-compose.yml up --build -d
+          docker-compose up --build -d
               
       - name: Run API Tests
         run: |

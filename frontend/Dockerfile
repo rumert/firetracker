@@ -1,4 +1,4 @@
-FROM node:20
+FROM cypress/base
 
 WORKDIR /app
 

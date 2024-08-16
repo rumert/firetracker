@@ -31,29 +31,21 @@ jobs:
           echo "MAIN_API_URL=${{ secrets.MAIN_API_URL }}" >> app/.env.local
           echo "AUTH_API_URL=${{ secrets.AUTH_API_URL }}" >> app/.env.local
 
-      - name: Build api for testing
-        uses: docker/build-push-action@v4
-        with:
-          context: ./api
-          push: false
-          load: true
-          tags: firetracker-api:test
-
-      - name: Build app for testing
-        uses: docker/build-push-action@v4
-        with:
-          context: ./app
-          push: false
-          load: true
-          tags: firetracker-app:test
-
-      - name: Run api Tests
+      - name: Build
         run: |
-          docker run --rm --env-file api/src/.env firetracker-api:test npm test
-
-      - name: Run app Tests
+          docker-compose -f docker-compose.yml up --build -d
+              
+      - name: Run API Tests
         run: |
-          docker run --rm --env-file app/.env.local -e CI=true firetracker-app:test sh -c "npm start & sleep 10 && npm test"
+          docker-compose exec api npm test
+
+      - name: Run App Tests
+        run: |
+          docker-compose exec app npm test
+
+      - name: Tear down services
+        run: |
+          docker-compose down 
 
   push-images:
     needs: build-and-test

@@ -42,11 +42,11 @@ jobs:
               
       - name: Run API Tests
         run: |
-          docker-compose exec api npm test
+          docker-compose exec -T api npm test
 
       - name: Run App Tests
         run: |
-          docker-compose exec app npm test
+          docker-compose exec -T app npm test
 
       - name: Tear down services
         run: |

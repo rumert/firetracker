@@ -1,7 +1,5 @@
 import { getTokens } from "./getTokens";
 
-const AUTH_API_URL = process.env.NODE_AUTH_API_URL;
-
 function fetchOptions(token: string, params: any) {
   return {
     ...params,
@@ -17,7 +15,7 @@ export default async function fetchWithTokens(url: string, params = {}) {
   const { accessToken, refreshToken } = await getTokens()
   let response = await fetch(url, fetchOptions(accessToken!, params));
   if (response.status === 403) {
-    const refreshResponse = await fetch(`${AUTH_API_URL}/token`, fetchOptions(refreshToken!, {}));
+    const refreshResponse = await fetch(`${process.env.AUTH_API_URL}/token`, fetchOptions(refreshToken!, {}));
     if (refreshResponse.status === 200) {
       const { accessToken: { token } } = await refreshResponse.json();
       response = await fetch(url, fetchOptions(token, params));

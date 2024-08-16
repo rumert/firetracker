@@ -1,8 +1,8 @@
 version: "2.27"
 services:
-  backend:
-    build: ./backend
-    container_name: firetracker-backend
+  api:
+    build: ./api
+    container_name: firetracker-api
     ports:
       - '4000:4000'
       - '5000:5000'
@@ -12,5 +12,5 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - NODE_AUTH_API_URL=http://backend:5000
-      - NODE_API_URL=http://backend:4000
+      - AUTH_API_URL=http://api:5000
+      - MAIN_API_URL=http://api:4000

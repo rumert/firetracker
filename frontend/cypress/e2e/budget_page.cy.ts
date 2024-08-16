@@ -2,7 +2,7 @@ describe('budget_page', () => {
 
     beforeEach(() => {
 
-      cy.exec('cd ../backend && npm run db:reset && npm run db:seed')
+      cy.exec('cd ../api && npm run db:reset && npm run db:seed')
       cy.successfulLogin('test@gmail.com', 'Test21')
       cy.get('[data-cy="addTransactionButton"]').click()
       cy.successfulTransactionCreation('test', 100)

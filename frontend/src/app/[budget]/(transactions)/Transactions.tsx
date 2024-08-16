@@ -17,7 +17,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
     const transactionId = FormData.get("transactionId") as string
     let redirectPath: string | null;
     try {
-      await fetchWithTokens(`${process.env.NODE_API_URL}/transaction/${transactionId}`, {
+      await fetchWithTokens(`${process.env.MAIN_API_URL}/transaction/${transactionId}`, {
         method: 'DELETE',
       });
       redirectPath = `/${budgetId}`

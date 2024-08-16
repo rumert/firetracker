@@ -20,7 +20,7 @@ async function handleUnauthenticatedRequest(req: NextRequest): Promise<NextRespo
 }
 
 async function handleAuthenticatedRequest(req: NextRequest, refreshToken: string): Promise<NextResponse> {
-  const resFetch = await fetch(`${process.env.NODE_AUTH_API_URL}/token`, {
+  const resFetch = await fetch(`${process.env.AUTH_API_URL}/token`, {
     headers: {
       authorization: `Bearer ${refreshToken}`
     }

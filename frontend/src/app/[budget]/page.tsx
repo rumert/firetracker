@@ -45,7 +45,7 @@ export type Transactions = Transaction[] | [] | null
 
 async function getBudget(budgetId: string): Promise<{ currentBudget: Budget, list: OtherBudgets }> {
   try {
-    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget/${budgetId}/list`);
+    const response = await fetchWithTokens(`${process.env.MAIN_API_URL}/budget/${budgetId}/list`);
     return await response.json()
   } catch (error) {
     console.log(error)
@@ -55,7 +55,7 @@ async function getBudget(budgetId: string): Promise<{ currentBudget: Budget, lis
 
 async function getTransactions(budgetId: any): Promise<{transactions: Transactions}> {
   try {
-    const response = await fetchWithTokens(`${process.env.NODE_API_URL}/budget/${budgetId}/transactions`);
+    const response = await fetchWithTokens(`${process.env.MAIN_API_URL}/budget/${budgetId}/transactions`);
     return await response.json()
   } catch (error) {
     console.log(error)

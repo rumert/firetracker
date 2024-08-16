@@ -22,7 +22,7 @@ jobs:
 
       - name: Pull Docker images
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/firetracker-backend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/firetracker-api:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/firetracker-frontend:latest
 
       - name: Stop and remove existing containers

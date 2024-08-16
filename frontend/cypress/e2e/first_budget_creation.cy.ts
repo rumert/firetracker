@@ -2,7 +2,7 @@ describe('first_budget_creation', () => {
 
   beforeEach(() => {
     // reset and seed the database prior to every test
-    cy.exec('cd ../backend && npm run db:reset')
+    cy.exec('cd ../api && npm run db:reset')
     cy.successfulSignUp('test2@gmail.com', 'Test21')
   })
 

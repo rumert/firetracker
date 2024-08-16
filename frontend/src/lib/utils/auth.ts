@@ -1,10 +1,8 @@
 'use server'
 import { cookies } from 'next/headers';
 
-const AUTH_API_URL = process.env.NODE_AUTH_API_URL;
-
 export async function login(email: string, password: string) {
-    const res = await fetch(`${AUTH_API_URL}/login`, { 
+    const res = await fetch(`${process.env.AUTH_API_URL}/login`, { 
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

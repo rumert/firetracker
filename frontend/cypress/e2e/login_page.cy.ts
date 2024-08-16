@@ -3,7 +3,7 @@ describe('login', () => {
 
   beforeEach(() => {
     // reset and seed the database prior to every test
-    cy.exec('cd ../backend && npm run db:reset && npm run db:seed')
+    cy.exec('cd ../api && npm run db:reset && npm run db:seed')
   })
 
   //sign up

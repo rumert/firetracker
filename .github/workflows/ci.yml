@@ -28,8 +28,8 @@ jobs:
           echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> api/src/.env
           echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> api/src/.env
           echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> api/src/.env
-          echo "MAIN_API_URL=${{ secrets.MAIN_API_URL }}" >> frontend/.env.local
-          echo "AUTH_API_URL=${{ secrets.AUTH_API_URL }}" >> frontend/.env.local
+          echo "MAIN_API_URL=${{ secrets.MAIN_API_URL }}" >> app/.env.local
+          echo "AUTH_API_URL=${{ secrets.AUTH_API_URL }}" >> app/.env.local
 
       - name: Build api for testing
         uses: docker/build-push-action@v4
@@ -39,21 +39,21 @@ jobs:
           load: true
           tags: firetracker-api:test
 
-      - name: Build Frontend for testing
+      - name: Build app for testing
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
+          context: ./app
           push: false
           load: true
-          tags: firetracker-frontend:test
+          tags: firetracker-app:test
 
       - name: Run api Tests
         run: |
           docker run --rm --env-file api/src/.env firetracker-api:test npm test
 
-      - name: Run Frontend Tests
+      - name: Run app Tests
         run: |
-          docker run --rm --env-file frontend/.env.local firetracker-frontend:test npm test
+          docker run --rm --env-file app/.env.local firetracker-app:test npm test
 
   push-images:
     needs: build-and-test
@@ -80,9 +80,9 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/firetracker-api:latest
 
-      - name: Build and push Frontend
+      - name: Build and push app
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
+          context: ./app
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/firetracker-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/firetracker-app:latest

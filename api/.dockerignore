@@ -3,4 +3,3 @@ auth.log
 main.log
 src/auth.log
 src/main.log
-src/.env

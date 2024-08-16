@@ -6,11 +6,11 @@ services:
     ports:
       - '4000:4000'
       - '5000:5000'
-  frontend:
-    build: ./frontend
-    container_name: firetracker-frontend
+  app:
+    build: ./app
+    container_name: firetracker-app
     ports:
       - '3000:3000'
     environment:
-      - AUTH_API_URL=http://api:5000
       - MAIN_API_URL=http://api:4000
+      - AUTH_API_URL=http://api:5000

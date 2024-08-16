@@ -47,7 +47,7 @@ Cypress.Commands.add('successfulBudgetCreation', (name, balance) => {
       return false
     }
   })
-  cy.url({ timeout: 10000 }).should('match', /\/[a-fA-F0-9]{24}$/) // MongoDB ObjectId pattern
+  cy.url().should('match', /\/[a-fA-F0-9]{24}$/) // MongoDB ObjectId pattern
     .then(url => {
       cy.get('[data-cy="balance"]').should('contain', balance)
       cy.get('[data-cy="popoverOpener"]').as('btn').click()

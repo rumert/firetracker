@@ -53,7 +53,7 @@ jobs:
 
       - name: Run app Tests
         run: |
-          docker run --rm --env-file app/.env.local firetracker-app:test npm test
+          docker run --rm --env-file app/.env.local -e CI=true firetracker-app:test sh -c "npm start & sleep 10 && npm test"
 
   push-images:
     needs: build-and-test

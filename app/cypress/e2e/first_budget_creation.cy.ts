@@ -2,7 +2,7 @@ describe('first_budget_creation', () => {
 
   beforeEach(() => {
     // reset and seed the database prior to every test
-    cy.exec('npm run db:reset')
+    cy.request('GET', `${Cypress.env('MAIN_API_URL')}/test/db/reset`);
     cy.successfulSignUp('test2@gmail.com', 'Test21')
   })
 

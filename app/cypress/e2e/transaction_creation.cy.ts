@@ -3,7 +3,8 @@ describe('transaction_creation', () => {
 
   beforeEach(() => {
 
-    cy.exec('npm run db:reset && npm run db:seed')
+    cy.request('GET', `${Cypress.env('MAIN_API_URL')}/test/db/reset`);
+    cy.request('GET', `${Cypress.env('MAIN_API_URL')}/test/db/seed`);
     cy.successfulLogin('test@gmail.com', 'Test21')
     cy.get('[data-cy="addTransactionButton"]').click()
   })

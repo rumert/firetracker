@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "db:reset": "node ../api/scripts/db-reset.js",
-    "db:seed": "node ../api/scripts/db-seed.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

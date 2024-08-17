@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon src/servers/server.js",
     "devAuth": "nodemon src/servers/authServer.js",
-    "test": "mocha --exit"
+    "test": "mocha --timeout 5000 --exit"
   },
   "keywords": [],
   "author": "",

@@ -6,6 +6,9 @@ services:
     ports:
       - '4000:4000'
       - '5000:5000'
+    networks:
+      - firetracker-network
+
   app:
     build: ./app
     container_name: firetracker-app

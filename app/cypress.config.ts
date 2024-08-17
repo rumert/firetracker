@@ -8,7 +8,7 @@ export default defineConfig({
     baseUrl: "http://localhost:3000",
   },
   env: {
-    MAIN_API_URL: 'http://[::1]:4000',
-    AUTH_API_URL: 'http://[::1]:5000',
+    MAIN_API_URL: 'http://api:4000',
+    AUTH_API_URL: 'http://api:5000',
   },
 });

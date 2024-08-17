@@ -33,8 +33,8 @@ jobs:
           echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> api/src/.env
           echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> api/src/.env
           echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> api/src/.env
-          echo "MAIN_API_URL=${{ secrets.MAIN_API_URL }}" >> app/.env.local
-          echo "AUTH_API_URL=${{ secrets.AUTH_API_URL }}" >> app/.env.local
+          echo "MAIN_API_URL=http://api:4000" >> app/.env.local
+          echo "AUTH_API_URL=http://api:5000" >> app/.env.local
 
       - name: Build
         run: |

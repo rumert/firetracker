@@ -14,3 +14,9 @@ services:
     environment:
       - MAIN_API_URL=http://api:4000
       - AUTH_API_URL=http://api:5000
+    networks:
+      - firetracker-network
+
+networks:
+  firetracker-network:
+    driver: bridge

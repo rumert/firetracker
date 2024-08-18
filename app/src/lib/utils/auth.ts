@@ -13,8 +13,18 @@ export async function login(email: string, password: string) {
     if (res.status != 200) {
         throw data.error
     } else {
-        cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires, httpOnly: true, secure: false }); // 1 minute in ms
-        cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: false }); // 7 days in ms
+        cookies().set('accessToken', data.accessToken.token, { 
+            expires: data.accessToken.expires, 
+            httpOnly: true, 
+            secure: false,
+            sameSite: 'lax',
+        });
+        cookies().set('refreshToken', data.refreshToken.token, { 
+            expires: data.refreshToken.expires, 
+            httpOnly: true, 
+            secure: false,
+            sameSite: 'lax',
+        });
     }
 };
 

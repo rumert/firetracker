@@ -14,7 +14,7 @@ export async function login(email: string, password: string) {
         throw data.error
     } else {
         cookies().set('accessToken', data.accessToken.token, { expires: data.accessToken.expires }); // 1 minute in ms
-        cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: true }); // 7 days in ms
+        cookies().set('refreshToken', data.refreshToken.token, { expires: data.refreshToken.expires, httpOnly: true, secure: false }); // 7 days in ms
     }
 };
 

@@ -9,12 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    
-    steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
 
       - name: Checkout Code
         uses: actions/checkout@v4

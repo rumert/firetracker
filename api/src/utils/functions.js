@@ -44,7 +44,7 @@ async function generateRefreshToken(RefreshTokenModel, UserModel, user) {
 }
 
 function generateAccessToken(user) {
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1m' });
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
     const expiresAt = new Date(jwt.decode(accessToken).exp * 1000)
     return { token: accessToken, expires: expiresAt.valueOf() }
 }

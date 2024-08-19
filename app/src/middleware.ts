@@ -4,6 +4,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   const refreshToken = req.cookies.get('refreshToken')?.value;
 
   if (!refreshToken) {
+    console.log('no refresh token')
     return await handleUnauthenticatedRequest(req);
   }
 
@@ -22,11 +23,14 @@ async function handleUnauthenticatedRequest(req: NextRequest): Promise<NextRespo
 async function handleAuthenticatedRequest(req: NextRequest, refreshToken: string): Promise<NextResponse> {
   const resFetch = await fetch(`${process.env.AUTH_API_URL}/token`, {
     headers: {
-      authorization: `Bearer ${refreshToken}`
+      authorization: `Bearer ${refreshToken}`,
+      'Content-type': 'application/json'
     }
   });
 
   if (!resFetch.ok) {
+    const data = await resFetch.json()
+    console.log('resfetch is not ok: ', resFetch, data)
     const response = NextResponse.redirect(new URL('/login', req.url));
     response.cookies.delete("accessToken");
     response.cookies.delete("refreshToken");
@@ -38,7 +42,7 @@ async function handleAuthenticatedRequest(req: NextRequest, refreshToken: string
     ? NextResponse.redirect(new URL('/', req.url)) 
     : NextResponse.next();
 
-    response.cookies.set('accessToken', data.accessToken.token, { 
+  response.cookies.set('accessToken', data.accessToken.token, { 
     expires: data.accessToken.expires, 
     httpOnly: true, 
     secure: false,

@@ -17,13 +17,11 @@ export async function login(email: string, password: string) {
             expires: data.accessToken.expires, 
             httpOnly: true, 
             secure: false,
-            sameSite: 'lax',
         });
         cookies().set('refreshToken', data.refreshToken.token, { 
             expires: data.refreshToken.expires, 
             httpOnly: true, 
             secure: false,
-            sameSite: 'lax',
         });
     }
 };

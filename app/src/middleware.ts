@@ -38,7 +38,13 @@ async function handleAuthenticatedRequest(req: NextRequest, refreshToken: string
     ? NextResponse.redirect(new URL('/', req.url)) 
     : NextResponse.next();
 
-  response.cookies.set("accessToken", data.accessToken.token, { expires: data.accessToken.expires });
+    response.cookies.set('accessToken', data.accessToken.token, { 
+    expires: data.accessToken.expires, 
+    httpOnly: true, 
+    secure: false,
+    sameSite: 'lax',
+  });
+  
   return response;
 }
 

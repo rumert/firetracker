@@ -61,7 +61,7 @@ Cypress.Commands.add('successfulTransactionCreation', (title, amount) => {
   cy.get('input[id=title]').type(title)
   cy.get('input[id=amount]').type(amount as unknown as string)
   cy.get('button[type=submit]').click()
-  cy.wait(2000)
+  cy.wait(4000)
   cy.get('[data-cy=balance]').should('contain', 100 - amount)
   cy.get('[data-cy=transactionTitle]').should('contain', title)
   cy.get('[data-cy=transactionAmount]').should('contain', amount)

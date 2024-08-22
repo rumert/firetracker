@@ -40,9 +40,7 @@ async function handleAuthenticatedRequest(req: NextRequest, refreshToken: string
     : NextResponse.next();
 
   response.cookies.set('accessToken', data.accessToken.token, { 
-    expires: data.accessToken.expires, 
-    httpOnly: true, 
-    secure: false,
+    expires: data.accessToken.expires
   });
   
   return response;

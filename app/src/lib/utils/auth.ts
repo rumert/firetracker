@@ -14,12 +14,14 @@ export async function login(email: string, password: string) {
         throw data.error
     } else {
         cookies().set('accessToken', data.accessToken.token, { 
-            expires: data.accessToken.expires
+            expires: data.accessToken.expires,
+            secure: true,
+            httpOnly: true
         });
         cookies().set('refreshToken', data.refreshToken.token, { 
             expires: data.refreshToken.expires, 
-            httpOnly: true, 
             secure: true,
+            httpOnly: true
         });
     }
 };

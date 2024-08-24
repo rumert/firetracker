@@ -53,7 +53,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This web application includes different frameworks and libraries so you can copy any part of it and use in your project.
+This project is a combination of different frameworks and libraries. You can copy any part of it and use in your project.
 
 ### Includes:
 * Database - some basic concepts using mongoose like query, schema, and expressions

@@ -15,17 +15,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Pull Docker images
-        run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/firetracker-api:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/firetracker-app:latest
-
       - name: Stop and remove existing containers
         run: |
           docker-compose down || true
@@ -36,9 +25,7 @@ jobs:
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> api/src/.env
           echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> api/src/.env
           echo "AI_KEY=${{ secrets.AI_KEY }}" >> api/src/.env
-          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> api/src/.env
-          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> api/src/.env
-          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> api/src/.env
+          echo "REDIS_HOST=redis" >> api/src/.env
           echo "MAIN_API_URL=http://api:4000" >> app/.env.local
           echo "AUTH_API_URL=http://api:5000" >> app/.env.local
 

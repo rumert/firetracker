@@ -8,6 +8,8 @@ services:
       - '5000:5000'
     networks:
       - firetracker-network
+    environment:
+      - REDIS_HOST=redis
 
   app:
     build: ./app
@@ -20,6 +22,30 @@ services:
     networks:
       - firetracker-network
 
+  redis:
+    image: redis:7.4.0
+    container_name: firetracker-redis
+    restart: always
+    ports:
+    - '6379:6379'
+    networks:
+      - firetracker-network
+    volumes:
+      - redis-data:/data
+
+  redis_insight:
+    image: redis/redisinsight:2.56
+    container_name: firetracker-redis-insight
+    restart: always
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis-insight:/data
+
 networks:
   firetracker-network:
     driver: bridge
+
+volumes:
+  redis-data:
+  redis-insight:

@@ -11,8 +11,11 @@ async function routeWrapper(req, res, next, handler) {
         await handler()
         mainServerLogger.info(`Response: ${req.method} ${req.originalUrl} - Status: ${res.statusCode} - User: ${req.user ? req.user.uid : 'Guest'}`);
     } catch (err) {
-        console.log(err)
-        next(err)
+        res.status(500).json({
+            message: 'Error resetting database',
+            error: err.message,
+            stack: err.stack
+        });
     }
 }
 
@@ -23,6 +26,12 @@ const resetDb = async (req, res, next) => {
             error.status = 403
             return next(error)
         }
+        
+        while (mongoose.connection.readyState !== 1) {
+            console.log('Waiting for MongoDB connection...');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
         await mongoose.connection.db.dropDatabase();
         await redisClient.flushAll()
         res.json('OK');

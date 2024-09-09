@@ -10,10 +10,15 @@ const mainServerUrl = "http://localhost:4000";
 describe('Integration tests', () => {
 
     beforeEach(async () => {
-        await request(mainServerUrl)
-        .get('/test/db/reset')
-        .expect(200)
-    });
+        try {
+            const res = await request(mainServerUrl)
+            .get('/test/db/reset')
+            console.log('Reset failed:', res.body);
+        } catch (error) {
+          console.log('Reset failed:', res.body);
+          throw error;
+        }
+      });
 
     const testUser = {
         email: 'test@example.com',

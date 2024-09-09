@@ -79,6 +79,14 @@ const transactions = [
         .escape()
 ]
 
+const transaction = [
+    ...user,
+    param('transaction_id')
+        .isMongoId()
+        .withMessage('Invalid transaction id')
+        .escape()
+]
+
 const transactionCreation = [
     ...user,
     body('type')
@@ -154,6 +162,7 @@ module.exports = {
     budgetList,
     budgetCreation,
     transactions,
+    transaction,
     transactionCreation,
     transactionUpdate,
     transactionDeletion,

@@ -25,9 +25,6 @@ jobs:
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> api/src/.env
           echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> api/src/.env
           echo "AI_KEY=${{ secrets.AI_KEY }}" >> api/src/.env
-          echo "REDIS_HOST=redis" >> api/src/.env
-          echo "MAIN_API_URL=http://api:4000" >> app/.env.local
-          echo "AUTH_API_URL=http://api:5000" >> app/.env.local
 
       - name: Deploy with Docker Compose
         run: |

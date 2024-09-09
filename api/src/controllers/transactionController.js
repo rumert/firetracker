@@ -95,7 +95,7 @@ const deleteTransaction = async (req, res, next) => {
             }
         );
         await redisClient.del(`transaction:${req.user.uid}:${req.params.transaction_id}`)
-        await redisClient.del(`transactions:${req.user.uid}:${req.body.budget_id}`)
+        await redisClient.del(`transactions:${req.user.uid}:${budget_id}`)
         res.json('OK')
     })
 };

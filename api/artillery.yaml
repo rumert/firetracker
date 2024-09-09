@@ -1,0 +1,37 @@
+config:
+  target: http://localhost:4000
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: Warm up phase
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 30
+      name: Spike phase
+  plugins:
+    ensure: {}
+    apdex: {}
+    metrics-by-endpoint: {}
+  variables:
+    authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Q0QGdtYWlsLmNvbSIsInVpZCI6IjY2ZGYxZmZiMjBhNzBjOWQ0M2UwMGY0OSIsImlhdCI6MTcyNTg5ODc0OCwiZXhwIjoxNzI2NTAzNTQ4fQ.gu8HXPtVC2UyU1ZMrFN3BDLnTj3DH9c6__HUQhAm6ag" 
+  apdex:
+    threshold: 100
+  ensure:
+    thresholds:
+      - http.response_time.p99: 100
+      - http.response_time.p95: 75
+scenarios:
+  - flow:
+      - loop:
+          - get:
+              url: '/budget/default/id'
+              headers:
+                Authorization: "Bearer {{ authToken }}"
+              expect:
+                statusCode: 200
+        count: 100

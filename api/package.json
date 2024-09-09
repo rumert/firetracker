@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon src/servers/server.js",
     "devAuth": "nodemon src/servers/authServer.js",
-    "test": "mocha --timeout 5000 --exit"
+    "test": "mocha --timeout 5000 --exit",
+    "test:artillery": "artillery run artillery.yaml"
   },
   "keywords": [],
   "author": "",

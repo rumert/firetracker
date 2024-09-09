@@ -17,10 +17,13 @@ async function routeWrapper(req, res, next, handler) {
 
 const getDefaultBudgetId = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
-        const budget_id = await getDataWithCaching(redisClient, `default_budget:${req.user.uid}:id`, async () => {
-            return ( await Budget.exists({ user_id: req.user.uid, is_default: true }) )._id
+        const data = await getDataWithCaching(redisClient, `default_budget:${req.user.uid}:id`, async () => {
+            return await Budget.exists({ user_id: req.user.uid, is_default: true })
         })
-        res.json({ budget_id })
+        if (!data) {
+            await redisClient.del(`default_budget:${req.user.uid}:id`)
+        }
+        res.json({ budget_id: data ? data._id : null })
     })
 };
 

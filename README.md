@@ -57,9 +57,9 @@ This project is a combination of different frameworks and libraries. You can cop
 
 ### Includes:
 * Database - some basic concepts using mongoose like query, schema, and expressions
-* api - various middlewares, controllers, loggers, and error handling
+* api - various middlewares, controllers, loggers, and error handler
 * api security - bcrypt hash algorithm for jwt auth, rate-limiting, input validation and sanitization, header security
-* Testing - e2e tests using Cypress and integration tests using Mocha
+* Testing - e2e tests using Cypress, integration tests using Mocha, and load testing using Artillery.
 * Caching - basic Redis caching for the api, reducing api response delay
 * Containerization - Docker containers for both app and api
 * CI/CD - Using Github Actions, building the app and making tests in Ubuntu. After successfull CI workflow, deployment of containers begins on self-hosted device from a cloud provider.
@@ -94,10 +94,9 @@ These are steps to install this project on your local using Docker
 * Docker and docker compose
 * credentials from the following services:
 	
-	- access token and refresh token from jwt
-	- mongodb url from mongodb atlas
-	- ai key from google ai studio
-	- redis host and redis password 
+  - access token and refresh token from jwt library
+  - mongodb url from mongodb atlas
+  - ai key from google ai studio
 	
   
 ### Installation
@@ -111,7 +110,7 @@ These are steps to install this project on your local using Docker
 2. rename the .env.example file inside api/src to .env and write your credentials
 3. run this command inside the firetracker folder to build the containers:
 
-	 ```sh
+   ```sh
    docker compose up
    ```
 4. visit localhost:3000 in your browser

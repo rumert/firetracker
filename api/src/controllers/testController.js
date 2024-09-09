@@ -1,3 +1,4 @@
+const redisClient = require('../config/redis');
 const Budget = require('../models/budget');
 const User = require('../models/user');
 const { createUser } = require('../utils/functions');
@@ -23,6 +24,7 @@ const resetDb = async (req, res, next) => {
             return next(error)
         }
         await mongoose.connection.db.dropDatabase();
+        await redisClient.flushAll()
         res.json('OK');
     })
 };

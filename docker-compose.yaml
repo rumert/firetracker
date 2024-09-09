@@ -6,8 +6,6 @@ services:
     ports:
       - '4000:4000'
       - '5000:5000'
-    networks:
-      - firetracker-network
     environment:
       - REDIS_HOST=redis
 
@@ -19,8 +17,6 @@ services:
     environment:
       - MAIN_API_URL=http://api:4000
       - AUTH_API_URL=http://api:5000
-    networks:
-      - firetracker-network
 
   redis:
     image: redis:7.4.0
@@ -28,8 +24,6 @@ services:
     restart: always
     ports:
     - '6379:6379'
-    networks:
-      - firetracker-network
     volumes:
       - redis-data:/data
 
@@ -41,10 +35,6 @@ services:
       - "5540:5540"
     volumes:
       - redis-insight:/data
-
-networks:
-  firetracker-network:
-    driver: bridge
 
 volumes:
   redis-data:

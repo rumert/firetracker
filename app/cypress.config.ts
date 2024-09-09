@@ -8,7 +8,7 @@ export default defineConfig({
     baseUrl: "http://localhost:3000",
   },
   env: {
-    MAIN_API_URL: 'http://localhost:4000',
-    AUTH_API_URL: 'http://localhost:5000',
+    MAIN_API_URL: 'http://firetracker-api:4000',
+    AUTH_API_URL: 'http://firetracker-api:5000',
   },
 });

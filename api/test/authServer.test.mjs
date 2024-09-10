@@ -13,7 +13,13 @@ describe('Integration tests', () => {
         await request(mainServerUrl)
         .get('/test/db/reset')
         .expect(200)
-      });
+    });
+
+    after(async () => {
+        await request(mainServerUrl)
+        .get('/test/db/reset')
+        .expect(200)
+    })
 
     const testUser = {
         email: 'test@example.com',

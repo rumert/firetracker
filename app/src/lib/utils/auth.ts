@@ -15,8 +15,6 @@ export async function login(email: string, password: string) {
     } else {
         cookies().set('accessToken', data.accessToken.token, { 
             expires: data.accessToken.expires,
-            secure: true,
-            httpOnly: true
         });
         cookies().set('refreshToken', data.refreshToken.token, { 
             expires: data.refreshToken.expires, 

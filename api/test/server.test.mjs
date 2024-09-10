@@ -64,6 +64,12 @@ describe("server test", () => {
         loginRes = await myFetch( authServerUrl, 'POST', '/login', 200, '', testUser )
     });
 
+    after(async () => {
+        await request(mainServerUrl)
+        .get('/test/db/reset')
+        .expect(200)
+    })
+
     describe("not requires budget", () => {
 
         it("should return error for invalid budget id in budget-list route", async () => {

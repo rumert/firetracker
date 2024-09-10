@@ -29,8 +29,11 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          docker-compose up -d
+          docker-compose build --no-cache
+          docker-compose up -d --force-recreate
 
       - name: Clean up old images
         run: |
           docker image prune -af
+          docker volume prune -f --filter "label!=keep"
+          docker network prune -f

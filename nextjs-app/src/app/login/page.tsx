@@ -22,7 +22,7 @@ export default function page({ searchParams }: { searchParams: { message: string
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
         const validationError = signUpValidation(email, password)
-        if (validationError) {
+        if (!validationError) {
             return redirect(`/login?message=${validationError}`)
         }
         let redirectPath: string | null;

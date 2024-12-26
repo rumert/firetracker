@@ -7,7 +7,8 @@ export async function login(email: string, password: string) {
         headers: {
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ nickname: email, password }),
+        credentials: 'include'
     });
     const data = await res.json()
     if (res.status != 200) {

@@ -28,7 +28,7 @@ services:
     build: ./nextjs-app
     container_name: nextjs-app
     ports:
-      - '3001:3001'
+      - '3000:3000'
     networks:
       - firetracker-network
     environment:

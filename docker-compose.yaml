@@ -1,30 +1,43 @@
 version: "2.27"
 services:
-  api:
-    build: ./api
-    container_name: firetracker-api
+  main-api:
+    build: ./main-api
+    container_name: main-api
     ports:
       - '4000:4000'
+    networks:
+      - firetracker-network
+    environment:
+      - MONGO_URL=mongodb://mongo/firetracker
+      - REDIS_HOST=redis
+      - NEXTJS_APP_URL=http://nextjs-app:3000
+
+  auth-api:
+    build: ./auth-api
+    container_name: auth-api
+    ports:
       - '5000:5000'
     networks:
       - firetracker-network
     environment:
+      - MONGO_URL=mongodb://mongo/firetracker
       - REDIS_HOST=redis
+      - NEXTJS_APP_URL=http://nextjs-app:3000
 
-  app:
-    build: ./app
-    container_name: firetracker-app
+  nextjs-app:
+    build: ./nextjs-app
+    container_name: nextjs-app
     ports:
-      - '3000:3000'
+      - '3001:3001'
     networks:
       - firetracker-network
     environment:
-      - MAIN_API_URL=http://api:4000
-      - AUTH_API_URL=http://api:5000
+      - MAIN_API_URL=http://main-api:4000
+      - AUTH_API_URL=http://auth-api:5000
 
   redis:
     image: redis:7.4.0
-    container_name: firetracker-redis
+    container_name: redis
     restart: always
     ports:
       - '6379:6379'
@@ -33,16 +46,16 @@ services:
     volumes:
       - redis-data:/data
 
-  redis_insight:
-    image: redis/redisinsight:2.56
-    container_name: firetracker-redis-insight
+  mongo:
+    image: mongo:6
+    container_name: mongo
     restart: always
     ports:
-      - "5540:5540"
+      - '27017:27017'
     networks:
       - firetracker-network
     volumes:
-      - redis-insight:/data
+      - mongo-data:/data/db
 
 networks:
   firetracker-network:
@@ -52,3 +65,4 @@ networks:
 volumes:
   redis-data:
   redis-insight:
+  mongo-data:

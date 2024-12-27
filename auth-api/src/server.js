@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/error-handler');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const initApollo = require('./config/apollo');
 
 const app = express();
 connectDB()
@@ -27,6 +28,8 @@ app.use(rateLimit({
 }))
 
 app.use('/', authRoutes);
+initApollo(app);
+
 app.use(errorHandler);
 
 module.exports = { app }

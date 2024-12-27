@@ -11,20 +11,10 @@ const { authenticateToken } = require('./middleware/token-middleware');
 const { errorHandler } = require('./middleware/error-handler');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const { apolloServer }= require('./config/apollo');
-const { connectApollo } = require('./config/apollo');
-const { expressMiddleware: apolloMiddleware } = require("@apollo/server/express4");
+const initApollo = require('./config/apollo');
 
 const app = express();
 connectDB()
-
-const initApolloMiddleware = async () => {
-    await connectApollo(); // Start Apollo server
-    app.use('/graphql', express.json(), apolloMiddleware(apolloServer)); // Attach middleware
-    console.log('Apollo middleware initialized');
-};
-
-initApolloMiddleware()
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -45,6 +35,8 @@ app.use(authenticateToken);
 app.use('/budget', budgetRoutes);
 app.use('/transaction', transactionRoutes);
 app.use('/test', testRoutes);
+initApollo(app);
+
 app.use(errorHandler)
 
 module.exports = { app }

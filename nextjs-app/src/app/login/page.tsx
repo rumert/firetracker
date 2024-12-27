@@ -46,10 +46,7 @@ export default function page() {
                     credentials: 'include'
                 });
                 const resData: ILoginResponse = await res.json()
-                if (resData !== 'OK') {
-                    setErrorMes(resData.error)
-                }
-                router.push('/')
+                resData !== 'OK' ? setErrorMes(resData.error) : router.push('/')
             } catch (error) {
                 setErrorMes('Internal Server Error')
             }

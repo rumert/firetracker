@@ -5,7 +5,7 @@ const { expressMiddleware } = require("@apollo/server/express4");
 
 const apolloServer = new ApolloServer({
     typeDefs,
-    resolvers,
+    resolvers
 })
 
 const initApollo = async (app) => {

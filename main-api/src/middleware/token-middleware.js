@@ -5,10 +5,8 @@ function authenticateToken(req, res, next) {
     if (req.path === '/test/db/reset' || req.path === '/test/db/seed') {
         return next();
     }
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(req.cookies?.access_token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             const error = new Error("Forbidden")
             error.status = 403

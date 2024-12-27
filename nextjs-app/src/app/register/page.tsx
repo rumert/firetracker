@@ -12,32 +12,33 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SubmitButton from '@/components/ui/SubmitButton'
 import { useRouter } from 'next/navigation'
-import { loginValidation } from '@/lib/utils/formValidations'
+import { registerValidation } from '@/lib/utils/formValidations'
 import Link from 'next/link'
 
-interface ILoginForm {
+interface IRegisterForm {
     nickname: string;
+    email: string;
     password: string;
 }
-type ILoginResponse = 'OK' | { error: string }
+type IRegisterResponse = 'OK' | { error: string }
 
 export default function page() {
-
-    const [form, setForm] = useState<ILoginForm>({
+    const [form, setForm] = useState<IRegisterForm>({
         nickname: '',
+        email: '',
         password: '',
     });
     const [errorMes, setErrorMes] = useState('');
     const router = useRouter()
 
-    async function login(event: React.FormEvent) {
+    async function register(event: React.FormEvent) {
         event.preventDefault();
-        const validationErr = loginValidation(form.password)
+        const validationErr = registerValidation(form.email, form.password)
         if (validationErr) {
             setErrorMes(validationErr)
         } else {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/login`, { 
+                const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/register`, { 
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json'
@@ -45,11 +46,12 @@ export default function page() {
                     body: JSON.stringify(form),
                     credentials: 'include'
                 });
-                const resData: ILoginResponse = await res.json()
-                if (resData !== 'OK') {
+                const resData: IRegisterResponse = await res.json()
+                if (resData === 'OK') {
+                    router.push('/')
+                } else {
                     setErrorMes(resData.error)
                 }
-                router.push('/')
             } catch (error) {
                 setErrorMes('Internal Server Error')
             }
@@ -60,15 +62,15 @@ export default function page() {
     <main className='flex justify-center items-center h-screen w-screen'>
         <Card className="w-full max-w-sm">
             <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Sign Up</CardTitle>
                 <CardDescription>
-                Enter your credentials below to login.
+                Enter your credentials below to sign up.
                 </CardDescription>
             </CardHeader>
-            <form onSubmit={login}>
+            <form onSubmit={register}>
                 <CardContent className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Nickname</Label>
+                        <Label htmlFor="nickname">Nickname</Label>
                         <Input 
                             value={form.nickname}
                             onChange={e => {
@@ -84,6 +86,21 @@ export default function page() {
                         />
                     </div>
                     <div className="grid gap-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                            value={form.email}
+                            onChange={e => {
+                                setForm({
+                                  ...form,
+                                  email: e.target.value
+                                });
+                            }}
+                            id="email" 
+                            type="text" 
+                            required 
+                        />
+                    </div>
+                    <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
                         <Input 
                             value={form.password}
@@ -95,7 +112,7 @@ export default function page() {
                             }}
                             id="password" 
                             type="password" 
-                            required
+                            required 
                         />
                     </div>
                     <p className='text-destructive'>{errorMes}</p>
@@ -105,10 +122,10 @@ export default function page() {
                       pendingText="Please wait..."
                       className='w-full'
                     >
-                      Login
+                      Sign Up
                     </SubmitButton> 
                 </CardFooter>
-                <p className='text-center pb-2'>Not a member? <Link href='/register' className='text-primary'>Sign Up</Link></p>
+                <p className='text-center pb-2'>Already a member? <Link href='/login' className='text-primary'>Login</Link></p>
             </form>    
         </Card>
     </main>

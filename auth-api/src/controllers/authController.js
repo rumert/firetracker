@@ -93,8 +93,10 @@ const register = async (req, res, next) => {
 };
 
 const getToken = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const refreshToken = authHeader && authHeader.split(' ')[1];
     await routeWrapper(req, res, next, async () => {
-        jwt.verify(req.cookies?.refresh_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
             if (err) {
                 res.clearCookie('access_token', {
                     httpOnly: true,
@@ -113,13 +115,13 @@ const getToken = async (req, res, next) => {
             }
             const userForToken = { nickname: user.nickname, uid: user.id }
             const { accessToken, maxAge } = generateAccessToken(userForToken)
-            res.cookie('access_token', accessToken, {
+            const tokenOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict',
                 maxAge,
-            });
-            return res.json('OK');
+            }
+            return res.json({ accessToken, tokenOptions });
         });
     })
 };

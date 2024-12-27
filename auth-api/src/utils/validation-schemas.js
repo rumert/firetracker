@@ -40,7 +40,7 @@ const register = [
         .isLength({ min:6, max:20 })
         .withMessage('Password must be between 6 and 20 characters')
         .matches(/^\S*$/, 'i')
-        .withMessage('Password must not contain spaces')
+        .withMessage('Password cannot contain spaces')
         .isStrongPassword({
             minLength: 6,
             minLowercase: 0,

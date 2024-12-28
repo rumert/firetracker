@@ -41,7 +41,7 @@
 //   }
 // `
 
-export const typeDefs = `#graphql
+const typeDefs = `#graphql
   type Test {
     name: String!
   }
@@ -61,3 +61,5 @@ export const typeDefs = `#graphql
     name: String,
   }
 `
+
+module.exports = typeDefs;

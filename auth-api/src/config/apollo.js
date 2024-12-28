@@ -1,4 +1,4 @@
-const { typeDefs } = require("../utils/graphql-schema");
+const typeDefs = require("../utils/graphql-schema");
 const resolvers = require("../utils/graphql-resolvers")
 const { ApolloServer } = require("@apollo/server")
 const { expressMiddleware } = require("@apollo/server/express4");
@@ -15,7 +15,7 @@ const initApollo = async (app) => {
         console.log('Apollo middleware initialized');
     } catch (error) {
         console.log(error);
-        //process.exit(1)
+        process.exit(1)
     }
 };
 

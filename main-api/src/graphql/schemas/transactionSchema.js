@@ -7,7 +7,7 @@ const transactionSchema = `#graphql
     user_id: String!,
     budget_id: String!,
     type: String!,
-    amount: Float!,
+    amount: Int!,
     category: String!,
     date: String!,
     title: String!,
@@ -26,13 +26,13 @@ const transactionSchema = `#graphql
   input createTransactionInput {
     budget_id: String!,
     type: String!,
-    amount: Float!,
+    amount:Int!,
     date: Date!,
     title: String!,
   }
   input updateTransactionInput {
     type: String,
-    amount: Float,
+    amount: Int,
     category: String,
     date: Date,
     title: String,

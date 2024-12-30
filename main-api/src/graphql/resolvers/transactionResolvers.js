@@ -19,7 +19,7 @@ const transactionResolvers = {
   Query: {
     transaction: async (_, { id }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
-        const transaction = await getDataWithCaching(redisClient, `transaction:${req.user.uid}:${id}`, async () => {
+        const transaction = await getDataWithCaching(redisClient, `transaction:${id}`, async () => {
           return await Transaction.findOne({ _id: id, user_id: req.user.uid });
         })
         if (!transaction) {
@@ -31,7 +31,7 @@ const transactionResolvers = {
 
     transactions: async (_, { budget_id }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
-        const transactions = await getDataWithCaching(redisClient, `transactions:${req.user.uid}:${budget_id}`, async () => {
+        const transactions = await getDataWithCaching(redisClient, `transactions:${budget_id}`, async () => {
           return await Transaction.find({ budget_id, user_id: req.user.uid }).sort({ created_at: 'desc' })
         })
         return transactions;
@@ -62,13 +62,16 @@ const transactionResolvers = {
             $inc: { current_balance: amount }
           }
         );
-        await redisClient.del(`transactions:${req.user.uid}:${budget_id}`)
+        await redisClient.del(`transactions:${budget_id}`)
         return newTransaction;
       }),
 
     updateTransaction: async (_, { id, edits }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
-        const transactionOld = await Transaction.findById(id)
+        const transactionOld = await Transaction.findOne({ _id: id, user_id: req.user.uid })
+        if (!transactionOld) {
+          return null;
+        }
         const transactionNew = await Transaction.findByIdAndUpdate( id, edits, { new: true } );
 
         if (edits.amount) {
@@ -83,8 +86,8 @@ const transactionResolvers = {
             transactionOld.budget_id, { $addToSet: { categories: edits.category } }
           );
         }
-        await redisClient.del(`transaction:${req.user.uid}:${id}`)
-        await redisClient.del(`transactions:${req.user.uid}:${edits.budget_id}`)
+        await redisClient.del(`transaction:${id}`)
+        await redisClient.del(`transactions:${edits.budget_id}`)
             
         return transactionNew;
       }),
@@ -99,8 +102,8 @@ const transactionResolvers = {
             $inc: { current_balance: -amount }
           }
         );
-        await redisClient.del(`transaction:${req.user.uid}:${id}`)
-        await redisClient.del(`transactions:${req.user.uid}:${budget_id}`)
+        await redisClient.del(`transaction:${id}`)
+        await redisClient.del(`transactions:${budget_id}`)
         return true
       }),
   },

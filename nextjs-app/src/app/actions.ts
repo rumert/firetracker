@@ -1,24 +1,55 @@
 "use server"
-import fetchWithTokens from "@/lib/utils/fetchWithTokens";
+import { fetchGraphQL } from "@/lib/utils/graphql";
 import { redirect } from "next/navigation";
+
+type CreateBudgetVariables = {
+  name: string;
+  base_balance: number;
+  is_default: boolean;
+};
+
+type CreateBudgetRes = {
+  createBudget: {
+    _id: string;
+  };
+};
+
+type createTransactionVariables = {
+  budget_id: string;
+  type: string;
+  amount: number;
+  date: string,
+  title: string,
+};
+
+type CreateTransactionRes = {
+  createTransaction: {
+    _id: string;
+  };
+};
 
 export async function createBudget(isDefault: boolean, formData: FormData) {
 
   const name = formData.get("name") as string;
-  const base_balance = formData.get("baseBalance") as unknown as number;
+  const base_balance = formData.get("baseBalance") as string;
   let redirectPath: string | null;
 
   try {
-      const res = await fetchWithTokens(`${process.env.MAIN_API_URL}/budget`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ name, base_balance, is_default: isDefault })
-      });
-      const data = await res.json()
-      if (!res.ok) throw data.error
-      redirectPath = `/${data.budget._id}`
+      const variables: CreateBudgetVariables = {
+        name,
+        base_balance: parseInt(base_balance, 10),
+        is_default: isDefault,
+      };
+      const mutation = `
+        mutation CreateBudget($name: String!, $base_balance: Int!, $is_default: Boolean!) {
+          createBudget(budget: { name: $name, base_balance: $base_balance, is_default: $is_default }) {
+            _id
+          }
+        }
+      `;
+    
+      const data: CreateBudgetRes = await fetchGraphQL(mutation, variables)
+      redirectPath = `/${data.createBudget._id}`
   } catch (errorMes) {
     console.log(errorMes)
     redirectPath = null
@@ -27,39 +58,34 @@ export async function createBudget(isDefault: boolean, formData: FormData) {
   redirectPath ? redirect(redirectPath) : ''
 }
 
-export async function addTransaction( 
+export async function createTransaction( 
   date: string, 
   budgetId: string, 
   currentState: { message: string }, 
   formData: FormData 
 ) {
   const title = formData.get('title') as string;
-  const amount = formData.get('amount') as unknown as number
+  const amount = formData.get('amount') as string
   const type = formData.get('type') as string;
 
   try {
-      const res = await fetchWithTokens(`${process.env.MAIN_API_URL}/transaction`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          budget_id: budgetId,
-          type,
-          amount: type === 'income' ? amount : -amount,
-          date,
-          title
-        })
-      });
-
-      if (!res.ok) {
-        const data = await res.json()
-        console.log(data.error)
-        return {
-          message: 'failed'
+      console.log(typeof(parseInt(amount, 10)))
+      const variables: createTransactionVariables = {
+        budget_id: budgetId,
+        type,
+        amount: type === 'income' ? parseInt(amount, 10) : -parseInt(amount, 10),
+        date,
+        title
+      };
+      const mutation = `
+        mutation CreateTransaction($budget_id: String!, $type: String!, $amount: Int!, $date: Date!, $title: String!) {
+          createTransaction(transaction: { budget_id: $budget_id, type: $type, amount: $amount, date: $date, title: $title } ) {
+            _id
+          }
         }
-      }
-
+      `;
+      
+      const data: CreateTransactionRes = await fetchGraphQL(mutation, variables)
       return {
         message: 'success'
       }

@@ -6,15 +6,18 @@ function authenticateToken(req, res, next) {
         return next();
     }
 
-    jwt.verify(req.cookies?.access_token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    console.log(accessToken)
+
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
-            const error = new Error("Forbidden")
-            error.status = 403
-            return next(error)
+            const error = new Error("Forbidden");
+            error.status = 403;
+            return next(error);
         }
         req.user = user;
         next();
     });
 }
 
-module.exports = { authenticateToken }
+module.exports = { authenticateToken };

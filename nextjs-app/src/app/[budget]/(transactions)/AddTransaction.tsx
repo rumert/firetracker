@@ -22,7 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useEffect, useState } from 'react'
-import { addTransaction } from '@/app/actions'
+import { createTransaction } from '@/app/actions'
 import { useParams, useRouter } from 'next/navigation'
 import SubmitButton from '@/components/ui/SubmitButton'
 import { useFormState } from 'react-dom'
@@ -38,7 +38,7 @@ export default function AddTransaction() {
     const [type, setType] = useState('expense')
 
     const params: { budget: string } = useParams()
-    const addTransactionWithOtherVars = addTransaction.bind(null, date.toDateString(), params.budget)
+    const addTransactionWithOtherVars = createTransaction.bind(null, date.toDateString(), params.budget)
     const [formState, formAction] = useFormState(addTransactionWithOtherVars, {message: 'initial'})
 
     useEffect(() => {

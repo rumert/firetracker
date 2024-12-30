@@ -1,24 +1,28 @@
 import AddBudget from "@/components/AddBudget";
-import fetchWithTokens from "@/lib/utils/fetchWithTokens";
+import { fetchGraphQL } from "@/lib/utils/graphql";
 import { redirect } from "next/navigation";
 
-async function getDefaultBucketId(): Promise<string | null> {
-  try {
-    const response = await fetchWithTokens(`${process.env.MAIN_API_URL}/budget/default/id`);
-    return ( await response.json() ).budget_id;
-  } catch (error) {
-    console.log(error)
-    return null
-  }
+type QueryRes = {
+  defaultBudget: {
+    _id: string
+  } 
 }
 
 export default async function Home() {
 
-  const budgetId = await getDefaultBucketId()
+  const query = `
+    query DefaultBudget {
+      defaultBudget {
+        _id
+      }
+    }
+  `;
 
-  return budgetId ? 
+  const data: QueryRes = await fetchGraphQL(query);
+
+  return data.defaultBudget ? 
   (
-    redirect(`/${budgetId}`)
+    redirect(`/${data.defaultBudget._id}`)
   )
   :
   (

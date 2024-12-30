@@ -65,7 +65,7 @@ const register = async (req, res, next) => {
             ]
         });
         if ( userIfExist ) {
-            const error = new Error("Email already exists. Please use a different email or login.")
+            const error = new Error("Email/Nickname already exists. Please use a different email or login.")
             error.status = 409
             return next(error)
         } else {
@@ -113,7 +113,7 @@ const getToken = async (req, res, next) => {
                 error.status = 403
                 return next(error)
             }
-            const userForToken = { nickname: user.nickname, uid: user.id }
+            const userForToken = { nickname: user.nickname, uid: user.uid }
             const { accessToken, maxAge } = generateAccessToken(userForToken)
             const tokenOptions = {
                 httpOnly: true,

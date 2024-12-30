@@ -1,5 +1,6 @@
 
 async function fetchCategoryFromAI(aiModel, expenseTitle) {
+    return 'category'; //remove this later!
     const listOfCategories = 'Groceries, Utilities, Transportation, Entertainment, Dining, Healthcare, Clothing, Education, Travel, Hobbies'
     const prompt = `Categorize the following expense title into one of these categories: ${listOfCategories}.\n\nTitle: ${expenseTitle}.\n\nDon't give me a response other than the category. If it fits more than one category, pick whatever you want.`
     const result = await aiModel.generateContent(prompt);

@@ -1,5 +1,5 @@
 "use server"
-import { fetchGraphQL } from "@/lib/utils/graphql";
+import { fetchGraphQL } from "@/lib/utils/fetchGraphQL";
 import { redirect } from "next/navigation";
 
 type CreateBudgetVariables = {

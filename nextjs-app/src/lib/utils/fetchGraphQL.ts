@@ -1,4 +1,3 @@
-import fetchWithTokens from "./fetchWithTokens";
 
 type GraphQLResponse<T> = {
     data: T;
@@ -10,11 +9,8 @@ export async function fetchGraphQL<T>(
     variables: Record<string, any> = {}
 ): Promise<T> {
 
-    const res = await fetchWithTokens(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/graphql`, {
+    const res = await fetch(`/api/proxy?method=POST&url=${process.env.NEXT_PUBLIC_MAIN_API_URL}/graphql`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ query, variables }),
     });
   

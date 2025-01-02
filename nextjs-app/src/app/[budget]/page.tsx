@@ -1,4 +1,3 @@
-import fetchWithTokens from '@/lib/utils/fetchWithTokens';
 import { redirect } from 'next/navigation';
 import React from 'react'
 import { BudgetPopover } from './(top)/BudgetPopover';
@@ -7,61 +6,6 @@ import BalanceCard from './(top)/BalanceCard';
 import BudgetTables from './(table)/BudgetTables';
 import Transactions from './(transactions)/Transactions';
 import Image from 'next/image';
-
-export type Budget = {
-  _id: string
-  user_id: string
-  name: string
-  base_balance: number
-  transaction_ids: [string]
-  current_balance: number
-  categories: [string]
-  is_default: boolean
-  created_at: Date
-} | null
-
-export type OtherBudgets = [
-  {
-    _id: string
-    name: string
-    is_default: boolean
-  }
-] | null
-
-export type Transaction = {
-  _id: string
-  user_id: string
-  budget_id: string
-  type: string
-  amount: number
-  category: string
-  date: string
-  title: string
-  created_at: Date
-  updated_at: Date
-}
-
-export type Transactions = Transaction[] | [] | null
-
-async function getBudget(budgetId: string): Promise<{ currentBudget: Budget, list: OtherBudgets }> {
-  try {
-    const response = await fetchWithTokens(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/budget/${budgetId}/list`);
-    return await response.json()
-  } catch (error) {
-    console.log(error)
-    return {currentBudget: null, list: null}
-  }
-}
-
-async function getTransactions(budgetId: any): Promise<{transactions: Transactions}> {
-  try {
-    const response = await fetchWithTokens(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/budget/${budgetId}/transactions`);
-    return await response.json()
-  } catch (error) {
-    console.log(error)
-    return {transactions: null}
-  }
-}
 
 export default async function page({ params }: { params: { budget: string } }) {
   const { currentBudget, list: otherBudgets } = await getBudget(params.budget)

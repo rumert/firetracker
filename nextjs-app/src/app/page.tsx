@@ -1,5 +1,5 @@
 import AddBudget from "@/components/AddBudget";
-import { fetchGraphQL } from "@/lib/utils/graphql";
+import { fetchGraphQL } from "@/lib/utils/fetchGraphQLServer";
 import { redirect } from "next/navigation";
 
 type QueryRes = {

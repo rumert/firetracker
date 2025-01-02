@@ -14,17 +14,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
-import { updateTransaction } from "@/app/actions"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import { Transaction } from "../page"
+import { Transaction, TransactionUpdateEdits } from "@/lib/types/transaction"
+import { updateTransaction } from "@/services/transactionService"
 
 export const getColumns = <TData extends Transaction>(category: string): ColumnDef<TData>[] => {
   const allCategories = ["Clothing", "Dining", "Education", "Entertainment", "Groceries", "Healthcare", "Hobbies", "Utilities", "Transportation", "Travel"]
   const router = useRouter()
 
-  async function handleTransaction(fieldToUpdate: object, transactionId: string, budgetId: string) {
-    await updateTransaction(fieldToUpdate, transactionId, budgetId)
+  async function handleTransaction(transactionId: string, edits: TransactionUpdateEdits) {
+    await updateTransaction(transactionId, edits)
     router.refresh()
   }
 
@@ -52,14 +52,12 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         placeholder={title} 
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && title != '' && handleTransaction(
-          { title }, 
           row.original._id,
-          row.original.budget_id, 
+          { title }
         )}
         onBlur={() => title != '' && handleTransaction(
-          { title }, 
           row.original._id,
-          row.original.budget_id,
+          { title }
         )}
         data-cy='titleInputCy'
         />
@@ -93,14 +91,12 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
           placeholder={amount} 
           onChange={(e) => setAmount(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && amount > 0 && handleTransaction(
-            row.original.type === 'income' ? { amount } : { amount: -amount }, 
             row.original._id,
-            row.original.budget_id,
+            row.original.type === 'income' ? { amount } : { amount: -amount }, 
           )}
           onBlur={() => amount > 0 && handleTransaction(
-            row.original.type === 'income' ? { amount } : { amount: -amount }, 
             row.original._id,
-            row.original.budget_id,
+            row.original.type === 'income' ? { amount } : { amount: -amount },
           )}
           data-cy='amountInputCy'
           />
@@ -146,9 +142,8 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
                 <DropdownMenuRadioGroup 
                 value={category} 
                 onValueChange={(e) => handleTransaction(
-                  { category : e },
                   row.original._id,
-                  row.original.budget_id, 
+                  { category : e }
                 )}>
                   { allCategories.map((cat: any, index: any) => {
                     return (

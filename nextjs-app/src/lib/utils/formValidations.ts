@@ -44,3 +44,10 @@ export function loginValidation<String>( password: string ) {
         return 'Password must contain at least a number and an uppercase letter'
     }
 }
+
+export function createBudgetValidation<String>( name: string, baseBalance: number ) {
+    
+    if (!validator.isLength(name, { min: 0 }) )  {
+        return 'Budget name should be at least 1 character'
+    }
+}

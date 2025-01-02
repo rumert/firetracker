@@ -22,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { getColumns } from "./Columns"
-import { Transaction } from "../page"
+import { Transaction } from "@/lib/types/transaction"
 
 interface DataTableProps<TData> {
   key: string

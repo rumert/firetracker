@@ -10,3 +10,11 @@ export type Transaction = {
   created_at: Date
   updated_at: Date
 }
+
+export type TransactionUpdateEdits = {
+  type?: string,
+  amount?: number,
+  category?: string,
+  date?: string,
+  title?: string
+}

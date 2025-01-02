@@ -9,19 +9,23 @@ const user = [
         })
 ]
 
-const defaultBudgetId = [
+const getDefaultBudget = [
     ...user
 ]
 
-const budgetList = [
+const getBudget = [
     ...user,
-    param('budget_id')
+    param('id')
         .isMongoId()
         .withMessage('Invalid budget id')
         .escape()
 ]
 
-const budgetCreation = [
+const getBudgets = [
+    ...user,
+]
+
+const createBudget = [
     ...user,
     body('name')
         .isString()
@@ -34,7 +38,43 @@ const budgetCreation = [
         .escape()
 ]
 
-const transactions = [
+const updateBudget = [
+    ...user,
+    param('id')
+        .isMongoId()
+        .withMessage('Invalid budget id')
+        .escape(),
+    body('name')
+        .isString()
+        .escape(),
+    body('current_balance')
+        .isNumeric({ no_symbols: true })
+        .escape(),
+    body('category')
+        .isString()
+        .escape(),
+    body('is_default')
+        .isBoolean()
+        .escape()
+]
+
+const deleteBudget = [
+    ...user,
+    param('id')
+        .isMongoId()
+        .withMessage('Invalid budget id')
+        .escape()
+]
+
+const getTransaction = [
+    ...user,
+    param('id')
+        .isMongoId()
+        .withMessage('Invalid transaction id')
+        .escape()
+]
+
+const getTransactions = [
     ...user,
     param('budget_id')
         .isMongoId()
@@ -42,24 +82,16 @@ const transactions = [
         .escape()
 ]
 
-const transaction = [
+const createTransaction = [
     ...user,
-    param('transaction_id')
+    param('budget_id')
         .isMongoId()
-        .withMessage('Invalid transaction id')
-        .escape()
-]
-
-const transactionCreation = [
-    ...user,
+        .escape(),
     body('type')
         .isString()
         .escape(),
     body('title')
         .isString()
-        .escape(),
-    body('budget_id')
-        .isMongoId()
         .escape(),
     body('amount')
         .isNumeric()
@@ -75,9 +107,9 @@ const transactionCreation = [
         .escape()
 ]
 
-const transactionUpdate = [
+const updateTransaction = [
     ...user,
-    param('transaction_id')
+    param('id')
         .isMongoId()
         .withMessage('Invalid transaction id')
         .escape(),
@@ -85,13 +117,9 @@ const transactionUpdate = [
         body('amount').exists({ values: 'falsy' }),
         body('category').exists({ values: 'falsy' }), 
         body('date').exists({ values: 'falsy' }),
-        body('title').exists({ values: 'falsy' })
-    ], { message: 'No field provided' }),
-    body('budget_id')
-        .if( body('amount').notEmpty() || body('category').notEmpty() )
-        .isMongoId()
-        .withMessage('Invalid budget id')
-        .escape(),
+        body('title').exists({ values: 'falsy' }),
+        body('type').exists({ values: 'falsy' })
+    ], { message: 'No field provided to update' }),
     body('amount')
         .optional()
         .isNumeric()
@@ -108,23 +136,30 @@ const transactionUpdate = [
         .optional() 
         .isString()
         .escape(),
+    body('type')
+        .optional()
+        .isString()
+        .escape(),
 ]
 
-const transactionDeletion = [
+const deleteTransaction = [
     ...user,
-    param('transaction_id')
+    param('id')
         .isMongoId()
         .withMessage('Invalid transaction id')
         .escape(),
 ]
 
 module.exports = { 
-    defaultBudgetId,
-    budgetList,
-    budgetCreation,
-    transactions,
-    transaction,
-    transactionCreation,
-    transactionUpdate,
-    transactionDeletion,
-}
+    getDefaultBudgetVal: getDefaultBudget,
+    getBudgetVal: getBudget,
+    getBudgetsVal: getBudgets,
+    createBudgetVal: createBudget,
+    updateBudgetVal: updateBudget,
+    deleteBudgetVal: deleteBudget,
+    getTransactionVal: getTransaction,
+    getTransactionsVal: getTransactions,
+    createTransactionVal: createTransaction,
+    updateTransactionVal: updateTransaction,
+    deleteTransactionVal: deleteTransaction,
+};

@@ -17,7 +17,14 @@ async function getDataWithCaching(redisClient, cacheKey, cb, expiration = 3600) 
     return freshData
 }
 
+const throwError = (message, status) => {
+    const error = new Error(message);
+    error.status = status;
+    throw error;
+};
+
 module.exports = {
     fetchCategoryFromAI,
     getDataWithCaching,
+    throwError,
 }

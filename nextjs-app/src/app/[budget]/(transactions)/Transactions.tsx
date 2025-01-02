@@ -1,4 +1,3 @@
-import fetchWithTokens from "@/lib/utils/fetchWithTokens";
 import AddTransaction from "./AddTransaction";
 import { Trash2 } from "lucide-react";
 import SubmitButton from "@/components/ui/SubmitButton";

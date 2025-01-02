@@ -1,16 +1,20 @@
 const express = require("express");
 const { 
-    getTransactionsInBudget,
-    getDefaultBudgetId,
-    getBudgetList,
+    getDefaultBudget,
+    getBudget,
+    getBudgets,
     createBudget,
+    updateBudget,
+    deleteBudget,
 } = require("../controllers/budgetController");
 const { validateRequest } = require('../middleware/validate-request');
 const { 
-    defaultBudgetId: defaultBudgetIdValidation,
-    budgetList: budgetListValidation,
-    budgetCreation: budgetCreationValidation,
-    transactions: transactionsValidation, 
+    getDefaultBudgetVal,
+    getBudgetVal,
+    getBudgetsVal,
+    createBudgetVal,
+    updateBudgetVal,
+    deleteBudgetVal, 
 } = require('../utils/validation-schemas');
 
 const router = express.Router();
@@ -20,9 +24,11 @@ const validate = (validationSchema) => [
     validateRequest,
 ];
 
-router.get("/default/id", validate(defaultBudgetIdValidation), getDefaultBudgetId);
-router.get("/:budget_id/list", validate(budgetListValidation), getBudgetList);
-router.post("/", validate(budgetCreationValidation), createBudget);
-router.get("/:budget_id/transactions", validate(transactionsValidation), getTransactionsInBudget);
+router.get("/default", validate(getDefaultBudgetVal), getDefaultBudget);
+router.get("/:id", validate(getBudgetVal), getBudget);
+router.get("s", validate(getBudgetsVal), getBudgets);
+router.post("/", validate(createBudgetVal), createBudget);
+router.put("/:id", validate(updateBudgetVal), updateBudget);
+router.delete("/:id", validate(deleteBudgetVal), deleteBudget);
 
 module.exports = router;

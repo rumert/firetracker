@@ -1,19 +1,3 @@
-"use server"
-import { fetchGraphQL } from "@/lib/utils/fetchGraphQL";
-import { redirect } from "next/navigation";
-
-type CreateBudgetVariables = {
-  name: string;
-  base_balance: number;
-  is_default: boolean;
-};
-
-type CreateBudgetRes = {
-  createBudget: {
-    _id: string;
-  };
-};
-
 type createTransactionVariables = {
   budget_id: string;
   type: string;
@@ -27,36 +11,6 @@ type CreateTransactionRes = {
     _id: string;
   };
 };
-
-export async function createBudget(isDefault: boolean, formData: FormData) {
-
-  const name = formData.get("name") as string;
-  const base_balance = formData.get("baseBalance") as string;
-  let redirectPath: string | null;
-
-  try {
-      const variables: CreateBudgetVariables = {
-        name,
-        base_balance: parseInt(base_balance, 10),
-        is_default: isDefault,
-      };
-      const mutation = `
-        mutation CreateBudget($name: String!, $base_balance: Int!, $is_default: Boolean!) {
-          createBudget(budget: { name: $name, base_balance: $base_balance, is_default: $is_default }) {
-            _id
-          }
-        }
-      `;
-    
-      const data: CreateBudgetRes = await fetchGraphQL(mutation, variables)
-      redirectPath = `/${data.createBudget._id}`
-  } catch (errorMes) {
-    console.log(errorMes)
-    redirectPath = null
-  }
-        
-  redirectPath ? redirect(redirectPath) : ''
-}
 
 export async function createTransaction( 
   date: string, 
@@ -98,28 +52,3 @@ export async function createTransaction(
   }
 }
 
-export async function updateTransaction( 
-  fieldToUpdate: object, 
-  transactionId: string, 
-  budgetId: string, 
-) {
-
-  try {
-      await fetchWithTokens(`${process.env.MAIN_API_URL}/transaction/${transactionId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ budget_id: budgetId, ...fieldToUpdate })
-      });
-
-      return {
-        message: 'success'
-      }
-  } catch (error) {
-    console.log(error)
-    return {
-      message: 'failed'
-    }
-  }
-}

@@ -1,27 +1,58 @@
-import { Budget } from "@/lib/types/budget";
+import { Transaction, TransactionUpdateEdits } from "@/lib/types/transaction";
 import { fetchGraphQL } from "@/lib/utils/fetchGraphQL";
 
-export async function getDefaultBudget(): Promise<Budget | null> {
+export async function getTransactions(
+  budgetId: string, 
+  token: string | null = null
+): Promise<[] | [Transaction]> {
   try {
-    const response = await fetchGraphQL(
-        `query DefaultBudget {
-            defaultBudget {
-                _id
-                user_id
-                name
-                base_balance
-                transaction_ids
-                current_balance
-                categories
-                is_default
-                created_at
-            }
-        }`
+    const response: { transactions: [] | [Transaction] } = await fetchGraphQL(
+      `query Transactions ($budget_id: MongoID!) {
+        transactions(budget_id: $budget_id) {
+          _id
+          user_id
+          budget_id
+          type
+          amount
+          category
+          date
+          title
+          created_at
+          updated_at
+        }
+    }`, {"budget_id": budgetId}, token
     )
-    console.log(response)
-    return null
+    return response.transactions
   } catch (error) {
-    console.log(error)
-    return null
+    throw Error('internal server error')
+  }
+}
+
+export async function updateTransaction( 
+  transactionId: string, 
+  edits: TransactionUpdateEdits,
+  token: string | null = null
+): Promise<Transaction>  {
+  try {
+    const response: { updateTransaction: Transaction } = await fetchGraphQL(
+      `mutation UpdateTransaction($id: MongoID!, $edits: updateTransactionInput) {
+        updateTransaction(id: $id, edits: $edits) {
+          _id
+          user_id
+          budget_id
+          type
+          amount
+          category
+          date
+          title
+          created_at
+          updated_at
+        }
+      }`, {"id": transactionId, "edits": edits}, token
+    )
+    console.log(response.updateTransaction)
+    return response.updateTransaction
+  } catch (error) {
+    throw Error('internal server error')
   }
 }

@@ -1,6 +1,6 @@
 const Transaction = require('../../models/transaction');
 const Budget = require('../../models/budget');
-const { getDataWithCaching, fetchCategoryFromAI } = require('../../utils/functions');
+const { getDataWithCaching, fetchCategoryFromAI, throwError } = require('../../utils/functions');
 const redisClient = require('../../config/redis');
 const { logger } = require('../../utils/logger');
 
@@ -23,8 +23,7 @@ const transactionResolvers = {
           return await Transaction.findOne({ _id: id, user_id: req.user.uid });
         })
         if (!transaction) {
-          await redisClient.del(`transaction:${req.user.uid}:${id}`);
-          return null;
+          throwError('not found', 404);
         }
         return transaction;
       }),
@@ -34,14 +33,17 @@ const transactionResolvers = {
         const transactions = await getDataWithCaching(redisClient, `transactions:${budget_id}`, async () => {
           return await Transaction.find({ budget_id, user_id: req.user.uid }).sort({ created_at: 'desc' })
         })
+        if (!transactions) {
+          throwError('not found', 404);
+        }
         return transactions;
       }),
   },
 
   Mutation: {
-    createTransaction: async (_, { transaction }, { req, res, next }) =>
+    createTransaction: async (_, { budget_id, transaction }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
-        const { budget_id, type, amount, date, title } = transaction;
+        const { type, amount, date, title } = transaction;
         const category = type === "expense" ? await fetchCategoryFromAI('asd', title) : 'Income'
 
         const newTransaction = await Transaction.create({
@@ -70,7 +72,7 @@ const transactionResolvers = {
       routeWrapper(req, res, next, async () => {
         const transactionOld = await Transaction.findOne({ _id: id, user_id: req.user.uid })
         if (!transactionOld) {
-          return null;
+          throwError('not found', 404);
         }
         const transactionNew = await Transaction.findByIdAndUpdate( id, edits, { new: true } );
 
@@ -87,7 +89,7 @@ const transactionResolvers = {
           );
         }
         await redisClient.del(`transaction:${id}`)
-        await redisClient.del(`transactions:${edits.budget_id}`)
+        await redisClient.del(`transactions:${transactionOld.budget_id}`)
             
         return transactionNew;
       }),
@@ -104,7 +106,7 @@ const transactionResolvers = {
         );
         await redisClient.del(`transaction:${id}`)
         await redisClient.del(`transactions:${budget_id}`)
-        return true
+        return 'OK'
       }),
   },
 };

@@ -20,14 +20,14 @@ import {
 } from "@/components/ui/popover"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Budget, OtherBudgets } from "../page"
+import { Budget } from "@/lib/types/budget"
 
 interface Props {
-  otherBudgets: OtherBudgets;
+  budgets: [] | [Budget];
   currentBudget: Budget;
 }
 
-export function BudgetPopover({ otherBudgets, currentBudget }: Props) {
+export function BudgetPopover({ budgets, currentBudget }: Props) {
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState(currentBudget!.name)
 
@@ -51,7 +51,7 @@ export function BudgetPopover({ otherBudgets, currentBudget }: Props) {
           <CommandList>
             <CommandEmpty>No budget found.</CommandEmpty>
             <CommandGroup>
-              {otherBudgets?.map((budget: any, index: any) => (
+              {budgets?.map((budget: any, index: any) => (
                 <Link href={`/${budget._id}`} key={index}>
                   <CommandItem
                     value={budget.name}

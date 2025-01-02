@@ -1,12 +1,14 @@
 'use client'
-import { getDefaultBudget } from '@/services/budgetService'
+import { getTransactions, updateTransaction } from '@/services/transactionService'
 import React from 'react'
 
 export default function page() {
-    async function test(e: any) {
+
+  async function test(e: any) {
     e.preventDefault()
-    await getDefaultBudget()
-    }
+    console.log(await getTransactions('67725e8be8e1005355516a45'))
+  }
+  
   return (
     <button onClick={test}>test</button>
   )

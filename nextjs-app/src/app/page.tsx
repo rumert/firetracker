@@ -1,33 +1,21 @@
-import AddBudget from "@/components/AddBudget";
-import { fetchGraphQL } from "@/lib/utils/fetchGraphQLServer";
+import CreateBudget from "@/components/AddBudget";
+import { getDefaultBudget } from "@/services/budgetService";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-type QueryRes = {
-  defaultBudget: {
-    _id: string
-  } 
-}
-
 export default async function Home() {
+  const token = cookies().get("access_token")?.value;
 
-  const query = `
-    query DefaultBudget {
-      defaultBudget {
-        _id
-      }
-    }
-  `;
+  const defaultBudget = await getDefaultBudget(token)
 
-  const data: QueryRes = await fetchGraphQL(query);
-
-  return data.defaultBudget ? 
+  return defaultBudget ? 
   (
-    redirect(`/${data.defaultBudget._id}`)
+    redirect(`/${defaultBudget._id}`)
   )
   :
   (
     <main>
-      <AddBudget isFirst={true} />
+      <CreateBudget isFirst={true} />
     </main>
   );
 }

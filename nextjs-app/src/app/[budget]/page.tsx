@@ -6,12 +6,18 @@ import BalanceCard from './(top)/BalanceCard';
 import BudgetTables from './(table)/BudgetTables';
 import Transactions from './(transactions)/Transactions';
 import Image from 'next/image';
+import { getBudget, getBudgets } from '@/services/budgetService';
+import { getTransactions } from '@/services/transactionService';
+import { cookies } from 'next/headers';
 
 export default async function page({ params }: { params: { budget: string } }) {
-  const { currentBudget, list: otherBudgets } = await getBudget(params.budget)
-  const { transactions } = await getTransactions(params.budget)
+  const token = cookies().get("access_token")?.value;
+  
+  const currentBudget = await getBudget(params.budget, token)
+  const budgets = await getBudgets(token)
+  const transactions = await getTransactions(params.budget, token)
 
-  return !currentBudget || !transactions ? redirect('/') :
+  return (!currentBudget || !transactions) ? redirect('/') :
     (
     <main>
       <div className='flex gap-20 px-20 py-6 sticky top-0 bg-background z-20'>
@@ -24,7 +30,7 @@ export default async function page({ params }: { params: { budget: string } }) {
              alt='icon'
             />
           </div>
-          <BudgetPopover otherBudgets={otherBudgets} currentBudget={currentBudget} />
+          <BudgetPopover budgets={budgets} currentBudget={currentBudget} />
           <CreateBudget />
         </div>
         <BalanceCard balance={currentBudget.current_balance} />

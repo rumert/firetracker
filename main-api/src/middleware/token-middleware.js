@@ -7,7 +7,6 @@ function authenticateToken(req, res, next) {
     }
 
     const accessToken = req.headers.authorization?.split(' ')[1];
-    console.log(accessToken)
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {

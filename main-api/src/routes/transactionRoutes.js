@@ -1,16 +1,18 @@
 const express = require("express");
 const { 
+    getTransaction,
+    getTransactions,
     createTransaction,
     updateTransaction,
     deleteTransaction,
-    getTransaction,
 } = require("../controllers/transactionController");
 const { validateRequest } = require('../middleware/validate-request');
 const { 
-    transaction: transactionValidation,
-    transactionCreation: transactionCreationValidation,
-    transactionUpdate: transactionUpdateValidation,
-    transactionDeletion: transactionDeletionValidation, 
+    getTransactionVal,
+    getTransactionsVal,
+    createTransactionVal,
+    updateTransactionVal,
+    deleteTransactionVal,
 } = require('../utils/validation-schemas');
 
 const router = express.Router();
@@ -20,9 +22,10 @@ const validate = (validationSchema) => [
     validateRequest
 ];
 
-router.get("/:transaction_id", validate(transactionValidation), getTransaction);
-router.post("/", validate(transactionCreationValidation), createTransaction);
-router.put("/:transaction_id", validate(transactionUpdateValidation), updateTransaction);
-router.delete("/:transaction_id", validate(transactionDeletionValidation), deleteTransaction);
+router.get("/:id", validate(getTransactionVal), getTransaction);
+router.get("s", validate(getTransactionsVal), getTransactions);
+router.post("/", validate(createTransactionVal), createTransaction);
+router.put("/:id", validate(updateTransactionVal), updateTransaction);
+router.delete("/:id", validate(deleteTransactionVal), deleteTransaction);
 
 module.exports = router;

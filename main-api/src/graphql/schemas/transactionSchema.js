@@ -19,12 +19,11 @@ const transactionSchema = `#graphql
     transactions(budget_id: MongoID!): [Transaction!]!
   }
   type Mutation {
-    createTransaction(transaction: createTransactionInput!): Transaction
+    createTransaction(budget_id: MongoID!, transaction: createTransactionInput!): Transaction
     updateTransaction(id: MongoID!, edits: updateTransactionInput): Transaction
-    deleteTransaction(id: MongoID!): Boolean
+    deleteTransaction(id: MongoID!): String
   }
   input createTransactionInput {
-    budget_id: String!,
     type: String!,
     amount:Int!,
     date: Date!,

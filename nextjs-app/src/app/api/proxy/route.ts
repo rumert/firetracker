@@ -33,15 +33,13 @@ export async function POST(req: NextRequest) {
     const refreshResponse = await fetch(
       `${process.env.NEXT_PUBLIC_AUTH_API_URL}/token`,
       {
-        method: 'POST',
+        method: 'GET',
         headers: { Authorization: `Bearer ${refreshToken}` },
       }
     );
 
     if (refreshResponse.status === 200) {
       const { accessToken: newAccessToken, tokenOptions } = await refreshResponse.json();
-
-      console.log('2: ', newAccessToken, tokenOptions)
 
       cookies().set('access_token', newAccessToken, tokenOptions)
 
@@ -53,7 +51,6 @@ export async function POST(req: NextRequest) {
         },
       });
     } else {
-      console.log('3')
       return NextResponse.json(
         { error: 'Not authenticated' }, 
         { status: refreshResponse.status }

@@ -1,7 +1,7 @@
 const Budget = require('../../models/budget');
 const Transaction = require('../../models/transaction');
 const User = require('../../models/user');
-const { getDataWithCaching } = require('../../utils/functions');
+const { getDataWithCaching, throwError } = require('../../utils/functions');
 const redisClient = require('../../config/redis');
 const { logger } = require('../../utils/logger');
 
@@ -25,8 +25,7 @@ const budgetResolvers = {
           return await Budget.findOne({ user_id: req.user.uid, is_default: true })
         })
         if (!budget) {
-          await redisClient.del(`default-budget:${req.user.uid}`);
-          return null;
+          throwError('not found', 404);
         }
         return budget
       }),
@@ -37,8 +36,7 @@ const budgetResolvers = {
           return await Budget.findOne({ _id: id, user_id: req.user.uid });
         })
         if (!budget) {
-          await redisClient.del(`budget:${id}`);
-          return null;
+          throwError('not found', 404);
         }
         return budget;
       }),
@@ -48,6 +46,9 @@ const budgetResolvers = {
         const budgets = await getDataWithCaching(redisClient, `budgets:${req.user.uid}`, async () => {
           return await Budget.find({ user_id: req.user.uid });
         })
+        if (!budgets) {
+          throwError('not found', 404);
+        }
         return budgets;
       }),
   },
@@ -75,7 +76,7 @@ const budgetResolvers = {
       routeWrapper(req, res, next, async () => {
         const budgetOld = await Budget.findOne({ _id: id, user_id: req.user.uid })
         if (!budgetOld) {
-          return null;
+          throwError('not found', 404);
         }
         let budgetNew;
 
@@ -137,7 +138,7 @@ const budgetResolvers = {
         await redisClient.del(`budget:${id}`)
         await redisClient.del(`budgets:${req.user.uid}`)
         await redisClient.del(`transactions:${id}`)
-        return true
+        return 'OK'
       }),
   },
 };

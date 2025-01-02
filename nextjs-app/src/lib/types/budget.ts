@@ -9,3 +9,14 @@ export type Budget = {
     is_default: boolean
     created_at: Date
 } | null
+
+export type CreateBudgetVariables = {
+    name: string;
+    base_balance: number;
+    is_default: boolean;
+};
+
+export type CreateBudgetForm = {
+    name: string,
+    baseBalance: number,
+}

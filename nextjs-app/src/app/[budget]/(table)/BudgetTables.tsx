@@ -1,8 +1,8 @@
 import React from 'react'
 import { DataTable } from './DataTable'
-import { Transactions } from '../page';
+import { Transaction } from '@/lib/types/transaction';
 
-export default async function BudgetTables({ transactions }: { transactions: Transactions }) {
+export default async function BudgetTables({ transactions }: { transactions: [Transaction] }) {
 
   const categorizedTransactions: any = transactions?.reduce((acc: any, transaction) => {
     const { category } = transaction;

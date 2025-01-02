@@ -21,7 +21,7 @@ const budgetSchema = `#graphql
   type Mutation {
     createBudget(budget: createBudgetInput!): Budget
     updateBudget(id: MongoID!, edits: updateBudgetInput): Budget
-    deleteBudget(id: MongoID!): Boolean
+    deleteBudget(id: MongoID!): String
   }
   input createBudgetInput {
     name: String!,

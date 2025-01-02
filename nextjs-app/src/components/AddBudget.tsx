@@ -3,21 +3,52 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import SubmitButton from '@/components/ui/SubmitButton'
-import { createBudget } from '@/app/actions'
 import { X } from 'lucide-react'
 import { Button } from './ui/button'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createBudgetValidation } from '@/lib/utils/formValidations'
+import { CreateBudgetForm } from '@/lib/types/budget'
+import { createBudget } from '@/services/budgetService'
 
 interface Props {
     isFirst: boolean
     setIsAddBudgetActive?: (value: boolean) => void
 }
 
-export default function AddBudget({ isFirst, setIsAddBudgetActive }: Props) {
+export default function AddBudget({ 
+    isFirst, 
+    setIsAddBudgetActive 
+}: Props) {
+    const [form, setForm] = useState<CreateBudgetForm>({
+        name: '',
+        baseBalance: 0,
+    });
+    const [errorMes, setErrorMes] = useState('');
+    const router = useRouter()
 
-    const createBudgetWithIsFirst = createBudget.bind(null, isFirst)
+    async function addBudget(event: React.FormEvent) {
+        event.preventDefault();
+        const validationErr = createBudgetValidation(form.name, form.baseBalance)
+        if (validationErr) {
+            setErrorMes(validationErr)
+        } else {
+            try {
+                const { _id: budgetId } = await createBudget({
+                    name: form.name,
+                    base_balance: form.baseBalance,
+                    is_default: isFirst
+                })
+                console.log('BID: ', budgetId)
+                //resData !== 'OK' ? setErrorMes(resData.error) : router.push('/')
+            } catch (error) {
+                setErrorMes('Internal Server Error')
+            }
+        }
+    }
   
   return (
-    <form action={createBudgetWithIsFirst} className='h-screen w-screen flex justify-center items-center absolute top-0 left-0 z-50 bg-background' data-cy='addBudget'>
+    <form onSubmit={addBudget} className='h-screen w-screen flex justify-center items-center absolute top-0 left-0 z-50 bg-background' data-cy='addBudget'>
         <Card className="w-[350px]">
             <CardHeader className='relative'>
                 <CardTitle>Create budget</CardTitle>
@@ -54,6 +85,7 @@ export default function AddBudget({ isFirst, setIsAddBudgetActive }: Props) {
                         />
                     </div>
                 </div>       
+                <p className='text-destructive'>{errorMes}</p>
             </CardContent>
             <CardFooter className="flex justify-start">
                 <SubmitButton

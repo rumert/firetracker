@@ -18,3 +18,17 @@ export type TransactionUpdateEdits = {
   date?: string,
   title?: string
 }
+
+export type CreateTransactionForm = {
+  date: Date,
+  title: string,
+  amount: number,
+  type: string,
+}
+
+export type CreateTransactionVariables = {
+  date: string,
+  title: string,
+  amount: number,
+  type: string,
+}

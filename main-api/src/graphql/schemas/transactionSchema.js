@@ -25,7 +25,7 @@ const transactionSchema = `#graphql
   }
   input createTransactionInput {
     type: String!,
-    amount:Int!,
+    amount: Int!,
     date: Date!,
     title: String!,
   }

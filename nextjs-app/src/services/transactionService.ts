@@ -1,4 +1,4 @@
-import { Transaction, TransactionUpdateEdits } from "@/lib/types/transaction";
+import { CreateTransactionVariables, Transaction, TransactionUpdateEdits } from "@/lib/types/transaction";
 import { fetchGraphQL } from "@/lib/utils/fetchGraphQL";
 
 export async function getTransactions(
@@ -24,6 +24,27 @@ export async function getTransactions(
     )
     return response.transactions
   } catch (error) {
+    console.log(error)
+    throw Error('internal server error')
+  }
+}
+
+export async function createTransaction( 
+  budgetId: string, 
+  variables: CreateTransactionVariables,
+  token: string | null = null
+): Promise<{ _id: string }>  {
+  try {
+    const response: { createTransaction: { _id: string } } = await fetchGraphQL(
+      `mutation CreateTransaction($budget_id: MongoID!, $transaction: createTransactionInput!) {
+        createTransaction(budget_id: $budget_id, transaction: $transaction) {
+          _id
+        }
+      }`, {"budget_id": budgetId, "transaction": variables}, token
+    )
+    return response.createTransaction
+  } catch (error) {
+    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -50,9 +71,26 @@ export async function updateTransaction(
         }
       }`, {"id": transactionId, "edits": edits}, token
     )
-    console.log(response.updateTransaction)
     return response.updateTransaction
   } catch (error) {
+    console.log(error)
+    throw Error('internal server error')
+  }
+}
+
+export async function deleteTransaction(
+  transactionId: string, 
+  token: string | null = null
+): Promise<'OK'> {
+  try {
+    await fetchGraphQL(
+      `mutation DeleteTransaction($id: MongoID!) {
+        deleteTransaction(id: $id)
+      }`, {"id": transactionId}, token
+    )
+    return 'OK'
+  } catch (error) {
+    console.log(error)
     throw Error('internal server error')
   }
 }

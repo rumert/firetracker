@@ -68,6 +68,7 @@ export async function getBudgets(token: string | null = null): Promise<[] | [Bud
     )
     return response.budgets
   } catch (error) {
+    console.log(error)
     throw Error('internal server error')
   }
 }

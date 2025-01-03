@@ -21,34 +21,46 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useEffect, useState } from 'react'
-import { createTransaction } from '@/app/actions'
+import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import SubmitButton from '@/components/ui/SubmitButton'
-import { useFormState } from 'react-dom'
+import { CreateTransactionForm } from '@/lib/types/transaction'
+import { createTransaction } from '@/services/transactionService'
+import { createTransactionValidation } from '@/lib/utils/formValidations'
 
 export default function AddTransaction() {
+    const params: { budget: string } = useParams()
     const [isDialogActive, setIsDialogActive] = useState(false) 
-    const router = useRouter()  
-    const [error, setError] = useState('')
-
     const today = (new Date())
     today.setHours(0, 0, 0, 0)
-    const [date, setDate] = useState(today) 
-    const [type, setType] = useState('expense')
-
-    const params: { budget: string } = useParams()
-    const addTransactionWithOtherVars = createTransaction.bind(null, date.toDateString(), params.budget)
-    const [formState, formAction] = useFormState(addTransactionWithOtherVars, {message: 'initial'})
-
-    useEffect(() => {
-        if (formState.message === 'success') {
-            setIsDialogActive(false)
-            router.refresh()
-        } else if (formState.message === 'failed') {
-            setError('an error occured, please try again.')
+    const [form, setForm] = useState<CreateTransactionForm>({
+        date: today,
+        title: '',
+        amount: 0,
+        type: 'expense',
+    });
+    const [error, setError] = useState('')
+    const router = useRouter()
+    
+    async function addTransaction(event: React.FormEvent) {
+        event.preventDefault();
+        const validationErr = createTransactionValidation(form)
+        if (validationErr) {
+            setError(validationErr)
+        } else {
+            try {
+                await createTransaction(params.budget, {
+                    ...form,
+                    amount: form.type === 'income' ? form.amount : -form.amount,
+                    date: form.date.toDateString(),
+                })
+                setIsDialogActive(false)
+                router.refresh()
+            } catch (error) {
+                setError('Internal Server Error')
+            }
         }
-    }, [formState])
+    }
 
   return (
     <div className='flex justify-end p-4 lg:p-8'>
@@ -57,12 +69,17 @@ export default function AddTransaction() {
                 <Button className='px-3' data-cy='addTransactionButton'><Plus /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                <form action={formAction}>
+                <form onSubmit={addTransaction}>
                     <DialogHeader>
                         <DialogTitle className='pb-1'>Add Transaction</DialogTitle>
                         <RadioGroup 
                         name='type'
-                        onValueChange={setType}
+                        onValueChange={e => {
+                            setForm({
+                              ...form,
+                              type: e
+                            });
+                        }}
                         defaultValue="expense" 
                         className='flex'
                         >
@@ -86,11 +103,17 @@ export default function AddTransaction() {
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="title" className="text-right">
-                                {type === "expense" ? "Where Did You Spent?" : "Where Did You Earn?"}
+                                {form.type === "expense" ? "Where Did You Spent?" : "Where Did You Earn?"}
                             </Label>
                             <Input
                             id="title"
-                            name='title'
+                            onChange={e => {
+                                setForm({
+                                  ...form,
+                                  title: e.target.value
+                                });
+                            }}
+                            value={form.title}
                             className="col-span-3"
                             required
                             />
@@ -101,10 +124,16 @@ export default function AddTransaction() {
                             </Label>
                             <Input
                             id="amount"
-                            name='amount'
+                            onChange={e => {
+                                setForm({
+                                  ...form,
+                                  amount: Number(e.target.value)
+                                });
+                            }}
+                            min={0}
+                            value={form.amount}
                             className="col-span-3"
                             type='number'
-                            min="1"
                             required
                             />
                         </div>
@@ -118,18 +147,25 @@ export default function AddTransaction() {
                                     variant={"outline"}
                                     className={cn(
                                         "w-[280px] justify-start text-left font-normal",
-                                        !date && "text-muted-foreground"
+                                        !form.date && "text-muted-foreground"
                                     )}
                                     >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                    {form.date ? format(form.date, "PPP") : <span>Pick a date</span>}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0">
                                     <Calendar
                                     mode="single"
-                                    selected={date}
-                                    onSelect={(e) => e ? setDate(e) : ''}
+                                    selected={form.date}
+                                    onSelect={(e) => {
+                                        if (e) {
+                                            setForm({
+                                                ...form,
+                                                date: e
+                                            });
+                                        }
+                                    }}
                                     initialFocus
                                     />
                                 </PopoverContent>

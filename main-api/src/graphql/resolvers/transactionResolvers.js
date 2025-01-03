@@ -64,7 +64,12 @@ const transactionResolvers = {
             $inc: { current_balance: amount }
           }
         );
-        await redisClient.del(`transactions:${budget_id}`)
+        await redisClient
+          .multi()
+          .del(`budget:${budget_id}`)
+          .del(`budgets:${req.user.uid}`)
+          .del(`transactions:${budget_id}`)
+          .exec();
         return newTransaction;
       }),
 
@@ -88,9 +93,13 @@ const transactionResolvers = {
             transactionOld.budget_id, { $addToSet: { categories: edits.category } }
           );
         }
-        await redisClient.del(`transaction:${id}`)
-        await redisClient.del(`transactions:${transactionOld.budget_id}`)
-            
+        await redisClient
+          .multi()
+          .del(`budget:${transactionOld.budget_id}`)
+          .del(`budgets:${req.user.uid}`)
+          .del(`transaction:${id}`)
+          .del(`transactions:${transactionOld.budget_id}`)
+          .exec(); 
         return transactionNew;
       }),
     
@@ -104,8 +113,11 @@ const transactionResolvers = {
             $inc: { current_balance: -amount }
           }
         );
-        await redisClient.del(`transaction:${id}`)
-        await redisClient.del(`transactions:${budget_id}`)
+        await redisClient
+          .multi()
+          .del(`transaction:${id}`)
+          .del(`transactions:${budget_id}`)
+          .exec(); 
         return 'OK'
       }),
   },

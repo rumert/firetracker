@@ -2,7 +2,9 @@ import AddTransaction from "./AddTransaction";
 import { Trash2 } from "lucide-react";
 import SubmitButton from "@/components/ui/SubmitButton";
 import { redirect } from "next/navigation";
-import { Transaction } from "../page";
+import { Transaction } from "@/lib/types/transaction";
+import { deleteTransaction } from "@/services/transactionService";
+import { cookies } from "next/headers";
 
 type props = {
   budgetId: string,
@@ -11,18 +13,15 @@ type props = {
 
 export default async function Transactions({ budgetId, transactions }: props) {
 
-  async function deleteTransaction(FormData: FormData) {
+  async function removeTransaction(FormData: FormData) {
     "use server"
     const transactionId = FormData.get("transactionId") as string
+    const token = cookies().get("access_token")?.value;
     let redirectPath: string | null;
     try {
-      await fetchWithTokens(`${process.env.MAIN_API_URL}/transaction/${transactionId}`, {
-        method: 'DELETE',
-      });
+      await deleteTransaction(transactionId, token);
       redirectPath = `/${budgetId}`
-
     } catch (error) {
-      console.log(error)
       redirectPath = null
     } 
     redirectPath && redirect(redirectPath)
@@ -62,7 +61,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
             <p className="col-span-2" data-cy='transactionTitle'>{tr.title}</p>
             <p className="col-span-2" data-cy='transactionAmount'>${Math.abs(tr.amount)}</p>
             <p className="col-span-2">{month}/{day}</p>
-            <form action={deleteTransaction}>
+            <form action={removeTransaction}>
               <input type="hidden" name="transactionId" value={tr._id} />
               <SubmitButton size='icon' variant="ghost" className="justify-self-end" cy='deleteTransaction'>
                 <Trash2 className="w-5 h-5 text-destructive" />

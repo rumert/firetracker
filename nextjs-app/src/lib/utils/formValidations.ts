@@ -1,6 +1,7 @@
 import validator from 'validator';
+import { CreateTransactionForm } from '../types/transaction';
 
-export function registerValidation<String>( email: string, password: string ) {
+export function registerValidation( email: string, password: string ): string | undefined {
     if ( !validator.isEmail(email) ) {
         return 'Invalid email'
     } else if (!validator.isLength(password, { min: 6, max: 20 }))  {
@@ -23,7 +24,7 @@ export function registerValidation<String>( email: string, password: string ) {
     }
 }
 
-export function loginValidation<String>( password: string ) {
+export function loginValidation( password: string ): string | undefined {
     
     if (!validator.isLength(password, { min: 6, max: 20 }))  {
         return 'Password must be between 6 and 20 characters'
@@ -45,9 +46,26 @@ export function loginValidation<String>( password: string ) {
     }
 }
 
-export function createBudgetValidation<String>( name: string ) {
+export function createBudgetValidation( name: string ): string | undefined {
     
-    if (!validator.isLength(name, { min: 0 }) )  {
+    if (!validator.isLength(name, { min: 1 }))  {
         return 'Budget name should be at least 1 character'
+    }
+}
+
+export function createTransactionValidation({
+    date,
+    title,
+    amount,
+    type, 
+}: CreateTransactionForm): string | undefined {
+    if (type != 'expense' && type != 'income') {
+        return 'type must be either expense or income'
+    }
+    if (!validator.isLength(title, { min: 1 })) {
+        return 'title cannot be empty'
+    }
+    if (amount <= 0)  {
+        return 'amount must be a positive number'
     }
 }

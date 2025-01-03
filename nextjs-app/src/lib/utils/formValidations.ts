@@ -45,7 +45,7 @@ export function loginValidation<String>( password: string ) {
     }
 }
 
-export function createBudgetValidation<String>( name: string, baseBalance: number ) {
+export function createBudgetValidation<String>( name: string ) {
     
     if (!validator.isLength(name, { min: 0 }) )  {
         return 'Budget name should be at least 1 character'

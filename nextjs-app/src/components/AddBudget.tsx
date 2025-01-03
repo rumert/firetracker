@@ -29,7 +29,7 @@ export default function AddBudget({
 
     async function addBudget(event: React.FormEvent) {
         event.preventDefault();
-        const validationErr = createBudgetValidation(form.name, form.baseBalance)
+        const validationErr = createBudgetValidation(form.name)
         if (validationErr) {
             setErrorMes(validationErr)
         } else {
@@ -39,8 +39,7 @@ export default function AddBudget({
                     base_balance: form.baseBalance,
                     is_default: isFirst
                 })
-                console.log('BID: ', budgetId)
-                //resData !== 'OK' ? setErrorMes(resData.error) : router.push('/')
+                router.push(`/${budgetId}`)
             } catch (error) {
                 setErrorMes('Internal Server Error')
             }
@@ -70,7 +69,14 @@ export default function AddBudget({
                         <Label htmlFor="name" className='font-normal'>Budget Name</Label>
                         <Input 
                             id="name" 
-                            name="name"
+                            onChange={e => {
+                                setForm({
+                                  ...form,
+                                  name: e.target.value
+                                });
+                            }}
+                            type='text'
+                            value={form.name}
                             autoFocus={true}
                             required 
                         />
@@ -80,7 +86,13 @@ export default function AddBudget({
                         <Input 
                             id="baseBalance" 
                             type="number" 
-                            name="baseBalance"
+                            onChange={e => {
+                                setForm({
+                                    ...form,
+                                    baseBalance: Number(e.target.value)
+                                });
+                            }}
+                            value={form.baseBalance}
                             required 
                         />
                     </div>

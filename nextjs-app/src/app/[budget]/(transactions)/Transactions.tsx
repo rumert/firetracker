@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Transaction } from "@/lib/types/transaction";
 import { deleteTransaction } from "@/services/transactionService";
 import { cookies } from "next/headers";
+import { format } from "date-fns";
 
 type props = {
   budgetId: string,
@@ -53,14 +54,17 @@ export default async function Transactions({ budgetId, transactions }: props) {
         }
         {transactions?.map((tr: Transaction, index: number) => {
           const date = new Date(tr.date);
-          const month = date.toLocaleString('default', { month: 'short' })
-          const day = date.getDate()
+          const formattedDate = format(date, 'MMM/dd')
+          const formattedAmount= new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+          }).format(tr.amount)
           //const year = date.getFullYear()
           return (
           <div key={index} className={`h-16 pl-8 pr-2 mb-1 grid grid-cols-7 place-items-center border ${tr.type === 'expense' ? 'border-destructive' : 'border-green-400'} rounded-md`}>
             <p className="col-span-2" data-cy='transactionTitle'>{tr.title}</p>
-            <p className="col-span-2" data-cy='transactionAmount'>${Math.abs(tr.amount)}</p>
-            <p className="col-span-2">{month}/{day}</p>
+            <p className="col-span-2" data-cy='transactionAmount'>{formattedAmount}</p>
+            <p className="col-span-2">{formattedDate}</p>
             <form action={removeTransaction}>
               <input type="hidden" name="transactionId" value={tr._id} />
               <SubmitButton size='icon' variant="ghost" className="justify-self-end" cy='deleteTransaction'>

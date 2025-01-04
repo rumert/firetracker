@@ -115,6 +115,8 @@ const transactionResolvers = {
         );
         await redisClient
           .multi()
+          .del(`budget:${budget_id}`)
+          .del(`budgets:${req.user.uid}`)
           .del(`transaction:${id}`)
           .del(`transactions:${budget_id}`)
           .exec(); 

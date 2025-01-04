@@ -57,6 +57,12 @@ export function DataTable<TData extends Transaction>({
       columnFilters,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+    },
   })
 
   return (

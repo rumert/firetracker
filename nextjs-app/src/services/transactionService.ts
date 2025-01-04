@@ -24,7 +24,6 @@ export async function getTransactions(
     )
     return response.transactions
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -44,7 +43,6 @@ export async function createTransaction(
     )
     return response.createTransaction
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -73,7 +71,6 @@ export async function updateTransaction(
     )
     return response.updateTransaction
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -90,7 +87,6 @@ export async function deleteTransaction(
     )
     return 'OK'
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }

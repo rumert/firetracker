@@ -25,7 +25,7 @@ const budgetResolvers = {
           return await Budget.findOne({ user_id: req.user.uid, is_default: true })
         })
         if (!budget) {
-          throwError('not found', 404);
+          return null
         }
         return budget
       }),
@@ -107,10 +107,12 @@ const budgetResolvers = {
           budgetNew = await Budget.findByIdAndUpdate(id, { $set: { is_default: edits.is_default } }, { new: true });
         }
 
-        await redisClient.del(`budget:${id}`)
-        await redisClient.del(`default-budget:${req.user.uid}`)
-        await redisClient.del(`budgets:${req.user.uid}`)
-            
+        await redisClient
+          .multi()
+          .del(`budget:${id}`)
+          .del(`default-budget:${req.user.uid}`)
+          .del(`budgets:${req.user.uid}`)
+          .exec();
         return budgetNew;
       }),
     
@@ -135,9 +137,13 @@ const budgetResolvers = {
           );
           await redisClient.del(`default-budget:${req.user.uid}`)
         }
-        await redisClient.del(`budget:${id}`)
-        await redisClient.del(`budgets:${req.user.uid}`)
-        await redisClient.del(`transactions:${id}`)
+
+        await redisClient
+          .multi()
+          .del(`budget:${id}`)
+          .del(`default-budget:${req.user.uid}`)
+          .del(`transactions:${id}`)
+          .exec();
         return 'OK'
       }),
   },

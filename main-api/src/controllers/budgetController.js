@@ -21,7 +21,9 @@ const getDefaultBudget = async (req, res, next) => {
       return await Budget.findOne({ user_id: req.user.uid, is_default: true })
     })
     if (!budget) {
-      throwError('not found', 404);
+      if (!budget) {
+        return null
+      }
     }
     res.json(budget)
   })
@@ -108,9 +110,12 @@ const updateBudget = async (req, res, next) => {
       budgetNew = await Budget.findByIdAndUpdate(id, { $set: { is_default: edits.is_default } }, { new: true });
     }
 
-    await redisClient.del(`budget:${id}`)
-    await redisClient.del(`default-budget:${req.user.uid}`)
-    await redisClient.del(`budgets:${req.user.uid}`)
+    await redisClient
+      .multi()
+      .del(`budget:${id}`)
+      .del(`default-budget:${req.user.uid}`)
+      .del(`budgets:${req.user.uid}`)
+      .exec();
         
     res.json(budgetNew);
   })
@@ -138,9 +143,12 @@ const deleteBudget = async (req, res, next) => {
       );
       await redisClient.del(`default-budget:${req.user.uid}`)
     }
-    await redisClient.del(`budget:${id}`)
-    await redisClient.del(`budgets:${req.user.uid}`)
-    await redisClient.del(`transactions:${id}`)
+    await redisClient
+      .multi()
+      .del(`budget:${id}`)
+      .del(`default-budget:${req.user.uid}`)
+      .del(`transactions:${id}`)
+      .exec();
     return 'OK'
   })
 };

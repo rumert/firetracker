@@ -44,7 +44,6 @@ export async function getBudget(budgetId: string, token: string | null = null): 
     )
     return response.budget
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -68,7 +67,6 @@ export async function getBudgets(token: string | null = null): Promise<[] | [Bud
     )
     return response.budgets
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }
@@ -84,7 +82,6 @@ export async function createBudget(variables: CreateBudgetVariables, token: stri
     )
     return response.createBudget
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }

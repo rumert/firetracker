@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Transaction, TransactionUpdateEdits } from "@/lib/types/transaction"
 import { updateTransaction } from "@/services/transactionService"
+import { format } from "date-fns"
 
 export const getColumns = <TData extends Transaction>(category: string): ColumnDef<TData>[] => {
   const allCategories = ["Clothing", "Dining", "Education", "Entertainment", "Groceries", "Healthcare", "Hobbies", "Utilities", "Transportation", "Travel"]
@@ -78,7 +79,6 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         style: "currency",
         currency: "USD",
       }).format(amountt)
-
       const [isEditing, setIsEditing] = useState(false)
       const [amount, setAmount]: any = useState(formatted)
       return isEditing ? (
@@ -116,9 +116,8 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
     header: () => <div className="text-right">Date</div>,
     cell: ({ row }) => {
       const date = new Date(row.getValue("date"));
-      const month = date.toLocaleString('default', { month: 'short' })
-      const day = date.getDate()
-      return <div className="text-right font-medium">{month}/{day}</div>
+      const formattedDate = format(date, 'MMM/dd')
+      return <div className="text-right font-medium">{formattedDate}</div>
     }
   },
   {

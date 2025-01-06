@@ -28,7 +28,6 @@ interface Props {
 }
 
 export function BudgetPopover({ budgets, currentBudget }: Props) {
-  console.log('budgets: ', budgets)
   const [open, setOpen] = React.useState(false)
   const [name, setName] = React.useState(currentBudget!.name)
 

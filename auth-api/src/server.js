@@ -29,4 +29,4 @@ app.use(rateLimit({
 app.use('/', authRoutes);
 app.use(errorHandler);
 
-module.exports = { app }
+module.exports = app 

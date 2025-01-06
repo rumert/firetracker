@@ -106,6 +106,9 @@ const transactionResolvers = {
     deleteTransaction: async (_, { id }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
         const { budget_id, amount } = await Transaction.findOneAndDelete({ _id: id, user_id: req.user.uid }).select('budget_id amount')
+        if (!budget_id) {
+          throwError('not found', 404);
+        }
         await Budget.findByIdAndUpdate(
           budget_id,
           {

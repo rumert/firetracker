@@ -1,3 +1,4 @@
+require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const redisClient = require('../config/redis');
 const Budget = require('../models/budget');
 const User = require('../models/user');

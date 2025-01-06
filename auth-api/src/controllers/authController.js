@@ -1,3 +1,4 @@
+require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { createUser, generateRefreshToken, generateAccessToken } = require('../utils/functions');
@@ -42,7 +43,7 @@ const login = async (req, res, next) => {
                 res.json('OK'); 
             } else {
                 const error = new Error("Wrong password")
-                error.status = 403
+                error.status = 401
                 return next(error)
             }
         } else {

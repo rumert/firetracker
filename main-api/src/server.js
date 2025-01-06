@@ -1,5 +1,5 @@
 //tools
-require('dotenv').config();
+require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const express = require("express");
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit')
@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
-    limit: process.env.NODE_ENV != 'production' ? 1000000000 : 20, // Limit each IP to 20 requests per `window` (here, per 5 minutes).
+    limit: process.env.NODE_ENV === 'test' ? 1000000000 : 20, // Limit each IP to 20 requests per `window` (here, per 5 minutes).
     standardHeaders: 'draft-7',
     legacyHeaders: false,
 }))
@@ -39,4 +39,4 @@ initApollo(app);
 
 app.use(errorHandler)
 
-module.exports = { app }
+module.exports = app 

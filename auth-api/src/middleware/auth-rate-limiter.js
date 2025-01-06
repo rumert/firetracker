@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const rateLimit = require('express-rate-limit')
 
 const isTestEnv = process.env.NODE_ENV === 'test';

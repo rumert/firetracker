@@ -1,4 +1,3 @@
-
 async function fetchCategoryFromAI(aiModel, expenseTitle) {
     return 'category'; //remove this later!
     const listOfCategories = 'Groceries, Utilities, Transportation, Entertainment, Dining, Healthcare, Clothing, Education, Travel, Hobbies'

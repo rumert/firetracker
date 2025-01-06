@@ -1,3 +1,4 @@
+require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 

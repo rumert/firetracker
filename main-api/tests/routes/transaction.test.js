@@ -3,12 +3,11 @@ const http = require('http');
 const app = require('../../src/server');
 const Transaction = require('../../src/models/transaction');
 const Budget = require('../../src/models/budget');
-const { fetchCategoryFromAI } = require('../../src/utils/functions');
 
 jest.mock('../../src/models/transaction');
 jest.mock('../../src/models/budget');
 jest.mock('../../src/utils/functions', () => ({
-  fetchCategoryFromAI: jest.requireActual('../../src/utils/functions').fetchCategoryFromAI,
+  fetchCategoryFromAI: jest.fn((_, __) => 'exampleCategory'),
   getDataWithCaching: jest.fn(async (_, __, cb) => await cb()),
   throwError: jest.requireActual('../../src/utils/functions').throwError,
 }));
@@ -62,13 +61,15 @@ describe('Transaction Routes', () => {
     });
   });
 
-  describe('GET /transactions/:budget_id', () => {
+  describe('GET /transaction/all/:budget_id', () => {
     it('should return transactions for a budget', async () => {
       const mockTransactions = [{ _id: validTransactionId, amount: 100 }];
-      Transaction.find.mockResolvedValue(mockTransactions);
+      Transaction.find.mockReturnValue({
+        sort: jest.fn().mockResolvedValue(mockTransactions)
+      });
 
       const response = await request(server)
-        .get(`/transactions/${validBudgetId}`)
+        .get(`/transaction/all/${validBudgetId}`)
         .set('Authorization', 'Bearer testToken');
 
       expect(response.status).toBe(200);
@@ -88,12 +89,11 @@ describe('Transaction Routes', () => {
 
   describe('POST /transaction/:budget_id', () => {
     it('should create a new transaction and update the budget', async () => {
-      const mockTransaction = { _id: '789', amount: 200, category: 'Expense' };
+      const mockTransaction = { _id: '789', amount: 200, category: 'exampleCategory' };
       const mockBudget = { _id: validBudgetId };
 
       Transaction.create.mockResolvedValue(mockTransaction);
       Budget.findByIdAndUpdate.mockResolvedValue(mockBudget);
-      fetchCategoryFromAI.mockResolvedValue('Expense');
 
       const response = await request(server)
         .post(`/transaction/${validBudgetId}`)
@@ -132,7 +132,7 @@ describe('Transaction Routes', () => {
       const response = await request(server)
         .put(`/transaction/${validTransactionId}`)
         .set('Authorization', 'Bearer testToken')
-        .send({ amount: 200 });
+        .send({ edits: { amount: 200 } });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockNewTransaction);
@@ -144,7 +144,7 @@ describe('Transaction Routes', () => {
       const response = await request(server)
         .put(`/transaction/${validTransactionId}`)
         .set('Authorization', 'Bearer testToken')
-        .send({ amount: 200 });
+        .send({ edits: { amount: 200 } });
 
       expect(response.status).toBe(404);
     });
@@ -162,8 +162,9 @@ describe('Transaction Routes', () => {
   describe('DELETE /transaction/:id', () => {
     it('should delete a transaction and update the budget', async () => {
       const mockTransaction = { _id: validTransactionId, budget_id: validBudgetId, amount: 100 };
-
-      Transaction.findOneAndDelete.mockResolvedValue(mockTransaction);
+      Transaction.findOneAndDelete.mockReturnValue({
+        select: jest.fn().mockResolvedValue(mockTransaction)
+      });
 
       const response = await request(server)
         .delete(`/transaction/${validTransactionId}`)
@@ -174,7 +175,9 @@ describe('Transaction Routes', () => {
     });
 
     it('should return 404 if transaction to delete is not found', async () => {
-      Transaction.findOneAndDelete.mockResolvedValue(null);
+      Transaction.findOneAndDelete.mockReturnValue({
+        select: jest.fn().mockResolvedValue(null)
+      });
 
       const response = await request(server)
         .delete(`/transaction/${validTransactionId}`)

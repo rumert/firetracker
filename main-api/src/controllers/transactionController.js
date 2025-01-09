@@ -35,7 +35,6 @@ const getTransactions = async (req, res, next) => {
   await routeWrapper(req, res, next, async () => {
     const budget_id = req.params.budget_id
     const transactions = await getDataWithCaching(redisClient, `transactions:${budget_id}`, async () => {
-      console.log('asd')
       return await Transaction.find({ budget_id, user_id: req.user.uid }).sort({ created_at: 'desc' })
     })
     if (!transactions) {
@@ -115,21 +114,21 @@ const updateTransaction = async (req, res, next) => {
 const deleteTransaction = async (req, res, next) => {
   await routeWrapper(req, res, next, async () => {
     const id = req.params.id
-    const { budget_id, amount } = await Transaction.findOneAndDelete({ _id: id, user_id: req.user.uid }).select('budget_id amount')
-    if (!budget_id) {
+    const transaction = await Transaction.findOneAndDelete({ _id: id, user_id: req.user.uid })?.select('budget_id amount')
+    if (!transaction?.budget_id) {
       throwError('not found', 404);
     }
     await Budget.findByIdAndUpdate(
-      budget_id,
+      transaction.budget_id,
       {
         $pull: { transaction_ids: id },
-        $inc: { current_balance: -amount }
+        $inc: { current_balance: -transaction.amount }
       }
     );
     await redisClient
       .multi()
       .del(`transaction:${id}`)
-      .del(`transactions:${budget_id}`)
+      .del(`transactions:${transaction.budget_id}`)
       .exec(); 
     res.json('OK')
   })

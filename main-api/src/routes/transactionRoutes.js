@@ -23,8 +23,8 @@ const validate = (validationSchema) => [
 ];
 
 router.get("/:id", validate(getTransactionVal), getTransaction);
-router.get("s", validate(getTransactionsVal), getTransactions);
-router.post("/", validate(createTransactionVal), createTransaction);
+router.get("/all/:budget_id", validate(getTransactionsVal), getTransactions);
+router.post("/:budget_id", validate(createTransactionVal), createTransaction);
 router.put("/:id", validate(updateTransactionVal), updateTransaction);
 router.delete("/:id", validate(deleteTransactionVal), deleteTransaction);
 

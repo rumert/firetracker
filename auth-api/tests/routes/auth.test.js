@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/server');
 const User = require('../../src/models/user');
-const RefreshToken = require('../../src/models/refreshToken');
 
 jest.mock('../../src/models/user');
 jest.mock('../../src/models/refreshToken');

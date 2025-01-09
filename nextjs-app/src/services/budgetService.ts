@@ -3,7 +3,7 @@ import { fetchGraphQL } from "@/lib/utils/fetchGraphQL";
 
 export async function getDefaultBudget(token: string | null = null): Promise<Budget> {
   try {
-    const response: { defaultBudget: Budget } = await fetchGraphQL(
+    const response: { defaultBudget: Budget | null } = await fetchGraphQL(
       `query DefaultBudget {
         defaultBudget {
           _id

@@ -46,9 +46,6 @@ const budgetResolvers = {
         const budgets = await getDataWithCaching(redisClient, `budgets:${req.user.uid}`, async () => {
           return await Budget.find({ user_id: req.user.uid });
         })
-        if (!budgets) {
-          throwError('not found', 404);
-        }
         return budgets;
       }),
   },
@@ -118,30 +115,32 @@ const budgetResolvers = {
     
     deleteBudget: async (_, { id }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
-        const { is_default, transaction_ids } = await Budget.findOneAndDelete({ _id: id, user_id: req.user.uid }).select('is_default transaction_ids')
+        const budget = await Budget.findOneAndDelete({ _id: id, user_id: req.user.uid })?.select('_id is_default transaction_ids')
+        if (!budget?._id) {
+          throwError('not found', 404);
+        } 
         
-        if (transaction_ids?.length > 0) {
-          await Transaction.deleteMany({ _id: { $in: transaction_ids } });
-          const pipeline = redisClient.pipeline();
-          transaction_ids.forEach(transactionId => {
+        if (budget.transaction_ids?.length > 0) {
+          await Transaction.deleteMany({ _id: { $in: budget.transaction_ids } });
+          const pipeline = redisClient.multi();
+          budget.transaction_ids.forEach(transactionId => {
             pipeline.del(`transaction:${transactionId}`);
           });
           await pipeline.exec();
         }
 
-        if (is_default) {
+        if (budget.is_default) {
           await Budget.findOneAndUpdate(
             { user_id: req.user.uid },
             { $set: { is_default: true } },
             { sort: { createdAt: -1 }, new: true }
           );
-          await redisClient.del(`default-budget:${req.user.uid}`)
         }
-
         await redisClient
           .multi()
           .del(`budget:${id}`)
           .del(`default-budget:${req.user.uid}`)
+          .del(`budgets:${req.user.uid}`)
           .del(`transactions:${id}`)
           .exec();
         return 'OK'

@@ -44,16 +44,20 @@ const updateBudget = [
         .isMongoId()
         .withMessage('Invalid budget id')
         .escape(),
-    body('name')
+    body('edits.name')
+        .optional()
         .isString()
         .escape(),
-    body('current_balance')
+    body('edits.current_balance')
+        .optional()
         .isNumeric({ no_symbols: true })
         .escape(),
-    body('category')
+    body('edits.category')
+        .optional()
         .isString()
         .escape(),
-    body('is_default')
+    body('edits.is_default')
+        .optional()
         .isBoolean()
         .escape()
 ]
@@ -114,29 +118,29 @@ const updateTransaction = [
         .withMessage('Invalid transaction id')
         .escape(),
     oneOf([
-        body('amount').exists({ values: 'falsy' }),
-        body('category').exists({ values: 'falsy' }), 
-        body('date').exists({ values: 'falsy' }),
-        body('title').exists({ values: 'falsy' }),
-        body('type').exists({ values: 'falsy' })
+        body('edits.amount').exists({ values: 'falsy' }),
+        body('edits.category').exists({ values: 'falsy' }), 
+        body('edits.date').exists({ values: 'falsy' }),
+        body('edits.title').exists({ values: 'falsy' }),
+        body('edits.type').exists({ values: 'falsy' })
     ], { message: 'No field provided to update' }),
-    body('amount')
+    body('edits.amount')
         .optional()
         .isNumeric()
         .escape(),
-    body('category')
+    body('edits.category')
         .optional()
         .isString()
         .escape(),
-    body('date')
+    body('edits.date')
         .optional() 
         .isString()
         .escape(),
-    body('title')
+    body('edits.title')
         .optional() 
         .isString()
         .escape(),
-    body('type')
+    body('edits.type')
         .optional()
         .isString()
         .escape(),

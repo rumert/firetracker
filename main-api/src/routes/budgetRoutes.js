@@ -25,8 +25,8 @@ const validate = (validationSchema) => [
 ];
 
 router.get("/default", validate(getDefaultBudgetVal), getDefaultBudget);
+router.get("/all", validate(getBudgetsVal), getBudgets);
 router.get("/:id", validate(getBudgetVal), getBudget);
-router.get("s", validate(getBudgetsVal), getBudgets);
 router.post("/", validate(createBudgetVal), createBudget);
 router.put("/:id", validate(updateBudgetVal), updateBudget);
 router.delete("/:id", validate(deleteBudgetVal), deleteBudget);

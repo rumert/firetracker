@@ -16,7 +16,7 @@ async function routeWrapper(req, res, next, handler) {
     }
 }
 
-const resetDb = async (req, res, next) => {
+const reset = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
         if (process.env.NODE_ENV !== 'test') {
             const error = new Error("Forbidden")
@@ -35,27 +35,33 @@ const resetDb = async (req, res, next) => {
     })
 };
 
-const seedDb = async (req, res, next) => {
+const seed = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
         if (process.env.NODE_ENV !== 'test') {
             const error = new Error("Forbidden")
             error.status = 403
             return next(error)
         }
-        const user = await createUser(User, 'test', 'test@gmail.com', 'Test21')
-        await Budget.create({
-            user_id: user.id,
+        const user = await createUser(User, 'test', 'test@test.com', 'Test123')
+        const budget = await Budget.create({
             name: 'test',
             base_balance: 100,
-            is_default: true
-        })
+            user_id: user.id,
+            is_default: true,
+        });
+        await User.findByIdAndUpdate(
+            user.id,
+            { $push: { budget_ids: budget.id } },
+            { new: true, useFindAndModify: false }
+        );
+        await redisClient.del(`budgets:${user.id}`);
         res.json('OK');
     })
 };
 
 module.exports = { 
-    resetDb,
-    seedDb,
+    reset,
+    seed,
 };
 
 

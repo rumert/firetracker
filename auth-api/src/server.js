@@ -3,6 +3,7 @@ const express = require("express");
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit')
 const authRoutes = require('./routes/authRoutes');
+const dbRoutes = require('./routes/dbRoutes');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/error-handler');
 const cors = require('cors');
@@ -26,6 +27,7 @@ app.use(rateLimit({
     legacyHeaders: false,
 }))
 
+app.use('/db', dbRoutes);
 app.use('/', authRoutes);
 app.use(errorHandler);
 

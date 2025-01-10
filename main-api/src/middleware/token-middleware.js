@@ -2,9 +2,6 @@ require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
 const jwt = require("jsonwebtoken");
 
 function authenticateToken(req, res, next) {
-    if (req.path === '/test/db/reset' || req.path === '/test/db/seed') {
-        return next();
-    }
 
     const accessToken = req.headers.authorization?.split(' ')[1];
 

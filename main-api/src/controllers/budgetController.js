@@ -63,7 +63,11 @@ const createBudget = async (req, res, next) => {
       { $push: { budget_ids: newBudget.id } },
       { new: true, useFindAndModify: false }
     );
-    await redisClient.del(`budgets:${req.user.uid}`);
+    await redisClient
+      .multi()
+      .del(`budgets:${req.user.uid}`)
+      .del(`default-budget:${req.user.uid}`)
+      .exec();
     res.json(newBudget);
   })
 };

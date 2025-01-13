@@ -32,7 +32,7 @@ export default function page() {
 
     async function login(event: React.FormEvent) {
         event.preventDefault();
-        const validationErr = loginValidation(form.password)
+        const validationErr = loginValidation(form.nickname, form.password)
         if (validationErr) {
             setErrorMes(validationErr)
         } else {
@@ -65,7 +65,7 @@ export default function page() {
             <form onSubmit={login}>
                 <CardContent className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Nickname</Label>
+                        <Label htmlFor="nickname">Nickname</Label>
                         <Input 
                             value={form.nickname}
                             onChange={e => {

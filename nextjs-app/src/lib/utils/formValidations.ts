@@ -24,26 +24,18 @@ export function registerValidation( email: string, password: string ): string | 
     }
 }
 
-export function loginValidation( password: string ): string | undefined {
+export function loginValidation( nickname: string, password: string ): string | undefined {
+
+    console.log(typeof nickname)
+
+    if (typeof nickname != 'string')  {
+        return 'Invalid nickname'
+    }
     
-    if (!validator.isLength(password, { min: 6, max: 20 }))  {
-        return 'Password must be between 6 and 20 characters'
-    } else if (password.includes(' ')) {
-        return 'Password cannot contain spaces'
+    if (typeof password != 'string')  {
+        return 'Invalid password'
     }
 
-    const isPasswordStrong = validator.isStrongPassword(password, {
-        minLength: 6,
-        minLowercase: 0,
-        minUppercase: 1, 
-        minNumbers: 1, 
-        minSymbols: 0, 
-        returnScore: false,
-    })
-
-    if (!isPasswordStrong) {
-        return 'Password must contain at least a number and an uppercase letter'
-    }
 }
 
 export function createBudgetValidation( name: string ): string | undefined {

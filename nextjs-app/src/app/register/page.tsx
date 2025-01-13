@@ -20,7 +20,7 @@ interface IRegisterForm {
     email: string;
     password: string;
 }
-type IRegisterResponse = 'OK' | { error: string }
+type IRegisterErrorResponse = { error: string }
 
 export default function page() {
     const [form, setForm] = useState<IRegisterForm>({
@@ -46,10 +46,10 @@ export default function page() {
                     body: JSON.stringify(form),
                     credentials: 'include'
                 });
-                const resData: IRegisterResponse = await res.json()
-                if (resData === 'OK') {
+                if (res.ok) {
                     router.push('/')
                 } else {
+                    const resData: IRegisterErrorResponse = await res.json()
                     setErrorMes(resData.error)
                 }
             } catch (error) {

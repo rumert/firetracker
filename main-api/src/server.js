@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit')
 const budgetRoutes = require('./routes/budgetRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const dbRoutes = require('./routes/dbRoutes');
 const connectDB = require('./config/db');
 const { authenticateToken } = require('./middleware/token-middleware');
 const { errorHandler } = require('./middleware/error-handler');
@@ -31,6 +32,7 @@ app.use(rateLimit({
 }))
 
 app.use(authenticateToken);
+app.use('/db', dbRoutes);
 app.use('/budget', budgetRoutes);
 app.use('/transaction', transactionRoutes);
 initApollo(app);

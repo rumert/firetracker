@@ -40,7 +40,7 @@ const login = async (req, res, next) => {
                     sameSite: 'Strict',
                     maxAge: refreshMaxAge,
                 });
-                res.json('OK'); 
+                res.json({ accessToken, refreshToken }); 
             } else {
                 const error = new Error("Wrong password")
                 error.status = 401
@@ -88,7 +88,7 @@ const register = async (req, res, next) => {
                 sameSite: 'Strict',
                 maxAge: refreshMaxAge,
             });
-            res.json('OK');
+            res.json({ accessToken, refreshToken });
         }
     })
 };

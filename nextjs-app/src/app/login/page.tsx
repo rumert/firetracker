@@ -19,7 +19,7 @@ interface ILoginForm {
     nickname: string;
     password: string;
 }
-type ILoginResponse = 'OK' | { error: string }
+type ILoginErrorResponse = { error: string }
 
 export default function page() {
 
@@ -45,8 +45,12 @@ export default function page() {
                     body: JSON.stringify(form),
                     credentials: 'include'
                 });
-                const resData: ILoginResponse = await res.json()
-                resData !== 'OK' ? setErrorMes(resData.error) : router.push('/')
+                if (res.ok) {
+                    router.push('/')
+                } else {
+                    const resData: ILoginErrorResponse = await res.json()
+                    setErrorMes(resData.error)
+                }
             } catch (error) {
                 setErrorMes('Internal Server Error')
             }

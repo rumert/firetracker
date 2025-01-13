@@ -66,7 +66,7 @@ export default function AddTransaction() {
     <div className='flex justify-end p-4 lg:p-8'>
         <Dialog open={isDialogActive} onOpenChange={setIsDialogActive} data-cy='addTransactionCard'>
             <DialogTrigger asChild>
-                <Button className='px-3' data-cy='addTransactionButton'><Plus /></Button>
+                <Button className='px-3' data-pw='addTransactionButton'><Plus /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={addTransaction}>

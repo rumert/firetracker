@@ -59,11 +59,12 @@ const seed = async (req, res, next) => {
         );
 
         for (const budget of newBudgets) {
+            const amount = Math.floor(Math.random() * 500) + 1
             const transactionsData = Array.from({ length: 20 }).map((_, index) => ({
                 user_id: req.user.uid,
                 budget_id: budget._id,
                 type: index % 2 === 0 ? 'expense' : 'income',
-                amount: Math.floor(Math.random() * 500) + 1,
+                amount: index % 2 === 0 ? -amount : amount,
                 date: randomDate(),
                 title: `Transaction_${index + 1}`,
                 category: index % 2 === 0 ? 'expense' : 'income',

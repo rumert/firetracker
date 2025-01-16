@@ -9,7 +9,7 @@ export default function CreateBudget() {
   return isAddBudgetActive ? (
     <AddBudget isFirst={false} setIsAddBudgetActive={setIsAddBudgetActive} />
   ) : (
-    <Button variant="secondary" className="px-3" type="button" onClick={ () => setIsAddBudgetActive(true) } data-pw='createBudgetButton'>
+    <Button variant="secondary" className="px-3" type="button" onClick={ () => setIsAddBudgetActive(true) } data-testid='createBudgetButton'>
       <Plus />
     </Button>
   )

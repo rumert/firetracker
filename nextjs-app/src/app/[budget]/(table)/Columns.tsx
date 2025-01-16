@@ -37,7 +37,6 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          data-cy='tableTitle'
         >
           {category}
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -48,7 +47,8 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
       const [isEditing, setIsEditing] = useState(false)
       const [title, setTitle] = useState(row.original.title)
       return isEditing ? (
-        <Input 
+        <Input
+        data-testid="titleInput" 
         className="w-24" 
         placeholder={title} 
         onChange={(e) => setTitle(e.target.value)}
@@ -60,11 +60,10 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
           row.original._id,
           { title }
         )}
-        data-cy='titleInputCy'
         />
       ) : (
-        <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)} data-cy='titleButtonCy'>
-          <h2 data-cy='transactionTitleInDT'>{title}</h2>
+        <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
+          <h2>{title}</h2>
           <PenLine className="h-4" />
         </Button>
       )
@@ -84,6 +83,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
       return isEditing ? (
         <div className="w-full flex justify-end">
           <Input 
+          data-testid="amountInput" 
           className="w-24"
           type="number"
           min="0"
@@ -92,19 +92,18 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
           onChange={(e) => setAmount(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && amount > 0 && handleTransaction(
             row.original._id,
-            row.original.type === 'income' ? { amount } : { amount: -amount }, 
+            row.original.type === 'income' ? { amount: parseInt(amount, 10) } : { amount: -parseInt(amount, 10) }, 
           )}
           onBlur={() => amount > 0 && handleTransaction(
             row.original._id,
-            row.original.type === 'income' ? { amount } : { amount: -amount },
+            row.original.type === 'income' ? { amount: parseInt(amount, 10) } : { amount: -parseInt(amount, 10) },
           )}
-          data-cy='amountInputCy'
           />
         </div>
       ) : (
         <div className="w-full flex justify-end">
-          <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)} data-cy='amountButtonCy'>
-            <h2 className="font-medium" data-cy='transactionAmountInDT'>{amount}</h2>
+          <Button className="hover:bg-transparent" variant='ghost' onClick={() => setIsEditing(true)}>
+            <h2 className="font-medium">{amount}</h2>
             <PenLine className="h-4" />
           </Button>
         </div>
@@ -127,14 +126,14 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
       return row.original.type === 'expense' && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0" data-cy='openDropdown'>
+            <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger data-cy='categoryList'>
+              <DropdownMenuSubTrigger>
                 Change Category
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
@@ -146,7 +145,7 @@ export const getColumns = <TData extends Transaction>(category: string): ColumnD
                 )}>
                   { allCategories.map((cat: any, index: any) => {
                     return (
-                    <DropdownMenuRadioItem value={cat} key={index} data-cy={cat === 'Dining' ? 'categoryToTest' : ''}>
+                    <DropdownMenuRadioItem value={cat} key={index}>
                       {cat}
                     </DropdownMenuRadioItem>
                     )

@@ -47,7 +47,7 @@ export default function AddBudget({
     }
   
   return (
-    <form onSubmit={addBudget} className='h-screen w-screen flex justify-center items-center absolute top-0 left-0 z-50 bg-background' data-cy='addBudget'>
+    <form onSubmit={addBudget} className='h-screen w-screen flex justify-center items-center absolute top-0 left-0 z-50 bg-background'>
         <Card className="w-[350px]">
             <CardHeader className='relative'>
                 <CardTitle>Create budget</CardTitle>
@@ -57,7 +57,6 @@ export default function AddBudget({
                 className='w-fit px-2 absolute right-1.5 top-0' 
                 variant='ghost' 
                 type='button'
-                data-cy='close'
                 >
                     <X className='text-destructive' />
                 </Button>

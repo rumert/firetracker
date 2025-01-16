@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Create Budget', () => {
     test.beforeEach(async ({ request, page }) => {
-        const resetRes = await request.get(`${process.env.AUTH_API_URL}/db/reset`);
+        const resetRes = await request.get(`${process.env.MAIN_API_URL}/db/reset`);
         if (!resetRes.ok()) {
             throw new Error('Failed to reset database');
         }

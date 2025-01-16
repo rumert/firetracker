@@ -62,8 +62,8 @@ export default async function Transactions({ budgetId, transactions }: props) {
           //const year = date.getFullYear()
           return (
           <div key={index} className={`h-16 pl-8 pr-2 mb-1 grid grid-cols-7 place-items-center border ${tr.type === 'expense' ? 'border-destructive' : 'border-green-400'} rounded-md`}>
-            <p className="col-span-2" data-cy='transactionTitle'>{tr.title}</p>
-            <p className="col-span-2" data-cy='transactionAmount'>{formattedAmount}</p>
+            <p className="col-span-2">{tr.title}</p>
+            <p className="col-span-2">{formattedAmount}</p>
             <p className="col-span-2">{formattedDate}</p>
             <form action={removeTransaction}>
               <input type="hidden" name="transactionId" value={tr._id} />

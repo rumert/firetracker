@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Budget', () => {
     let token: string;
-    test.beforeEach(async ({ page, request, browser }) => {
+    test.beforeEach(async ({ page, request }) => {
         const resetRes = await request.get(`${process.env.MAIN_API_URL}/db/reset`);
         if (!resetRes.ok()) {
             throw new Error('Failed to reset main database');
@@ -41,7 +41,7 @@ test.describe('Budget', () => {
         test('should create a new budget and redirect to its page', async ({ page, browser }) => {
             await browser.newContext({ storageState: 'auth.json' });
             await page.goto(`${process.env.APP_URL}`);
-            await page.locator('button[data-pw="createBudgetButton"]').click();
+            await page.locator('button[data-testid="createBudgetButton"]').click();
            
             await page.getByLabel('Budget Name').fill('new budget')
             await page.getByLabel('Base Balance ( $ )').fill('0');
@@ -54,7 +54,7 @@ test.describe('Budget', () => {
         });
 
         test('should create a new transaction and display it correctly', async ({ page, browser }) => {
-            await page.locator('button[data-pw="addTransactionButton"]').click();
+            await page.locator('button[data-testid="addTransactionButton"]').click();
             await page.getByLabel('Where Did You Spent?').fill('school');
             await page.getByLabel('Amount ($)').fill('30');
             await page.getByLabel('Date').click();
@@ -80,7 +80,7 @@ test.describe('Budget', () => {
 
     test.describe('requires multiple budgets and transactions', () => {
 
-        test.beforeEach(async ({ request }) => {
+        test.beforeEach(async ({ request, page }) => {
             const seedRes = await request.get(`${process.env.MAIN_API_URL}/db/seed`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,10 +90,39 @@ test.describe('Budget', () => {
             if (!seedRes.ok()) {
                 throw new Error('Failed to seed database');
             }
+            await page.getByText('test budget').click();
+            await page.getByRole('link', { name: 'Budget_2' }).click()
         });
-        
-        test('', async ({ }) => {
+
+        test('should update transaction name', async ({ page }) => {
+            await page.getByRole('button').filter({ hasText: 'Transaction' }).nth(0).click();
+            const titleInput = page.getByTestId('titleInput').nth(0)
+            await titleInput.click();
+            await titleInput.fill('new name');
+            await titleInput.press('Enter');
             
+            const locator = page.getByRole('button', { name: 'new name' })
+            await expect(locator).toBeVisible()
+        });
+
+        test('should update transaction amount', async ({ page }) => {
+            await page.getByRole('button').filter({ hasText: '$' }).nth(0).click();
+            const amountInput = page.getByTestId('amountInput').nth(0)
+            await amountInput.click();
+            await amountInput.fill('10000');
+            await amountInput.press('Enter');
+
+            const locator = page.getByRole('button').filter({ hasText: '-$10,000.00' })
+            await expect(locator).toBeVisible()
+        });
+
+        test('should update transaction category', async ({ page }) => {
+            await page.getByRole('button', { name: 'Open menu' }).first().click();
+            await page.getByRole('menuitem', { name: 'Change Category' }).hover();
+            await page.getByRole('menuitemradio', { name: 'Clothing' }).click();
+
+            const locator = page.getByRole('button', { name: 'Clothing' })
+            await expect(locator).toBeVisible()
         });
         
     });

@@ -124,6 +124,12 @@ test.describe('Budget', () => {
             const locator = page.getByRole('button', { name: 'Clothing' })
             await expect(locator).toBeVisible()
         });
+
+        test('should delete transaction', async ({ page }) => {
+            const locator = page.getByTestId('transaction').nth(0)
+            await page.getByTestId('transactionDeleteButton').nth(0).click();
+            await expect(locator).not.toBeVisible()
+        });
         
     });
 

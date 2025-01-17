@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom';
 import { Button, buttonVariants } from './button';
 import { Loader2 } from 'lucide-react';
 
-export default function SubmitButton({ children, pendingText, variant, size, className }: any) {
+export default function SubmitButton({ children, pendingText, variant, size, className, testId }: any) {
     const { pending } = useFormStatus();
     
     return pending ? (
@@ -14,7 +14,7 @@ export default function SubmitButton({ children, pendingText, variant, size, cla
           {pendingText}
         </Button> 
     ) : (
-        <Button type="submit" variant={variant} size={size} className={className}>
+        <Button type="submit" variant={variant} size={size} className={className} data-testid={testId}>
           { children }
         </Button>
     )

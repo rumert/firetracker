@@ -67,5 +67,4 @@ networks:
 
 volumes:
   redis-data:
-  redis-insight:
   mongo-data:

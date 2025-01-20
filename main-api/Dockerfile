@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 4000
 
-CMD cd src; node index.js
+CMD ["sh", "-c", "npm run ${SCRIPT}"]

@@ -26,8 +26,8 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > api/src/.env
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> api/src/.env
+          echo "ACCESS_TOKEN_SECRET=test_access_secret" > api/src/.env
+          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> api/src/.env
           echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> api/src/.env
           echo "AI_KEY=${{ secrets.AI_KEY }}" >> api/src/.env
           echo "NODE_ENV=test" >> api/src/.env

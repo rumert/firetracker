@@ -52,7 +52,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
           <div></div>
         </div>
         }
-        {transactions?.map((tr: Transaction, index: number) => {
+        {transactions?.map((tr: Transaction) => {
           const date = new Date(tr.date);
           const formattedDate = format(date, 'MMM/dd')
           const formattedAmount= new Intl.NumberFormat("en-US", {
@@ -61,7 +61,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
           }).format(tr.amount)
           //const year = date.getFullYear()
           return (
-          <div data-testid='transaction' key={index} className={`h-16 pl-8 pr-2 mb-1 grid grid-cols-7 place-items-center border ${tr.type === 'expense' ? 'border-destructive' : 'border-green-400'} rounded-md`}>
+          <div data-testid='transaction' key={tr._id} className={`h-16 pl-8 pr-2 mb-1 grid grid-cols-7 place-items-center border ${tr.type === 'expense' ? 'border-destructive' : 'border-green-400'} rounded-md`}>
             <p className="col-span-2">{tr.title}</p>
             <p className="col-span-2">{formattedAmount}</p>
             <p className="col-span-2">{formattedDate}</p>

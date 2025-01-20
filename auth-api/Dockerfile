@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:22
 
 WORKDIR /app
 
@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD cd src; node index.js
+CMD ["sh", "-c", "npm run ${SCRIPT}"]

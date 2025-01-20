@@ -90,6 +90,7 @@ test.describe('Budget', () => {
             if (!seedRes.ok()) {
                 throw new Error('Failed to seed database');
             }
+            await page.reload({ waitUntil: 'domcontentloaded' });
             await page.getByText('test budget').click();
             await page.getByRole('link', { name: 'Budget_2' }).click()
         });
@@ -125,12 +126,12 @@ test.describe('Budget', () => {
             await expect(locator).toBeVisible()
         });
 
-        test('should delete transaction', async ({ page }) => {
-            const locator = page.getByTestId('transaction').nth(0)
-            await page.getByTestId('transactionDeleteButton').nth(0).click();
-            await expect(locator).not.toBeVisible()
+        test('should delete a transaction', async ({ page }) => {
+            await page.waitForSelector('[data-testid="transaction"]');
+            const transactionCount = await page.getByTestId('transaction').count();
+            await page.getByTestId('transactionDeleteButton').nth(0).click()
+            await expect(page.getByTestId('transaction')).toHaveCount(transactionCount - 1)
         });
         
     });
-
 });

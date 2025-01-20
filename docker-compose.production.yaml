@@ -6,11 +6,11 @@ services:
     ports:
       - '4000:4000'
     networks:
-      - firetracker-network
+      - firetracker-network-prod
+    extra_hosts:
+      - "localhost:host-gateway"
     environment:
-      - MONGO_URL=mongodb://mongo/firetracker
-      - REDIS_HOST=redis
-      - NEXTJS_APP_URL=http://nextjs-app:3000
+      - SCRIPT=start
 
   auth-api:
     build: ./auth-api
@@ -18,11 +18,11 @@ services:
     ports:
       - '5000:5000'
     networks:
-      - firetracker-network
+      - firetracker-network-prod
+    extra_hosts:
+      - "localhost:host-gateway"
     environment:
-      - MONGO_URL=mongodb://mongo/firetracker
-      - REDIS_HOST=redis
-      - NEXTJS_APP_URL=http://nextjs-app:3000
+      - SCRIPT=start
 
   nextjs-app:
     build: ./nextjs-app
@@ -30,11 +30,9 @@ services:
     ports:
       - '3000:3000'
     networks:
-      - firetracker-network
-    environment:
-      - APP_URL=http://localhost:3000
-      - MAIN_API_URL=http://main-api:4000
-      - AUTH_API_URL=http://auth-api:5000
+      - firetracker-network-prod
+    extra_hosts:
+      - "localhost:host-gateway"
 
   redis:
     image: redis:7.4.0
@@ -43,7 +41,9 @@ services:
     ports:
       - '6379:6379'
     networks:
-      - firetracker-network
+      - firetracker-network-prod
+    extra_hosts:
+      - "localhost:host-gateway"
     volumes:
       - redis-data:/data
 
@@ -54,12 +54,14 @@ services:
     ports:
       - '27017:27017'
     networks:
-      - firetracker-network
+      - firetracker-network-prod
+    extra_hosts:
+      - "localhost:host-gateway"
     volumes:
       - mongo-data:/data/db
 
 networks:
-  firetracker-network:
+  firetracker-network-prod:
     driver: bridge
 
 

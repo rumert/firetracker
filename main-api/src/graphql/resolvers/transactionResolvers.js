@@ -67,6 +67,7 @@ const transactionResolvers = {
         await redisClient
           .multi()
           .del(`budget:${budget_id}`)
+          .del(`default-budget:${req.user.uid}`)
           .del(`budgets:${req.user.uid}`)
           .del(`transactions:${budget_id}`)
           .exec();
@@ -96,6 +97,7 @@ const transactionResolvers = {
         await redisClient
           .multi()
           .del(`budget:${transactionOld.budget_id}`)
+          .del(`default-budget:${req.user.uid}`)
           .del(`budgets:${req.user.uid}`)
           .del(`transaction:${id}`)
           .del(`transactions:${transactionOld.budget_id}`)
@@ -119,6 +121,7 @@ const transactionResolvers = {
         await redisClient
           .multi()
           .del(`budget:${budget_id}`)
+          .del(`default-budget:${req.user.uid}`)
           .del(`budgets:${req.user.uid}`)
           .del(`transaction:${id}`)
           .del(`transactions:${budget_id}`)

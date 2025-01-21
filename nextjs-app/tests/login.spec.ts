@@ -65,6 +65,8 @@ test.describe('Login', () => {
             await page.getByLabel('Budget Name').fill('test budget')
             await page.getByLabel('Base Balance ( $ )').fill('1');
             await page.getByRole('button', { name: 'Create' }).click();
+            const url = new RegExp(`${process.env.APP_URL}/[a-f\\d]{24}`);
+            await page.waitForURL(url);
         });
     
         test('should redirect to default budget page on login', async ({ browser, page }) => {

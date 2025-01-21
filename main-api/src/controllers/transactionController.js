@@ -71,6 +71,7 @@ const createTransaction = async (req, res, next) => {
     await redisClient
       .multi()
       .del(`budget:${budget_id}`)
+      .del(`default-budget:${req.user.uid}`)
       .del(`budgets:${req.user.uid}`)
       .del(`transactions:${budget_id}`)
       .exec();
@@ -125,8 +126,12 @@ const deleteTransaction = async (req, res, next) => {
         $inc: { current_balance: -transaction.amount }
       }
     );
+    
     await redisClient
       .multi()
+      .del(`budget:${transaction.budget_id}`)
+      .del(`default-budget:${req.user.uid}`)
+      .del(`budgets:${req.user.uid}`)
       .del(`transaction:${id}`)
       .del(`transactions:${transaction.budget_id}`)
       .exec(); 

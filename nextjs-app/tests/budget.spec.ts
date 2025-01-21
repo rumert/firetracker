@@ -46,6 +46,8 @@ test.describe('Budget', () => {
             await page.getByLabel('Budget Name').fill('new budget')
             await page.getByLabel('Base Balance ( $ )').fill('0');
             await page.getByRole('button', { name: 'Create' }).click();
+            const url = new RegExp(`${process.env.APP_URL}/[a-f\\d]{24}`);
+            await page.waitForURL(url);
             
             const locator_1 = page.getByText('No Transactions Yet')
             const locator_2 = page.getByText('new budget')
@@ -90,7 +92,7 @@ test.describe('Budget', () => {
             if (!seedRes.ok()) {
                 throw new Error('Failed to seed database');
             }
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await page.reload();
             await page.getByText('test budget').click();
             await page.getByRole('link', { name: 'Budget_2' }).click()
         });
@@ -113,7 +115,7 @@ test.describe('Budget', () => {
             await amountInput.fill('10000');
             await amountInput.press('Enter');
 
-            const locator = page.getByRole('button').filter({ hasText: '-$10,000.00' })
+            const locator = page.getByRole('button').filter({ hasText: '$10,000.00' })
             await expect(locator).toBeVisible()
         });
 
@@ -130,6 +132,7 @@ test.describe('Budget', () => {
             await page.waitForSelector('[data-testid="transaction"]');
             const transactionCount = await page.getByTestId('transaction').count();
             await page.getByTestId('transactionDeleteButton').nth(0).click()
+            
             await expect(page.getByTestId('transaction')).toHaveCount(transactionCount - 1)
         });
         

@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,24 +26,44 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=test_access_secret" > api/src/.env
-          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> api/src/.env
-          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> api/src/.env
-          echo "AI_KEY=${{ secrets.AI_KEY }}" >> api/src/.env
-          echo "NODE_ENV=test" >> api/src/.env
+          # auth-api
+          echo "ACCESS_TOKEN_SECRET=test_access_secret" >> auth-api/src/.env.test
+          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> auth-api/src/.env.test
+          echo "MONGO_URL=${{ secrets.TEST_MONGO_URL }}" >> auth-api/src/.env.test
+          echo "REDIS_HOST=${{ secrets.TEST_REDIS_HOST }}" >> auth-api/src/.env.test
+          echo "REDIS_PORT=${{ secrets.TEST_REDIS_PORT }}" >> auth-api/src/.env.test
+          echo "REDIS_DB=1" >> auth-api/src/.env.test
+          # main-api
+          echo "ACCESS_TOKEN_SECRET=test_access_secret" >> main-api/src/.env.test
+          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> main-api/src/.env.test
+          echo "MONGO_URL=${{ secrets.TEST_MONGO_URL }}" >> main-api/src/.env.test
+          echo "REDIS_HOST=${{ secrets.TEST_REDIS_HOST }}" >> main-api/src/.env.test
+          echo "REDIS_PORT=${{ secrets.TEST_REDIS_PORT }}" >> main-api/src/.env.test
+          echo "REDIS_DB=1" >> main-api/src/.env.test
+          # Nextjs-app
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.TEST_APP_URL }}" > nextjs-app/.env.local
+          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" > nextjs-app/.env.local
+          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" > nextjs-app/.env.local
+          echo "APP_URL=${{ secrets.TEST_APP_URL }}" > nextjs-app/.env.test
+          echo "MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" > nextjs-app/.env.test
+          echo "AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" > nextjs-app/.env.test
 
-      - name: Build
+      - name: Build services
         run: |
-          docker-compose up --build -d
-              
-      - name: Run API Tests
+          docker compose -f docker-compose.test.yaml up --build -d
+
+      - name: Run auth api tests
         run: |
-          docker-compose exec -T api npm test
+          docker exec -i auth-api npm test
+
+      - name: Run main api tests
+        run: |
+          docker exec -i main-api npm test
 
       - name: Run App Tests
         run: |
-          docker-compose exec -T app npm test
+          docker exec -i nextjs-app npm test
 
       - name: Tear down services
         run: |
-          docker-compose down 
+          docker compose down

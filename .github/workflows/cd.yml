@@ -21,16 +21,25 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" > api/src/.env
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> api/src/.env
-          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> api/src/.env
-          echo "AI_KEY=${{ secrets.AI_KEY }}" >> api/src/.env
-          echo "NODE_ENV=production" >> api/src/.env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRETL }}" >> auth-api/src/.env.test
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRETL }}" >> main-api/src/.env.test
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> auth-api/src/.env.test
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> main-api/src/.env.test
+          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> auth-api/src/.env.test
+          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> main-api/src/.env.test
+          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> auth-api/src/.env.test
+          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> main-api/src/.env.test
+          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> auth-api/src/.env.test
+          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> main-api/src/.env.test
+          echo "REDIS_DB=2" >> auth-api/src/.env.test
+          echo "REDIS_DB=2" >> main-api/src/.env.test
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.PRODUCTION_APP_URL }}" > nextjs-app/.env.local
+          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.PRODUCTION_MAIN_API_URL }}" > nextjs-app/.env.local
+          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.PRODUCTION_AUTH_API_URL }}" > nextjs-app/.env.local
 
       - name: Deploy with Docker Compose
         run: |
-          docker-compose build --no-cache
-          docker-compose up -d --force-recreate
+          docker-compose -f docker-compose.production.yaml up --build -d
 
       - name: Clean up old images
         run: |

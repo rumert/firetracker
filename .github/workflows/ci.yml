@@ -66,4 +66,4 @@ jobs:
 
       - name: Tear down services
         run: |
-          docker compose down
+          docker compose -f docker-compose.test.yaml down

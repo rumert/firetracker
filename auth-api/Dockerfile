@@ -9,5 +9,3 @@ RUN npm install
 COPY . .
 
 EXPOSE 5000
-
-CMD ["sh", "-c", "npm run ${SCRIPT}"]

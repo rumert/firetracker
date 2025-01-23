@@ -17,7 +17,7 @@ jobs:
 
       - name: Stop and remove existing containers
         run: |
-          docker-compose down
+          docker compose -f docker-compose.production.yaml down
 
       - name: Set Up Environment Variables
         run: |

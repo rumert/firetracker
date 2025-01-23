@@ -9,8 +9,7 @@ services:
       - firetracker-network-dev
     extra_hosts:
       - "localhost:host-gateway"
-    environment:
-      - SCRIPT=dev
+    command: sh -c "npm run dev"
 
   auth-api:
     build: ./auth-api
@@ -21,8 +20,7 @@ services:
       - firetracker-network-dev
     extra_hosts:
       - "localhost:host-gateway"
-    environment:
-      - SCRIPT=dev
+    command: sh -c "npm run dev"
 
   nextjs-app:
     build: ./nextjs-app
@@ -33,6 +31,7 @@ services:
       - firetracker-network-dev
     extra_hosts:
       - "localhost:host-gateway"
+    command: sh -c "npm run dev"
 
   redis:
     image: redis:7.4.0

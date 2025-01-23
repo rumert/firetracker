@@ -33,9 +33,9 @@ jobs:
           echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> main-api/src/.env.test
           echo "REDIS_DB=2" >> auth-api/src/.env.test
           echo "REDIS_DB=2" >> main-api/src/.env.test
-          echo "NEXT_PUBLIC_APP_URL=${{ secrets.PRODUCTION_APP_URL }}" > nextjs-app/.env.local
-          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.PRODUCTION_MAIN_API_URL }}" > nextjs-app/.env.local
-          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.PRODUCTION_AUTH_API_URL }}" > nextjs-app/.env.local
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.PRODUCTION_APP_URL }}" >> nextjs-app/.env.local
+          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.PRODUCTION_MAIN_API_URL }}" >> nextjs-app/.env.local
+          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.PRODUCTION_AUTH_API_URL }}" >> nextjs-app/.env.local
 
       - name: Deploy with Docker Compose
         run: |

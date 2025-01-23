@@ -41,12 +41,12 @@ jobs:
           echo "REDIS_PORT=${{ secrets.TEST_REDIS_PORT }}" >> main-api/src/.env.test
           echo "REDIS_DB=1" >> main-api/src/.env.test
           # Nextjs-app
-          echo "NEXT_PUBLIC_APP_URL=${{ secrets.TEST_APP_URL }}" > nextjs-app/.env.local
-          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" > nextjs-app/.env.local
-          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" > nextjs-app/.env.local
-          echo "APP_URL=${{ secrets.TEST_APP_URL }}" > nextjs-app/.env.test
-          echo "MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" > nextjs-app/.env.test
-          echo "AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" > nextjs-app/.env.test
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.TEST_APP_URL }}" >> nextjs-app/.env.local
+          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" >> nextjs-app/.env.local
+          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" >> nextjs-app/.env.local
+          echo "APP_URL=${{ secrets.TEST_APP_URL }}" >> nextjs-app/.env.test
+          echo "MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" >> nextjs-app/.env.test
+          echo "AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" >> nextjs-app/.env.test
 
       - name: Build services
         run: |
@@ -59,6 +59,9 @@ jobs:
       - name: Run main api tests
         run: |
           docker exec -i main-api npm test
+
+      - name: Install Playwright Browsers
+        run: docker exec -i nextjs-app npx playwright install --with-deps
 
       - name: Run App Tests
         run: |

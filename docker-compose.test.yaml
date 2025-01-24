@@ -7,8 +7,6 @@ services:
       - '4000:4000'
     networks:
       - firetracker-network-test
-    extra_hosts:
-      - "localhost:host-gateway"
     command: sh -c "npm run start-test"
 
   auth-api:
@@ -18,20 +16,23 @@ services:
       - '5000:5000'
     networks:
       - firetracker-network-test
-    extra_hosts:
-      - "localhost:host-gateway"
     command: sh -c "npm run start-test"
 
   nextjs-app:
-    build: ./nextjs-app
+    build:
+      context: ./nextjs-app
+      args:
+        NODE_ENV: test
     container_name: nextjs-app
     ports:
       - '3000:3000'
     networks:
-      - firetracker-network-test
-    extra_hosts:
-      - "localhost:host-gateway"
-    command: sh -c "npm run build && npm run start"
+      - firetracker-network-test 
+    command: >
+      sh -c "npx playwright install --with-deps && 
+      npm run build && 
+      npm run start && 
+      wait"
 
   redis:
     image: redis:7.4.0
@@ -41,8 +42,6 @@ services:
       - '6379:6379'
     networks:
       - firetracker-network-test
-    extra_hosts:
-      - "localhost:host-gateway"
     volumes:
       - redis-data:/data
 
@@ -54,8 +53,6 @@ services:
       - '27017:27017'
     networks:
       - firetracker-network-test
-    extra_hosts:
-      - "localhost:host-gateway"
     volumes:
       - mongo-data:/data/db
 

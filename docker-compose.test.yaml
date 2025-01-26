@@ -3,19 +3,11 @@ services:
   main-api:
     build: ./main-api
     container_name: main-api
-    ports:
-      - '4000:4000'
-    networks:
-      - firetracker-network-test
     command: sh -c "npm run start-test"
 
   auth-api:
     build: ./auth-api
     container_name: auth-api
-    ports:
-      - '5000:5000'
-    networks:
-      - firetracker-network-test
     command: sh -c "npm run start-test"
 
   nextjs-app:
@@ -24,13 +16,9 @@ services:
       args:
         NODE_ENV: test
     container_name: nextjs-app
-    ports:
-      - '3000:3000'
-    networks:
-      - firetracker-network-test 
     command: >
       sh -c "npx playwright install --with-deps && 
-      npm run build && 
+      npm run build:test && 
       npm run start && 
       wait"
 
@@ -38,10 +26,6 @@ services:
     image: redis:7.4.0
     container_name: redis
     restart: always
-    ports:
-      - '6379:6379'
-    networks:
-      - firetracker-network-test
     volumes:
       - redis-data:/data
 
@@ -49,17 +33,8 @@ services:
     image: mongo:6
     container_name: mongo
     restart: always
-    ports:
-      - '27017:27017'
-    networks:
-      - firetracker-network-test
     volumes:
       - mongo-data:/data/db
-
-networks:
-  firetracker-network-test:
-    driver: bridge
-
 
 volumes:
   redis-data:

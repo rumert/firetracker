@@ -3,25 +3,25 @@ import { test, expect } from '@playwright/test';
 test.describe('Budget', () => {
     let token: string;
     test.beforeEach(async ({ page, request }) => {
-        const resetRes = await request.get(`${process.env.MAIN_API_URL}/db/reset`);
+        const resetRes = await request.get(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/db/reset`);
         if (!resetRes.ok()) {
             throw new Error('Failed to reset main database');
         }
 
-        await page.goto(`${process.env.APP_URL}/register`);
+        await page.goto(`${process.env.NEXT_PUBLIC_APP_URL}/register`);
         await page.getByLabel('Nickname').fill('test123');
         await page.getByLabel('Email').fill('test@test.com');
         await page.getByLabel('Password').fill('Test123');
         await page.getByRole('button', { name: 'Sign Up' }).click();
 
-        await page.waitForURL(`${process.env.APP_URL}`);
+        await page.waitForURL(`${process.env.NEXT_PUBLIC_APP_URL}`);
         await page.context().storageState({ path: 'auth.json' });
 
         await page.getByLabel('Budget Name').fill('test budget')
         await page.getByLabel('Base Balance ( $ )').fill('0');
         await page.getByRole('button', { name: 'Create' }).click();
 
-        const loginRes = await request.post(`${process.env.AUTH_API_URL}/login`, {
+        const loginRes = await request.post(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/login`, {
             headers: {
                 'Content-type': 'application/json'
             },
@@ -40,13 +40,13 @@ test.describe('Budget', () => {
         
         test('should create a new budget and redirect to its page', async ({ page, browser }) => {
             await browser.newContext({ storageState: 'auth.json' });
-            await page.goto(`${process.env.APP_URL}`);
+            await page.goto(`${process.env.NEXT_PUBLIC_APP_URL}`);
             await page.locator('button[data-testid="createBudgetButton"]').click();
            
             await page.getByLabel('Budget Name').fill('new budget')
             await page.getByLabel('Base Balance ( $ )').fill('0');
             await page.getByRole('button', { name: 'Create' }).click();
-            const url = new RegExp(`${process.env.APP_URL}/[a-f\\d]{24}`);
+            const url = new RegExp(`${process.env.NEXT_PUBLIC_APP_URL}/[a-f\\d]{24}`);
             await page.waitForURL(url);
             
             const locator_1 = page.getByText('No Transactions Yet')
@@ -83,7 +83,7 @@ test.describe('Budget', () => {
     test.describe('requires multiple budgets and transactions', () => {
 
         test.beforeEach(async ({ request, page }) => {
-            const seedRes = await request.get(`${process.env.MAIN_API_URL}/db/seed`, {
+            const seedRes = await request.get(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/db/seed`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

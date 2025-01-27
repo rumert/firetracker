@@ -5,10 +5,6 @@ services:
     container_name: main-api
     ports:
       - '4000:4000'
-    networks:
-      - firetracker-network-prod
-    extra_hosts:
-      - "localhost:host-gateway"
     command: sh -c "npm run start"
 
   auth-api:
@@ -16,10 +12,6 @@ services:
     container_name: auth-api
     ports:
       - '5000:5000'
-    networks:
-      - firetracker-network-prod
-    extra_hosts:
-      - "localhost:host-gateway"
     command: sh -c "npm run start"
 
   nextjs-app:
@@ -27,11 +19,7 @@ services:
     container_name: nextjs-app
     ports:
       - '3000:3000'
-    networks:
-      - firetracker-network-prod
-    extra_hosts:
-      - "localhost:host-gateway"
-    command: sh -c "npm run build:prod && npm run start"
+    command: sh -c "npm run build && npm run start"
 
   redis:
     image: redis:7.4.0
@@ -39,10 +27,6 @@ services:
     restart: always
     ports:
       - '6379:6379'
-    networks:
-      - firetracker-network-prod
-    extra_hosts:
-      - "localhost:host-gateway"
     volumes:
       - redis-data:/data
 
@@ -52,17 +36,8 @@ services:
     restart: always
     ports:
       - '27017:27017'
-    networks:
-      - firetracker-network-prod
-    extra_hosts:
-      - "localhost:host-gateway"
     volumes:
       - mongo-data:/data/db
-
-networks:
-  firetracker-network-prod:
-    driver: bridge
-
 
 volumes:
   redis-data:

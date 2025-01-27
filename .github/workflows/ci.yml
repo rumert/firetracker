@@ -59,6 +59,7 @@ jobs:
 
       - name: Run App Tests
         run: |
+          sleep 30
           docker exec -i nextjs-app npm test
 
       - name: Tear down services

@@ -61,6 +61,7 @@ jobs:
         run: |
           sleep 30
           docker exec -i nextjs-app npm test
+          docker cp nextjs-app:/app/playwright-report ./playwright-report && ls -la
       
       - name: Upload trace artifacts
         uses: actions/upload-artifact@v4

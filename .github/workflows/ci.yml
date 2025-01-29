@@ -61,6 +61,14 @@ jobs:
         run: |
           sleep 30
           docker exec -i nextjs-app npm test
+      
+      - name: Upload trace artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
       - name: Tear down services
         run: |

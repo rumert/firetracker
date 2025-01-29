@@ -61,14 +61,21 @@ jobs:
         run: |
           sleep 15
           docker exec -i nextjs-app npm test
-          docker cp nextjs-app:/app/playwright-report ./playwright-report
+          mkdir ${{ github.workspace }}/playwright-report
+          docker cp nextjs-app:/app/playwright-report ${{ github.workspace }}/playwright-report
+
+      - name: debug
+        run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/playwright-report
       
       - name: Upload trace artifacts
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: ./playwright-report/
+          path: playwright-report
+          include-hidden-files: true
           retention-days: 30
 
       - name: Tear down services

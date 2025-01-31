@@ -48,11 +48,10 @@ jobs:
       - name: Build services
         run: |
           docker compose -f docker-compose.test.yaml up --build -d
-          sleep 20
 
-      - name: DEBUG
+      - name: Wait Services To be Ready
         run: |
-          docker exec -i nextjs-app cat /app/.env.test
+          sleep 30
 
       - name: Run auth api tests
         run: |

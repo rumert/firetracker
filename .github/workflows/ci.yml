@@ -78,7 +78,3 @@ jobs:
           path: ${{ github.workspace }}/pw-test-results
           include-hidden-files: true
           retention-days: 30
-
-      - name: Tear down services
-        run: |
-          docker compose -f docker-compose.test.yaml down

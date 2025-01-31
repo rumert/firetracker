@@ -16,23 +16,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Stop and remove existing containers
-        run: |
-          docker compose -f docker-compose.production.yaml down || true
+        run: docker compose -f docker-compose.production.yaml down
+        continue-on-error: true
 
       - name: Set Up Environment Variables
         run: |
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRETL }}" >> auth-api/src/.env.test
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRETL }}" >> main-api/src/.env.test
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> auth-api/src/.env.test
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> main-api/src/.env.test
-          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> auth-api/src/.env.test
-          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> main-api/src/.env.test
-          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> auth-api/src/.env.test
-          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> main-api/src/.env.test
-          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> auth-api/src/.env.test
-          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> main-api/src/.env.test
-          echo "REDIS_DB=2" >> auth-api/src/.env.test
-          echo "REDIS_DB=2" >> main-api/src/.env.test
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRET }}" >> auth-api/src/.env.production
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRET }}" >> main-api/src/.env.production
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> auth-api/src/.env.production
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> main-api/src/.env.production
+          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> auth-api/src/.env.production
+          echo "MONGO_URL=${{ secrets.PRODUCTION_MONGO_URL }}" >> main-api/src/.env.production
+          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> auth-api/src/.env.production
+          echo "REDIS_HOST=${{ secrets.PRODUCTION_REDIS_HOST }}" >> main-api/src/.env.production
+          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> auth-api/src/.env.production
+          echo "REDIS_PORT=${{ secrets.PRODUCTION_REDIS_PORT }}" >> main-api/src/.env.production
+          echo "REDIS_DB=2" >> auth-api/src/.env.production
+          echo "REDIS_DB=2" >> main-api/src/.env.production
           echo "NEXT_PUBLIC_APP_URL=${{ secrets.PRODUCTION_APP_URL }}" >> nextjs-app/.env.production
           echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.PRODUCTION_MAIN_API_URL }}" >> nextjs-app/.env.production
           echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.PRODUCTION_AUTH_API_URL }}" >> nextjs-app/.env.production

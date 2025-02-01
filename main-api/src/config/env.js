@@ -4,7 +4,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', `.env.${process.env.NODE_ENV
 
 module.exports={
     NODE_ENV: process.env.NODE_ENV,
-    ACCESS_TOKEN: process.env.ACCESS_TOKEN,
+    ACCESS_TOKEN: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN: process.env.REFRESH_TOKEN_SECRET,
     MONGO_URL: process.env.MONGO_URL,
     REDIS_HOST: process.env.REDIS_HOST,

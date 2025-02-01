@@ -1,11 +1,11 @@
-require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
+const { REDIS_HOST, REDIS_PORT, REDIS_DB } = require("./env");
 const Redis = require("redis");
 const redisClient = Redis.createClient({
     socket: {
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+        host: REDIS_HOST,
+        port: REDIS_PORT,
     },
-    database: process.env.REDIS_DB
+    database: REDIS_DB
 });
 
 redisClient.connect();

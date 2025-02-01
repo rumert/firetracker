@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
+const { AI_KEY } = require("../config/env");
 const Transaction = require('../models/transaction');
 const Budget = require('../models/budget');
 const { fetchCategoryFromAI, getDataWithCaching, throwError } = require('../utils/functions');
@@ -6,7 +6,7 @@ const redisClient = require('../config/redis');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { logger } = require('../utils/logger');
 
-const aiModel = new GoogleGenerativeAI(process.env.AI_KEY).getGenerativeModel({ model: "gemini-1.5-flash" });
+const aiModel = new GoogleGenerativeAI(AI_KEY).getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function routeWrapper(req, res, next, handler) {
   logger.info(`Request: ${req.method} ${req.originalUrl} - User: ${req.user ? req.user.uid : 'Guest'}`);

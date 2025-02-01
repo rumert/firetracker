@@ -35,8 +35,7 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          docker-compose -f docker-compose.production.yaml build --no-cache
-          docker-compose -f docker-compose.production.yaml up -d
+          docker-compose -f docker-compose.production.yaml up --build -d
 
       - name: Clean up old images
         run: |

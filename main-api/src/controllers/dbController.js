@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
+const { NODE_ENV } = require("../config/env");
 const { default: mongoose } = require('mongoose');
 const redisClient = require('../config/redis');
 const Budget = require('../models/budget');
@@ -19,7 +19,7 @@ async function routeWrapper(req, res, next, handler) {
 
 const reset = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
-        if (process.env.NODE_ENV !== 'test') {
+        if (NODE_ENV !== 'test') {
             const error = new Error("Forbidden")
             error.status = 403
             return next(error)
@@ -38,7 +38,7 @@ const reset = async (req, res, next) => {
 
 const seed = async (req, res, next) => {
     await routeWrapper(req, res, next, async () => {
-        if (process.env.NODE_ENV !== 'test') {
+        if (NODE_ENV !== 'test') {
             const error = new Error("Forbidden")
             error.status = 403
             return next(error)

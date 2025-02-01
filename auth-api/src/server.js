@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
+const { NODE_ENV } = require("./config/env");
 const express = require("express");
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit')
@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimit({
     windowMs: 60 * 1000, // a minute
-    limit: process.env.NODE_ENV === 'test' ? 10000 : 30, // Limit each IP to 30 requests per `window`.
+    limit: NODE_ENV === 'test' ? 10000 : 30, // Limit each IP to 30 requests per `window`.
     standardHeaders: 'draft-7',
     legacyHeaders: false,
 }))

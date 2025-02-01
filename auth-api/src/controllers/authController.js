@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `./src/.env.${process.env.NODE_ENV}` });
+const { NODE_ENV, REFRESH_TOKEN } = require("../config/env");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { createUser, generateRefreshToken, generateAccessToken } = require('../utils/functions');
@@ -29,14 +29,14 @@ const login = async (req, res, next) => {
 
                 res.cookie('access_token', accessToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: NODE_ENV === 'production',
                     sameSite: 'Strict',
                     maxAge: accessMaxAge,
                 });
                 
                 res.cookie('refresh_token', refreshToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: NODE_ENV === 'production',
                     sameSite: 'Strict',
                     maxAge: refreshMaxAge,
                 });
@@ -77,14 +77,14 @@ const register = async (req, res, next) => {
 
             res.cookie('access_token', accessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: NODE_ENV === 'production',
                 sameSite: 'Strict',
                 maxAge: accessMaxAge,
             });
             
             res.cookie('refresh_token', refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: NODE_ENV === 'production',
                 sameSite: 'Strict',
                 maxAge: refreshMaxAge,
             });
@@ -97,16 +97,16 @@ const getToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1];
     await routeWrapper(req, res, next, async () => {
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        jwt.verify(refreshToken, REFRESH_TOKEN, (err, user) => {
             if (err) {
                 res.clearCookie('access_token', {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: NODE_ENV === 'production',
                     sameSite: 'Strict',
                 });
                 res.clearCookie('refresh_token', {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: NODE_ENV === 'production',
                     sameSite: 'Strict',
                 });
 
@@ -118,7 +118,7 @@ const getToken = async (req, res, next) => {
             const { accessToken, maxAge } = generateAccessToken(userForToken)
             const tokenOptions = {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: NODE_ENV === 'production',
                 sameSite: 'Strict',
                 maxAge,
             }

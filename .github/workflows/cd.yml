@@ -35,10 +35,4 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          docker-compose -f docker-compose.production.yaml up --build -d
-
-      - name: Clean up old images
-        run: |
-          docker image prune -af
-          docker volume prune -f --filter "label!=keep"
-          docker network prune -f
+          docker compose -f docker-compose.production.yaml up --build -d

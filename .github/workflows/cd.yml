@@ -32,6 +32,10 @@ jobs:
           echo "NEXT_PUBLIC_APP_URL=${{ secrets.PRODUCTION_APP_URL }}" >> nextjs-app/.env.production
           echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.PRODUCTION_MAIN_API_URL }}" >> nextjs-app/.env.production
           echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.PRODUCTION_AUTH_API_URL }}" >> nextjs-app/.env.production
+      
+      - name: Wait for a bit
+        run: |
+          sleep 30
 
       - name: Deploy with Docker Compose
         run: |

@@ -7,7 +7,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/rumert/firetracker">
-    <img src="app/public/logo.png" alt="Logo" width="80" height="80">
+    <img src="nextjs-app/public/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Firetracker</h3>
@@ -21,12 +21,11 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
+
+## Table of Contents
+
+<ol>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
@@ -36,37 +35,27 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
+</ol>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project is a combination of different frameworks and libraries. You can copy any part of it and use in your project.
+Full-stack budget tracking project combines modern frameworks and libraries to help users manage and visualize their finances effectively.
 
 ### Includes:
 * Database - some basic concepts using mongoose like query, schema, and expressions
-* api - various middlewares, controllers, loggers, and error handler
+* api - middlewares, controllers, loggers, and an error handler
 * api security - bcrypt hash algorithm for jwt auth, rate-limiting, input validation and sanitization, header security
-* Testing - e2e tests using Cypress, integration tests using Mocha, and load testing using Artillery.
-* Caching - basic Redis caching for the api, reducing api response delay
-* Containerization - Docker containers for both app and api
-* CI/CD - Using Github Actions, building the app and making tests in Ubuntu. After successfull CI workflow, deployment of containers begins on self-hosted device from a cloud provider.
-* Various customized ui components from Shadcn: table, calendar, card, dropdown menu, popover etc.
+* Testing - e2e tests using Playwright, unit tests using Jest, and load testing using Artillery.
+* Caching - basic Redis caching for the apis, reducing response delay
+* Containerization - Docker containers for microservices
+* CI/CD - Using Github Actions, building the app and making tests. After successfull CI workflow, deployment of containers begins on your desired device.
+* Customized ui components from Shadcn: table, calendar, card, dropdown menu, popover etc.
 * Some next.js/react concepts like SSR and server actions
-* Nextjs middleware to handle cookies before generating pages
-* Custom jwt authentication
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -87,51 +76,116 @@ This project is a combination of different frameworks and libraries. You can cop
 <!-- GETTING STARTED -->
 ## Getting Started
 
-These are steps to install this project on your local using Docker
+These are steps to install and use this project in any way you want:
 
-### Prerequisites
+<details>
+  <summary>Development</summary>
+  <ol>
+    <li>
+      <p>Clone the Repo:</p>
+      <pre><code>git clone https://github.com/rumert/firetracker.git</code></pre>
+    </li>
+    <li>
+      <p>Prepare Databases:</p>
+      <pre><code>docker compose -f docker-compose.development.yaml up --build</code></pre>
+    </li>
+    <li>
+      <p>Create your own jwt secrets and change the corresponding values inside the env files under the both apis' src folder. Make sure the values for both apis are same.</p>
+    </li>
+    <li>
+      <p>Install and Run:</p>
+      <ol>
+        <li>
+          <p>App:</p>
+          <pre><code>cd nextjs-app</code>
+npm i</pre>
+          <pre><code>npm run dev</code></pre>
+        </li>
+        <li>
+          <p>Main Api:</p>
+          <pre><code>cd main-api</code>
+npm i</pre>
+          <pre><code>npm run dev</code></pre>
+        </li>
+        <li>
+          <p>Auth Api:</p>
+          <pre><code>cd auth-api</code>
+npm i</pre>
+          <pre><code>npm run dev</code></pre>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <p>visit localhost:3000 in your browser</p>
+    </li>
+  </ol>
+</details>
 
-* Docker and docker compose
-* credentials from the following services:
-	
-  - access token and refresh token from jwt library
-  - mongodb url from mongodb atlas
-  - ai key from google ai studio
-	
-  
-### Installation
+<details>
+  <summary>Test</summary>
+  <ol>
+    <li>
+      <p>Clone the Repo:</p>
+      <pre><code>git clone https://github.com/rumert/firetracker.git</code></pre>
+    </li>
+    <li>
+      <p>Prepare All Services:</p>
+      <pre><code>docker compose -f docker-compose.test.yaml up --build</code></pre>
+    </li>
+    <li>
+      <p>Run tests:</p>
+      <ol>
+        <li>
+          <p>App:</p>
+          <pre><code>cd nextjs-app</code>
+npm run test</pre>
+        </li>
+        <li>
+          <p>Main Api:</p>
+          <pre><code>cd main-api</code>
+npm run test</pre>
+        </li>
+        <li>
+          <p>Auth Api:</p>
+          <pre><code>cd auth-api</code>
+npm run test</pre>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</details>
 
-1. Clone the repo
-
-   ```sh
-   git clone https://github.com/rumert/firetracker
-   cd firetracker
-   ```
-2. rename the .env.example file inside api/src to .env and write your credentials
-3. run this command inside the firetracker folder to build the containers:
-
-   ```sh
-   docker compose up
-   ```
-4. visit localhost:3000 in your browser
+<details>
+  <summary>Production</summary>
+  <ol>
+    <li>
+      <p>Clone the Repo:</p>
+      <pre><code>git clone https://github.com/rumert/firetracker.git</code></pre>
+    </li>
+    <li>
+      <p>Prepare All Services:</p>
+      <pre><code>docker compose -f docker-compose.production.yaml up --build</code></pre>
+    </li>
+    <li>
+      <p>Visit localhost:3000 in your browser (some features won't work on local since this env requires https)</p>
+    </li>
+  </ol>
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
 
 - [x] Add Containerization
 - [x] Add CI/CD
-- [ ] Microservices architecture
-- [ ] Add mocking for services
+- [x] Microservices architecture
+- [ ] Dashboard
+- [ ] and more features...
 
 See the [open issues](https://github.com/rumert/firetracker/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- LICENSE -->
 ## License
@@ -140,16 +194,12 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
 ## Contact
 
 Rumert Kıran - rumertkiran@gmail.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge

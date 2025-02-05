@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node ./src",
-    "start-test": "NODE_ENV=test node ./src",
-    "dev": "NODE_ENV=development nodemon ./src",
+    "start": "cross-env NODE_ENV=production node ./src",
+    "start-test": "cross-env NODE_ENV=test node ./src",
+    "dev": "cross-env NODE_ENV=development nodemon ./src",
     "test": "cross-env NODE_ENV=test jest",
     "test:artillery": "artillery run artillery.yaml"
   },

@@ -10,7 +10,7 @@ export default async function Home() {
 
   return defaultBudget ? 
   (
-    redirect(`/${defaultBudget._id}`)
+    redirect(`/budget/${defaultBudget._id}`)
   )
   :
   (

@@ -20,7 +20,8 @@ services:
       args:
         NODE_ENV: test
     container_name: nextjs-app
-    network_mode: "host"
+    ports:
+      - '3000:3000'
     command: >
       sh -c "npm run build:test && 
       npm run start"

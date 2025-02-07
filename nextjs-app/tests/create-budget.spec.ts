@@ -23,7 +23,7 @@ test.describe('Create Budget', () => {
         await page.getByLabel('Budget Name').fill('test budget')
         await page.getByLabel('Base Balance ( $ )').fill('1');
         await page.getByRole('button', { name: 'Create' }).click();
-        const url = new RegExp(`${process.env.NEXT_PUBLIC_APP_URL}/[a-f\\d]{24}`);
+        const url = new RegExp(`${process.env.NEXT_PUBLIC_APP_URL}/budget/[a-f\\d]{24}`);
         await page.waitForURL(url);
         
         const locator_1 = page.getByText('No Transactions Yet')

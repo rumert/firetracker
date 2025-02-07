@@ -20,7 +20,6 @@ export async function getDefaultBudget(token: string | null = null): Promise<Bud
     )
     return response.defaultBudget
   } catch (error) {
-    console.log(error)
     throw Error('internal server error')
   }
 }

@@ -26,8 +26,6 @@ export function registerValidation( email: string, password: string ): string | 
 
 export function loginValidation( nickname: string, password: string ): string | undefined {
 
-    console.log(typeof nickname)
-
     if (typeof nickname != 'string')  {
         return 'Invalid nickname'
     }

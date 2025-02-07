@@ -16,7 +16,7 @@ interface Props {
     setIsAddBudgetActive?: (value: boolean) => void
 }
 
-export default function AddBudget({ 
+export default function AddBudget({
     isFirst, 
     setIsAddBudgetActive 
 }: Props) {
@@ -39,7 +39,7 @@ export default function AddBudget({
                     base_balance: form.baseBalance,
                     is_default: isFirst
                 })
-                router.push(`/${budgetId}`)
+                router.push(`/budget/${budgetId}`)
             } catch (error) {
                 setErrorMes('Internal Server Error')
             }

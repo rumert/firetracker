@@ -51,7 +51,7 @@ export function BudgetPopover({ budgets, currentBudget }: Props) {
             <CommandEmpty>No budget found.</CommandEmpty>
             <CommandGroup>
               {budgets?.map((budget: any, index: any) => (
-                <Link href={`/${budget._id}`} key={index}>
+                <Link href={`/budget/${budget._id}`} key={index}>
                   <CommandItem
                     value={budget.name}
                     onSelect={(currentName) => {

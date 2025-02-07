@@ -21,7 +21,7 @@ export default async function Transactions({ budgetId, transactions }: props) {
     let redirectPath: string | null;
     try {
       await deleteTransaction(transactionId, token);
-      redirectPath = `/${budgetId}`
+      redirectPath = `/budget/${budgetId}`
     } catch (error) {
       redirectPath = null
     } 

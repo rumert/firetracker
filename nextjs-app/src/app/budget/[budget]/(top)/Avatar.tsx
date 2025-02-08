@@ -25,7 +25,7 @@ export default function Avatar() {
     <DropdownMenu>
         <div className='-mr-10 lg:-mr-6'>
             <DropdownMenuTrigger asChild>
-                <Button className='px-3' data-testid='addTransactionButton' variant="secondary">
+                <Button className='px-3' variant="secondary">
                     <UserRound />
                 </Button>
             </DropdownMenuTrigger>

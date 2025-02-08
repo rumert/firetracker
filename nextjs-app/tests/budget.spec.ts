@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Budget', () => {
     let token: string;
     test.beforeEach(async ({ page, request }) => {
-        const resetRes = await request.get(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/db/reset`);
+        const resetRes = await request.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/main/db/reset`);
         if (!resetRes.ok()) {
             throw new Error('Failed to reset main database');
         }
@@ -21,7 +21,7 @@ test.describe('Budget', () => {
         await page.getByLabel('Base Balance ( $ )').fill('0');
         await page.getByRole('button', { name: 'Create' }).click();
 
-        const loginRes = await request.post(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/login`, {
+        const loginRes = await request.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/login`, {
             headers: {
                 'Content-type': 'application/json'
             },
@@ -83,7 +83,7 @@ test.describe('Budget', () => {
     test.describe('requires multiple budgets and transactions', () => {
 
         test.beforeEach(async ({ request, page }) => {
-            const seedRes = await request.get(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/db/seed`, {
+            const seedRes = await request.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/main/db/seed`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

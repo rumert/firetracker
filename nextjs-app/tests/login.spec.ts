@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Login', () => {
     test.beforeEach(async ({ request }) => {
-        const resetRes = await request.get(`${process.env.NEXT_PUBLIC_MAIN_API_URL}/db/reset`);
+        const resetRes = await request.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/main/db/reset`);
         if (!resetRes.ok()) {
             throw new Error('Failed to reset database');
         }
-        const registerRes = await request.post(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/register`, {
+        const registerRes = await request.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/register`, {
             data: {
                 nickname: "test123",
                 email: "test@test.com",

@@ -10,7 +10,7 @@ export async function fetchGraphQL<T>(
 ): Promise<T> {
   let res;
   if(!token) {
-    res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/proxy?method=POST&url=${process.env.NEXT_PUBLIC_MAIN_API_URL}/graphql`, {
+    res = await fetch(`/api/proxy?method=POST&url=${process.env.NEXT_PUBLIC_APP_URL}/api/main/graphql`, {
       method: 'POST',
       body: JSON.stringify({ query, variables }),
     });

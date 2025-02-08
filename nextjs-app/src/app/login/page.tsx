@@ -37,7 +37,7 @@ export default function page() {
             setErrorMes(validationErr)
         } else {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/login`, { 
+                const res = await fetch(`/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json'

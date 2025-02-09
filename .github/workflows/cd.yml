@@ -17,6 +17,9 @@ jobs:
 
       - name: Set Up Environment Variables
         run: |
+          rm -f auth-api/src/.env.production
+          rm -f main-api/src/.env.production
+          rm -f nextjs-app/.env.production
           echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRET }}" >> auth-api/src/.env.production
           echo "ACCESS_TOKEN_SECRET=${{ secrets.PRODUCTION_ACCESS_TOKEN_SECRET }}" >> main-api/src/.env.production
           echo "REFRESH_TOKEN_SECRET=${{ secrets.PRODUCTION_REFRESH_TOKEN_SECRET }}" >> auth-api/src/.env.production

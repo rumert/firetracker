@@ -24,27 +24,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Set Up Environment Variables
-        run: |
-          # auth-api
-          echo "ACCESS_TOKEN_SECRET=test_access_secret" >> auth-api/src/.env.test
-          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> auth-api/src/.env.test
-          echo "MONGO_URL=${{ secrets.TEST_MONGO_URL }}" >> auth-api/src/.env.test
-          echo "REDIS_HOST=${{ secrets.TEST_REDIS_HOST }}" >> auth-api/src/.env.test
-          echo "REDIS_PORT=${{ secrets.TEST_REDIS_PORT }}" >> auth-api/src/.env.test
-          echo "REDIS_DB=1" >> auth-api/src/.env.test
-          # main-api
-          echo "ACCESS_TOKEN_SECRET=test_access_secret" >> main-api/src/.env.test
-          echo "REFRESH_TOKEN_SECRET=test_refresh_secret" >> main-api/src/.env.test
-          echo "MONGO_URL=${{ secrets.TEST_MONGO_URL }}" >> main-api/src/.env.test
-          echo "REDIS_HOST=${{ secrets.TEST_REDIS_HOST }}" >> main-api/src/.env.test
-          echo "REDIS_PORT=${{ secrets.TEST_REDIS_PORT }}" >> main-api/src/.env.test
-          echo "REDIS_DB=1" >> main-api/src/.env.test
-          # Nextjs-app
-          echo "NEXT_PUBLIC_APP_URL=${{ secrets.TEST_APP_URL }}" >> nextjs-app/.env.test
-          echo "NEXT_PUBLIC_MAIN_API_URL=${{ secrets.TEST_MAIN_API_URL }}" >> nextjs-app/.env.test
-          echo "NEXT_PUBLIC_AUTH_API_URL=${{ secrets.TEST_AUTH_API_URL }}" >> nextjs-app/.env.test
-
       - name: Build services
         run: |
           docker compose -f docker-compose.test.yaml up --build -d
@@ -65,6 +44,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/nextjs-app
           npm install
+          npx playwright install --with-deps
           npm test
       
       - name: Upload trace artifacts

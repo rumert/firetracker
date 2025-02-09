@@ -15,10 +15,7 @@ services:
     command: sh -c "npm run start-test"
 
   nextjs-app:
-    build:
-      context: ./nextjs-app
-      args:
-        NODE_ENV: test
+    build: ./nextjs-app
     container_name: nextjs-app
     ports:
       - '3000:3000'

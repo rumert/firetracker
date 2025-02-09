@@ -14,10 +14,15 @@ const cookieParser = require('cookie-parser');
 const initApollo = require('./config/apollo');
 
 const app = express();
+app.set('trust proxy', 1)
 connectDB()
 
+const allowedOrigin = NODE_ENV === 'production' 
+    ? ['https://firetracker.online', 'https://www.firetracker.online'] 
+    : ['http://localhost:3000'];
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: allowedOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));

@@ -13,16 +13,23 @@ const initApollo = async (app) => {
         await apolloServer.start();
         
         app.use('/graphql', 
-            expressMiddleware(apolloServer, {
-                context: async ({ req, res }) => {
-                    return { req, res };
-                },
-            })
+            async (req, res, next) => {
+                try {
+                    await expressMiddleware(apolloServer, {
+                        context: async ({ req, res }) => {
+                            return { req, res };
+                        },
+                    })(req, res, next);
+                } catch (error) {
+                    console.error('Apollo middleware error:', error);
+                    next(error);
+                }
+            }
         );
         
-        console.log('Apollo middleware initialized');
+        console.log('Apollo middleware initialized!');
     } catch (error) {
-        console.log(error);
+        console.error('Apollo initialization error:', error);
         process.exit(1);
     }
 };

@@ -154,6 +154,17 @@ const deleteTransaction = [
         .escape(),
 ]
 
+const getNickname = [
+    ...user,
+]
+
+const updateNickname = [
+    ...user,
+    body('nickname')
+        .isString()
+        .escape(),
+]
+
 module.exports = { 
     getDefaultBudgetVal: getDefaultBudget,
     getBudgetVal: getBudget,
@@ -166,4 +177,6 @@ module.exports = {
     createTransactionVal: createTransaction,
     updateTransactionVal: updateTransaction,
     deleteTransactionVal: deleteTransaction,
+    getNicknameVal: getNickname,
+    updateNicknameVal: updateNickname,
 };

@@ -31,13 +31,13 @@ export default function Avatar() {
             </DropdownMenuTrigger>
         </div>
         <DropdownMenuContent>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
                 <Link href='/account'>Account Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
                 <form action={logOut}>
-                    <button>
+                    <button className='h-full w-full'>
                         Log Out
                     </button>
                 </form>

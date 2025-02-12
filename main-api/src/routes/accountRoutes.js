@@ -1,12 +1,16 @@
 const express = require("express");
 const {
     getNickname, 
-    updateNickname
+    updateNickname,
+    updatePassword,
+    deleteAccount
 } = require("../controllers/accountController");
 const { validateRequest } = require('../middleware/validate-request');
 const {
     getNicknameVal,
     updateNicknameVal,
+    updatePasswordVal,
+    deleteAccountVal
 } = require('../utils/validation-schemas');
 
 const router = express.Router();
@@ -18,5 +22,7 @@ const validate = (validationSchema) => [
 
 router.get("/nickname", validate(getNicknameVal), getNickname);
 router.put("/nickname", validate(updateNicknameVal), updateNickname);
+router.put("/password", validate(updatePasswordVal), updatePassword);
+router.delete("/", validate(deleteAccountVal), deleteAccount);
 
 module.exports = router;

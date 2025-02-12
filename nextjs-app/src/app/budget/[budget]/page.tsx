@@ -9,7 +9,8 @@ import Image from 'next/image';
 import { getBudget, getBudgets } from '@/services/budgetService';
 import { getTransactions } from '@/services/transactionService';
 import { cookies } from 'next/headers';
-import Avatar from './(top)/Avatar';
+import Avatar from '../../../components/Avatar';
+import Link from 'next/link';
 
 export default async function page({ params }: { params: { budget: string } }) {
   const token = cookies().get("access_token")?.value;
@@ -24,14 +25,14 @@ export default async function page({ params }: { params: { budget: string } }) {
       <div className='flex justify-between gap-20 px-20 py-6 sticky top-0 bg-background z-20'>
         <div className='flex gap-8'>
           <div className='flex gap-2'>
-            <div className='relative h-10 w-10'>
+            <Link href='/' className='relative h-10 w-10'>
               <Image
               src='/logo.png'
               width='100'
               height='100'
               alt='icon'
               />
-            </div>
+            </Link>
             <BudgetPopover budgets={budgets} currentBudget={currentBudget} />
             <CreateBudget />
           </div>

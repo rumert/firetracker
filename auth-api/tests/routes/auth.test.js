@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/server');
 const User = require('../../src/models/user');
-const { default: mongoose } = require('mongoose');
 
 jest.mock('../../src/models/user');
 jest.mock('../../src/models/refreshToken');
@@ -12,9 +11,7 @@ jest.mock('../../src/utils/functions', () => ({
 }));
 
 describe('Auth Routes', () => {
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+
   describe('POST /login', () => {
     it('should return 200 and set cookies when login is successful', async () => {
       const mockUser = { id: '123', nickname: 'testuser', password_hash: 'hashedPassword' };

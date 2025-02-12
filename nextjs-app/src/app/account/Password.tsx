@@ -1,66 +1,91 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { IPasswordForm } from '@/lib/types/auth';
+import SubmitButton from '@/components/ui/SubmitButton'
+import { updatePassword } from '@/services/userService'
 import React, { useState } from 'react'
 
 export default function Password() {
-
-    const [passwordForm, setPasswordForm] = useState<IPasswordForm>({
-        currentPass: '',
-        newPass: '',
-        reNewPass: '',
-    });
-
-    async function handlePassword() {
-        if (passwordForm.newPass !== passwordForm.reNewPass) {
-            console.log("1")
-        }
-        console.log("2")
+    const emptyForm = {
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
     }
+    const [form, setForm] = useState(emptyForm);
+    const [error, setError] = useState('')
+
+  async function handlePass(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+        await updatePassword(form.currentPassword, form.newPassword)
+        setForm(emptyForm)
+    } catch (error: any) {
+        setError(error.message)
+    }
+  }
 
   return (
-    <div className='flex flex-col gap-4'>
-        <div className='flex flex-col gap-1'>
-            <Label htmlFor="currentPass">Current Password</Label>
-            <Input
-            id="currentPass"
-            className="w-40"
-            placeholder={passwordForm.currentPass}
-            onChange={(e) => setPasswordForm({
-                ...passwordForm,
-                currentPass: e.target.value,
-            })}
-            />
-        </div>
-        <div className='flex items-center gap-4'>
-            <div className='flex flex-col gap-1'>
-                <Label htmlFor="newPass">New Password</Label>
+    <form onSubmit={handlePass} className="space-y-4 p-6 border-b">
+        <h2 className="text-xl font-semibold">Password</h2>
+        <div className="grid gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="current" className="text-right">
+                    Current Password:
+                </Label>
                 <Input
-                id="newPass"
-                className="w-40"
-                placeholder={passwordForm.newPass}
-                onChange={(e) => setPasswordForm({
-                    ...passwordForm,
-                    newPass: e.target.value,
+                id="current"
+                type="password"
+                value={form.currentPassword}
+                onChange={(e) => setForm({
+                    ...form,
+                    currentPassword: e.target.value,
                 })}
+                className="col-span-2"
+                required
                 />
             </div>
-
-            <div className='flex flex-col gap-1'>
-                <Label htmlFor="reNewPass">Confirm New Password</Label>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="new" className="text-right">
+                New Password:
+                </Label>
                 <Input
-                id="reNewPass"
-                className="w-40"
-                placeholder={passwordForm.reNewPass}
-                onChange={(e) => setPasswordForm({
-                    ...passwordForm,
-                    reNewPass: e.target.value,
+                id="new"
+                type="password"
+                value={form.newPassword}
+                onChange={(e) => setForm({
+                    ...form,
+                    newPassword: e.target.value,
                 })}
+                className="col-span-2"
+                required
                 />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="confirm" className="text-right">
+                Confirm Password:
+                </Label>
+                <Input
+                id="confirm"
+                type="password"
+                value={form.confirmPassword}
+                onChange={(e) => setForm({
+                    ...form,
+                    confirmPassword: e.target.value,
+                })}
+                className="col-span-2"
+                required
+                />
+            </div>
+            <p className='text-destructive'>{error}</p>
+            <div className="flex justify-end">
+                <SubmitButton
+                    disabled={(form.newPassword !== form.confirmPassword) || form.newPassword == ''}
+                    pendingText='Please wait...'
+                >
+                    Update Password
+                </SubmitButton>
+            </div>
         </div>
-    </div>
-     
+    </form>
   )
 }

@@ -1,41 +1,50 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import SubmitButton from '@/components/ui/SubmitButton'
 import { updateNickname } from '@/services/userService'
-import { PenLine } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-export default function Nickname({ currentNickname }: { currentNickname: string }) {
-    const router = useRouter()
-    const [nickname, setNickname] = useState<string>(currentNickname)
-    const [isEditingNickname, setIsEditingNickname] = useState(false)
+interface Props {
+  currentNickname: string
+}
 
-    async function handleNickname() {
+export default function Nickname({ currentNickname }: Props) {
+    const [newNickname, setNewNickname] = useState('')
+    const [error, setError] = useState('')
+    const [nickname, setNickname] = useState(currentNickname)
+
+    async function handleNickname(e: React.FormEvent) {
+      e.preventDefault();
       try {
-        await updateNickname(nickname)
-        setIsEditingNickname(false)
-        router.push('/account')
+        const res = await updateNickname(newNickname)
+        setNickname(res.newNickname)
+        setNewNickname('')
       } catch (error: any) {
-        router.push(`/account?errorMes=${error.message}`)
-      }  
+        setError(error.message)
+      }
     }
-  return ( 
-    <div>
-      <Label htmlFor="nickname">Nickname</Label>
-      <div className='flex items-center'>
+
+  return (
+    <form onSubmit={handleNickname} className="space-y-4 p-6 border-b">
+      <h2 className="text-xl font-semibold">Nickname</h2>
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="nickname" className="text-right">
+          New Nickname:
+        </Label>
         <Input
-        id="nickname"
-        className="w-40"
-        placeholder={nickname}
-        disabled={!isEditingNickname}
-        onChange={(e) => setNickname(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && nickname != '' && handleNickname()}
-        onBlur={() => nickname != '' && handleNickname()}
+          id="nickname"
+          value={newNickname}
+          onChange={(e) => setNewNickname(e.target.value)}
+          className="col-span-2"
+          placeholder={nickname}
+          required
         />
-        <button onClick={() => setIsEditingNickname(!isEditingNickname)}><PenLine className="h-4" /></button>
-      </div> 
-    </div>
-    
+      </div>
+      <p className='text-destructive'>{error}</p>
+      <div className="flex justify-end">
+        <SubmitButton pendingText="Please wait...">Save Changes</SubmitButton>
+      </div>
+    </form>
   )
 }

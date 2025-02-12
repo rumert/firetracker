@@ -1,7 +1,7 @@
 const { AI_KEY } = require("../config/env");
 const Transaction = require('../models/transaction');
 const Budget = require('../models/budget');
-const { fetchCategoryFromAI, getDataWithCaching, throwError } = require('../utils/functions');
+const { getDataWithCaching, throwError } = require('../utils/functions');
 const redisClient = require('../config/redis');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { logger } = require('../utils/logger');
@@ -48,7 +48,7 @@ const createTransaction = async (req, res, next) => {
   await routeWrapper(req, res, next, async () => {
     const budget_id = req.params.budget_id
     const { type, amount, date, title } = req.body;
-    const category = type === "expense" ? await fetchCategoryFromAI('asd', title) : 'Income'
+    const category = type === "expense" ? 'Hobby' : 'Income'
 
     const newTransaction = await Transaction.create({
       user_id: req.user.uid,

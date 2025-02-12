@@ -162,6 +162,38 @@ const updateNickname = [
     ...user,
     body('nickname')
         .isString()
+        .withMessage('Invalid nickname')
+        .escape(),
+]
+
+const updatePassword = [
+    ...user,
+    body('currentPassword')
+        .isString()
+        .escape(),
+
+    body('newPassword')
+        .isString()
+        .isLength({ min:6, max:20 })
+        .withMessage('Password must be between 6 and 20 characters')
+        .matches(/^\S*$/, 'i')
+        .withMessage('Password cannot contain spaces')
+        .isStrongPassword({
+            minLength: 6,
+            minLowercase: 0,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 0,
+            returnScore: false
+        })
+        .withMessage('Password must contain at least a number and an uppercase letter')
+        .escape(),
+]
+
+const deleteAccount = [
+    ...user,
+    body('password')
+        .isString()
         .escape(),
 ]
 
@@ -179,4 +211,6 @@ module.exports = {
     deleteTransactionVal: deleteTransaction,
     getNicknameVal: getNickname,
     updateNicknameVal: updateNickname,
+    updatePasswordVal: updatePassword,
+    deleteAccountVal: deleteAccount,
 };

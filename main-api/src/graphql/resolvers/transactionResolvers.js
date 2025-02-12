@@ -1,6 +1,6 @@
 const Transaction = require('../../models/transaction');
 const Budget = require('../../models/budget');
-const { getDataWithCaching, fetchCategoryFromAI, throwError } = require('../../utils/functions');
+const { getDataWithCaching, throwError } = require('../../utils/functions');
 const redisClient = require('../../config/redis');
 const { logger } = require('../../utils/logger');
 
@@ -44,7 +44,7 @@ const transactionResolvers = {
     createTransaction: async (_, { budget_id, transaction }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
         const { type, amount, date, title } = transaction;
-        const category = type === "expense" ? await fetchCategoryFromAI('asd', title) : 'Income'
+        const category = type === "expense" ? "Hobby" : 'Income'
 
         const newTransaction = await Transaction.create({
           user_id: req.user.uid,

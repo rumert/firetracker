@@ -44,7 +44,7 @@ const transactionResolvers = {
     createTransaction: async (_, { budget_id, transaction }, { req, res, next }) =>
       routeWrapper(req, res, next, async () => {
         const { type, amount, date, title } = transaction;
-        const category = type === "expense" ? "Hobby" : 'Income'
+        const category = type === "expense" ? "Hobbies" : 'Income'
 
         const newTransaction = await Transaction.create({
           user_id: req.user.uid,
